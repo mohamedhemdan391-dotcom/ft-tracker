@@ -6,87 +6,96 @@
 <title>FT Tracker</title>
 
 <style>
-:root{
-  --red:#c40000;
-}
 body{
   margin:0;
-  font-family:Arial, sans-serif;
-  background:#f5f5f5;
+  font-family:Arial,sans-serif;
+  background:#f4f4f4;
 }
 header{
-  background:var(--red);
+  background:#c40000;
   color:#fff;
-  padding:18px;
   text-align:center;
+  padding:20px;
 }
-header h1{margin:0;font-size:28px;}
-header span{font-size:14px;opacity:.9}
+header h1{margin:0;font-size:32px}
+header span{opacity:.9}
 
 .container{padding:20px}
 
 .card{
   background:#fff;
+  padding:20px;
   border-radius:14px;
-  padding:22px;
   margin-bottom:15px;
-  box-shadow:0 4px 10px rgba(0,0,0,.1);
+  box-shadow:0 4px 12px rgba(0,0,0,.08);
   cursor:pointer;
 }
-.card h3{margin:0;color:var(--red)}
+.card h3{margin:0;color:#c40000}
 
 .page{display:none}
 .page.active{display:block}
 
-input,textarea,select{
+input,select,textarea{
   width:100%;
   padding:12px;
   margin:8px 0;
-  border-radius:8px;
+  border-radius:10px;
   border:1px solid #ccc;
   font-size:16px;
 }
 
+.checkbox-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:8px 0;
+}
+
 button{
-  background:var(--red);
+  width:100%;
+  background:#1976d2;
   color:#fff;
   border:none;
   padding:14px;
-  width:100%;
-  border-radius:10px;
+  border-radius:12px;
   font-size:18px;
   cursor:pointer;
 }
-.back{background:#333;margin-top:10px}
-.small-btn{
+
+.back{
+  margin-top:10px;
+  background:#c40000;
+}
+
+.small{
   width:auto;
   padding:8px 12px;
-  margin:5px 0;
+  background:#555;
+  margin-top:5px;
 }
 
-.device-box,.lead-box{
+.box{
   border:1px dashed #ccc;
   padding:10px;
+  border-radius:10px;
   margin:10px 0;
-  border-radius:8px;
 }
 
-/* ✅ SUCCESS OVERLAY */
 .success{
   display:none;
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.6);
-  z-index:999;
   align-items:center;
   justify-content:center;
+  z-index:999;
 }
-.success-box{
+.success div{
   background:#e8f5e9;
-  color:#1b5e20;
+  color:#2e7d32;
   padding:30px 40px;
-  border-radius:16px;
-  font-size:26px;
+  border-radius:20px;
+  font-size:28px;
   text-align:center;
 }
 </style>
@@ -111,9 +120,20 @@ button{
 <!-- DAILY -->
 <div class="page" id="daily">
 <h3>التشييك اليومي</h3>
-<input id="daily_coach" placeholder="اسم المدرب" required>
-<textarea id="daily_areas" placeholder="مناطق التشييك" required></textarea>
-<textarea id="daily_notes" placeholder="ملاحظات"></textarea>
+
+<input id="daily_coach" placeholder="اسم المدرب">
+
+<p>مناطق التشييك</p>
+<div class="checkbox-row"><input type="checkbox" class="area" value="Dumbbells & Bars"> الدمبلز والبارات</div>
+<div class="checkbox-row"><input type="checkbox" class="area" value="Accessories"> الاكسسوارات</div>
+<div class="checkbox-row"><input type="checkbox" class="area" value="Selection Area"> Selection</div>
+<div class="checkbox-row"><input type="checkbox" class="area" value="Group Classes Area"> الحصص الجماعية</div>
+<div class="checkbox-row"><input type="checkbox" class="area" value="FTZ Area"> FTZ</div>
+<div class="checkbox-row"><input type="checkbox" class="area" value="TV"> TV</div>
+<div class="checkbox-row"><input type="checkbox" class="area" value="Coaches Office"> مكتب المدربين</div>
+
+<textarea id="daily_notes" placeholder="ملاحظات (اختياري)"></textarea>
+
 <button onclick="submitDaily()">إرسال</button>
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 </div>
@@ -121,23 +141,26 @@ button{
 <!-- DETAILED -->
 <div class="page" id="detailed">
 <h3>التشييك الدقيق</h3>
-<input id="det_coach" placeholder="اسم المدرب" required>
-<input id="det_branch" placeholder="اسم الفرع" required>
 
-<select id="det_status" onchange="toggleDevices()" required>
-  <option value="">حالة الأجهزة</option>
-  <option value="جيدة">جيدة</option>
-  <option value="صيانة">صيانة</option>
+<input id="det_coach" placeholder="اسم المدرب">
+<input id="det_branch" placeholder="اسم الفرع">
+
+<select id="det_status" onchange="toggleDevices()">
+<option value="">حالة الأجهزة</option>
+<option value="جيدة">جيدة</option>
+<option value="صيانة">صيانة</option>
 </select>
 
 <div id="devices" style="display:none">
-  <div class="device-box">
+  <div class="box">
     <input class="dev_name" placeholder="اسم الجهاز">
     <input class="dev_serial" placeholder="رقم السيريال">
     <input class="dev_order" placeholder="رقم الطلب">
+    <button class="small" onclick="this.parentElement.remove()">🗑 حذف</button>
   </div>
-  <button class="small-btn" onclick="addDevice()">➕ جهاز آخر</button>
 </div>
+
+<button class="small" onclick="addDevice()">➕ إضافة جهاز</button>
 
 <button onclick="submitDetailed()">إرسال</button>
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
@@ -146,26 +169,27 @@ button{
 <!-- LEADS -->
 <div class="page" id="leads">
 <h3>العملاء المرشحين</h3>
-<input id="lead_coach" placeholder="اسم المدرب" required>
-<input id="lead_branch" placeholder="اسم الفرع" required>
+
+<input id="lead_coach" placeholder="اسم المدرب">
+<input id="lead_branch" placeholder="اسم الفرع">
 
 <div id="leadList">
-  <div class="lead-box">
+  <div class="box">
     <input class="lead_name" placeholder="اسم العميل">
     <input class="lead_phone" placeholder="رقم الجوال">
+    <button class="small" onclick="this.parentElement.remove()">🗑 حذف</button>
   </div>
 </div>
 
-<button class="small-btn" onclick="addLead()">➕ إضافة عميل</button>
+<button class="small" onclick="addLead()">➕ إضافة عميل</button>
 <button onclick="submitLeads()">إرسال</button>
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 </div>
 
 </div>
 
-<!-- SUCCESS -->
 <div class="success" id="success">
-  <div class="success-box">✅ تم الإرسال</div>
+  <div>✅ تم الإرسال</div>
 </div>
 
 <script>
@@ -173,17 +197,28 @@ function openPage(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   document.getElementById(p).classList.add('active');
 }
-function goHome(){ openPage('home'); }
+function goHome(){openPage('home')}
+
+function showSuccess(){
+  success.style.display="flex";
+  setTimeout(()=>{success.style.display="none";goHome()},1500);
+}
 
 /* DAILY */
 function submitDaily(){
-  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",{
-    method:"POST",mode:"no-cors",
-    body:new URLSearchParams({
-      "entry.1598276908":daily_coach.value,
-      "entry.670685014":new Date().toLocaleString(),
-      "entry.793034521":daily_areas.value,
-      "entry.987129842":daily_notes.value
+  const coach=daily_coach.value.trim();
+  const areas=document.querySelectorAll('.area:checked');
+  if(!coach||areas.length===0){alert("أكمل البيانات");return}
+
+  areas.forEach(a=>{
+    fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",{
+      method:"POST",mode:"no-cors",
+      body:new URLSearchParams({
+        "entry.1598276908":coach,
+        "entry.670685014":new Date().toLocaleString(),
+        "entry.793034521":a.value,
+        "entry.987129842":daily_notes.value||"لا يوجد"
+      })
     })
   });
   showSuccess();
@@ -191,75 +226,73 @@ function submitDaily(){
 
 /* DETAILED */
 function toggleDevices(){
-  devices.style.display = det_status.value==="صيانة"?"block":"none";
+  devices.style.display=det_status.value==="صيانة"?"block":"none";
 }
 function addDevice(){
   const d=document.createElement("div");
-  d.className="device-box";
-  d.innerHTML='<input class="dev_name" placeholder="اسم الجهاز"><input class="dev_serial" placeholder="رقم السيريال"><input class="dev_order" placeholder="رقم الطلب">';
-  devices.insertBefore(d,devices.lastElementChild);
+  d.className="box";
+  d.innerHTML=`
+    <input class="dev_name" placeholder="اسم الجهاز">
+    <input class="dev_serial" placeholder="رقم السيريال">
+    <input class="dev_order" placeholder="رقم الطلب">
+    <button class="small" onclick="this.parentElement.remove()">🗑 حذف</button>`;
+  devices.appendChild(d);
 }
 function submitDetailed(){
+  if(!det_coach.value||!det_branch.value||!det_status.value){alert("أكمل البيانات");return}
   const t=new Date().toLocaleString();
   if(det_status.value==="جيدة"){
     sendDetailed(t,"جيدة","","","");
   }else{
-    document.querySelectorAll(".device-box").forEach(b=>{
+    document.querySelectorAll(".box").forEach(b=>{
       sendDetailed(t,"صيانة",
         b.querySelector(".dev_name").value,
         b.querySelector(".dev_serial").value,
         b.querySelector(".dev_order").value
       );
-    });
+    })
   }
   showSuccess();
 }
 function sendDetailed(t,s,n,se,o){
-  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/formResponse",{
-    method:"POST",mode:"no-cors",
-    body:new URLSearchParams({
-      "entry.1110574157":det_coach.value,
-      "entry.225813099":det_branch.value,
-      "entry.472300684":t,
-      "entry.1420106518":s,
-      "entry.1117457821":n,
-      "entry.1076673732":se,
-      "entry.1452213865":o
-    })
-  });
-}
+fetch("https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/formResponse",{
+method:"POST",mode:"no-cors",
+body:new URLSearchParams({
+"entry.1110574157":det_coach.value,
+"entry.225813099":det_branch.value,
+"entry.472300684":t,
+"entry.1420106518":s,
+"entry.1117457821":n,
+"entry.1076673732":se,
+"entry.1452213865":o
+})
+})}
 
 /* LEADS */
 function addLead(){
-  const l=document.createElement("div");
-  l.className="lead-box";
-  l.innerHTML='<input class="lead_name" placeholder="اسم العميل"><input class="lead_phone" placeholder="رقم الجوال">';
-  leadList.appendChild(l);
+const l=document.createElement("div");
+l.className="box";
+l.innerHTML=`
+<input class="lead_name" placeholder="اسم العميل">
+<input class="lead_phone" placeholder="رقم الجوال">
+<button class="small" onclick="this.parentElement.remove()">🗑 حذف</button>`;
+leadList.appendChild(l);
 }
 function submitLeads(){
-  const t=new Date().toLocaleString();
-  document.querySelectorAll(".lead-box").forEach(l=>{
-    fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",{
-      method:"POST",mode:"no-cors",
-      body:new URLSearchParams({
-        "entry.1803783309":lead_coach.value,
-        "entry.1531832061":lead_branch.value,
-        "entry.1038119858":t,
-        "entry.634489457":l.querySelector(".lead_name").value,
-        "entry.2087664957":l.querySelector(".lead_phone").value
-      })
-    });
-  });
-  showSuccess();
-}
-
-/* SUCCESS */
-function showSuccess(){
-  success.style.display="flex";
-  setTimeout(()=>{
-    success.style.display="none";
-    goHome();
-  },1500);
+if(!lead_coach.value||!lead_branch.value){alert("أكمل البيانات");return}
+document.querySelectorAll(".box").forEach(l=>{
+fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",{
+method:"POST",mode:"no-cors",
+body:new URLSearchParams({
+"entry.1803783309":lead_coach.value,
+"entry.1531832061":lead_branch.value,
+"entry.1038119858":new Date().toLocaleString(),
+"entry.634489457":l.querySelector(".lead_name").value,
+"entry.2087664957":l.querySelector(".lead_phone").value
+})
+})
+})
+showSuccess();
 }
 </script>
 
