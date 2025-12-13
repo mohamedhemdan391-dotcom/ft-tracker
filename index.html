@@ -3,94 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>FT Tracker</title>
 
 <style>
-:root{
-  --main:#c62828;
-  --bg:#f4f5f7;
-  --card:#ffffff;
-  --text:#222;
-}
-*{box-sizing:border-box;font-family:Tahoma,Arial}
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-}
-header{
-  background:var(--main);
-  color:#fff;
-  padding:20px;
-  text-align:center;
-  position:relative;
-}
-.lang-btn{
-  position:absolute;
-  top:15px;
-  left:15px;
-  background:#fff;
-  color:#000;
-  border-radius:20px;
-  padding:5px 12px;
-  cursor:pointer;
-  font-size:14px;
-}
-.container{padding:20px;max-width:600px;margin:auto}
-.card{
-  background:var(--card);
-  border-radius:14px;
-  padding:18px;
-  margin-bottom:15px;
-  box-shadow:0 4px 10px rgba(0,0,0,.08);
-  cursor:pointer;
-  font-size:18px;
-}
+:root{--red:#c62828;--bg:#f4f5f7}
+*{box-sizing:border-box;font-family:Tahama,Arial}
+body{margin:0;background:var(--bg)}
+header{background:var(--red);color:#fff;padding:20px;text-align:center;position:relative}
+.lang-btn{position:absolute;top:15px;left:15px;background:#fff;color:#000;border-radius:20px;padding:5px 12px;cursor:pointer}
+.container{max-width:600px;margin:auto;padding:20px}
+.card{background:#fff;padding:18px;border-radius:14px;margin-bottom:15px;box-shadow:0 4px 10px rgba(0,0,0,.1);cursor:pointer}
 .hidden{display:none}
-input,select,textarea,button{
-  width:100%;
-  padding:12px;
-  margin:8px 0;
-  border-radius:8px;
-  border:1px solid #ccc;
-  font-size:15px;
-}
-button{
-  background:#1976d2;
-  color:#fff;
-  border:none;
-}
-.back{
-  cursor:pointer;
-  color:#1976d2;
-  margin-bottom:10px;
-  display:inline-block;
-}
-.success{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  font-size:28px;
-  z-index:1000;
-}
+input,textarea,button{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:1px solid #ccc}
+button{background:#1976d2;color:#fff;border:none}
+.back{background:#c62828;color:#fff;padding:8px 14px;border-radius:6px;display:inline-block;margin-bottom:10px;cursor:pointer}
+.checkbox-group label{display:block;margin:5px 0}
+.add-btn{background:#388e3c;margin-top:5px}
+.remove-btn{background:#d32f2f;margin-top:5px}
+.success{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);color:#fff;font-size:28px;align-items:center;justify-content:center;z-index:999}
+.device-box,.lead-box{border:1px dashed #ccc;padding:10px;border-radius:8px;margin-top:8px}
 </style>
 </head>
 
 <body>
 
 <header>
-  <div class="lang-btn" onclick="toggleLang()">EN</div>
-  <h1 id="title">FT Tracker</h1>
+  <div class="lang-btn">EN</div>
+  <h1>FT Tracker</h1>
 </header>
 
 <div class="container">
 
-<!-- HOME -->
 <div id="home">
   <div class="card" onclick="openPage('daily')">📋 التشييك اليومي</div>
   <div class="card" onclick="openPage('device')">🛠️ التشييك الدقيق</div>
@@ -99,22 +42,23 @@ button{
 
 <!-- DAILY -->
 <div id="daily" class="hidden">
-  <span class="back" onclick="goHome()">← العودة للرئيسية</span>
+  <div class="back" onclick="goHome()">العودة للرئيسية</div>
   <h3>التشييك اليومي</h3>
 
-  <form onsubmit="sendForm(event, DAILY_URL)">
+  <form onsubmit="sendForm(event,DAILY)">
     <input name="entry.1598276908" placeholder="اسم المدرب" required>
-    <input name="entry.670685014" id="dailyDate" readonly>
-    <label>مناطق التشييك</label>
-    <select name="entry.793034521" multiple required>
-      <option>Dumbbells & Bars</option>
-      <option>Accessories</option>
-      <option>Selection Area</option>
-      <option>Group Classes Area</option>
-      <option>FTZ Area</option>
-      <option>TV</option>
-      <option>Coaches Office</option>
-    </select>
+    <input name="entry.670685014" value="" id="dDate" readonly>
+
+    <div class="checkbox-group">
+      <label><input type="checkbox" name="entry.793034521" value="Dumbbells & Bars"> الدمبلز والبارات</label>
+      <label><input type="checkbox" name="entry.793034521" value="Accessories"> الاكسسوارات</label>
+      <label><input type="checkbox" name="entry.793034521" value="Selection"> Selection</label>
+      <label><input type="checkbox" name="entry.793034521" value="Group Classes"> الحصص الجماعية</label>
+      <label><input type="checkbox" name="entry.793034521" value="FTZ"> FTZ</label>
+      <label><input type="checkbox" name="entry.793034521" value="TV"> TV</label>
+      <label><input type="checkbox" name="entry.793034521" value="Office"> مكتب المدربين</label>
+    </div>
+
     <textarea name="entry.987129842" placeholder="ملاحظات"></textarea>
     <button>إرسال</button>
   </form>
@@ -122,25 +66,22 @@ button{
 
 <!-- DEVICE -->
 <div id="device" class="hidden">
-  <span class="back" onclick="goHome()">← العودة للرئيسية</span>
+  <div class="back" onclick="goHome()">العودة للرئيسية</div>
   <h3>التشييك الدقيق</h3>
 
-  <form onsubmit="sendForm(event, DEVICE_URL)">
+  <form onsubmit="sendForm(event,DEVICE)">
     <input name="entry.1110574157" placeholder="اسم المدرب" required>
     <input name="entry.225813099" placeholder="اسم الفرع" required>
-    <input name="entry.472300684" id="deviceDate" readonly>
+    <input name="entry.472300684" id="devDate" readonly>
 
-    <select name="entry.1420106518" onchange="toggleDevice(this.value)" required>
+    <select name="entry.1420106518" onchange="toggleMaintenance(this.value)" required>
       <option value="">حالة الأجهزة</option>
       <option value="جيدة">جيدة</option>
       <option value="صيانة">صيانة</option>
     </select>
 
-    <div id="maintenance" class="hidden">
-      <input name="entry.1117457821" placeholder="اسم الجهاز">
-      <input name="entry.1076673732" placeholder="رقم السيريال">
-      <input name="entry.1452213865" placeholder="رقم الطلب">
-    </div>
+    <div id="devices"></div>
+    <button type="button" class="add-btn" onclick="addDevice()">➕ إضافة جهاز</button>
 
     <button>إرسال</button>
   </form>
@@ -148,15 +89,17 @@ button{
 
 <!-- LEADS -->
 <div id="leads" class="hidden">
-  <span class="back" onclick="goHome()">← العودة للرئيسية</span>
+  <div class="back" onclick="goHome()">العودة للرئيسية</div>
   <h3>العملاء المرشحين</h3>
 
-  <form onsubmit="sendForm(event, LEADS_URL)">
+  <form onsubmit="sendForm(event,LEADS)">
     <input name="entry.1803783309" placeholder="اسم المدرب" required>
     <input name="entry.1531832061" placeholder="اسم الفرع" required>
-    <input name="entry.1038119858" id="leadsDate" readonly>
-    <input name="entry.634489457" placeholder="اسم العميل" required>
-    <input name="entry.2087664957" placeholder="رقم الجوال" required>
+    <input name="entry.1038119858" id="lDate" readonly>
+
+    <div id="leadBox"></div>
+    <button type="button" class="add-btn" onclick="addLead()">➕ إضافة مرشح</button>
+
     <button>إرسال</button>
   </form>
 </div>
@@ -166,50 +109,41 @@ button{
 <div class="success" id="success">✅ تم الإرسال</div>
 
 <script>
-const DAILY_URL  ="https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse";
-const DEVICE_URL ="https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/formResponse";
-const LEADS_URL  ="https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse";
+const DAILY="https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse";
+const DEVICE="https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/formResponse";
+const LEADS="https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse";
 
-function now(){
-  return new Date().toLocaleString('en-GB');
-}
-dailyDate.value=deviceDate.value=leadsDate.value=now();
+const now=()=>new Date().toLocaleString("en-GB");
+dDate.value=devDate.value=lDate.value=now();
 
-function openPage(id){
-  home.classList.add('hidden');
-  daily.classList.add('hidden');
-  device.classList.add('hidden');
-  leads.classList.add('hidden');
-  document.getElementById(id).classList.remove('hidden');
-}
-
-function goHome(){
-  daily.classList.add('hidden');
-  device.classList.add('hidden');
-  leads.classList.add('hidden');
-  home.classList.remove('hidden');
-}
-
-function toggleDevice(v){
-  maintenance.classList.toggle('hidden',v!=="صيانة");
-}
+function openPage(p){home.classList.add("hidden");[daily,device,leads].forEach(x=>x.classList.add("hidden"));document.getElementById(p).classList.remove("hidden")}
+function goHome(){[daily,device,leads].forEach(x=>x.classList.add("hidden"));home.classList.remove("hidden")}
 
 function sendForm(e,url){
-  e.preventDefault();
-  fetch(url,{method:"POST",body:new FormData(e.target),mode:"no-cors"})
-  .then(()=>showSuccess());
+ e.preventDefault();
+ fetch(url,{method:"POST",body:new FormData(e.target),mode:"no-cors"})
+ .then(()=>{success.style.display="flex";setTimeout(()=>{success.style.display="none";goHome()},1500)})
 }
 
-function showSuccess(){
-  success.style.display="flex";
-  setTimeout(()=>{
-    success.style.display="none";
-    goHome();
-  },1500);
+function toggleMaintenance(v){devices.innerHTML=v==="صيانة"?"":""}
+
+function addDevice(){
+ devices.insertAdjacentHTML("beforeend",`
+ <div class="device-box">
+  <input name="entry.1117457821" placeholder="اسم الجهاز">
+  <input name="entry.1076673732" placeholder="رقم السيريال">
+  <input name="entry.1452213865" placeholder="رقم الطلب">
+  <button type="button" class="remove-btn" onclick="this.parentElement.remove()">حذف</button>
+ </div>`)
 }
 
-function toggleLang(){
-  alert("النسخة الإنجليزية جاهزة – نفعّلها بالمرحلة القادمة");
+function addLead(){
+ leadBox.insertAdjacentHTML("beforeend",`
+ <div class="lead-box">
+  <input name="entry.634489457" placeholder="اسم العميل">
+  <input name="entry.2087664957" placeholder="رقم الجوال">
+  <button type="button" class="remove-btn" onclick="this.parentElement.remove()">حذف</button>
+ </div>`)
 }
 </script>
 
