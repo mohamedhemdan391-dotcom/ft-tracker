@@ -8,7 +8,7 @@
 <style>
 body{
   margin:0;
-  font-family: 'Cairo', sans-serif;
+  font-family: Arial, sans-serif;
   background:#F9FAFB;
   color:#1F2937;
 }
@@ -20,13 +20,12 @@ header{
   padding:20px 10px;
 }
 
-header .logo{
-  font-size:44px;
+.logo{
+  font-size:42px;
   font-weight:900;
-  line-height:1;
 }
 
-header .title{
+.title{
   font-size:18px;
   margin-top:5px;
 }
@@ -56,91 +55,7 @@ header .title{
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:30px;
-}
-
-.card h3{
-  margin:0;
-  font-size:18px;
-}
-
-.card p{
-  margin:4px 0 0;
-  font-size:14px;
-  color:#6B7280;
-}
-
-/* Forms */
-form{
-  background:#fff;
-  border-radius:16px;
-  padding:20px;
-  box-shadow:0 6px 16px rgba(0,0,0,0.08);
-}
-
-input, textarea, button{
-  width:100%;
-  margin-bottom:12px;
-  padding:12px;
-  font-size:15px;
-  border-radius:10px;
-  border:1px solid #D1D5DB;
-}
-
-button{
-  background:#D32F2F;
-  color:#fff;
-  border:none;
-  font-size:16px;
-  cursor:pointer;
-}
-
-button:disabled{
-  opacity:.6;
-}
-
-/* Success Overlay */
-#successOverlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.5);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:1000;
-}
-
-.successBox{
-  background:#fff;
-  border-radius:20px;
-  padding:30px;
-  text-align:center;
-  width:85%;
-  max-width:320px;
-  animation:scaleIn .3s ease;
-}
-
-.successIcon{
-  font-size:64px;
-  color:#16A34A;
-}
-
-.successBox h2{
-  margin:10px 0 5px;
-}
-
-.successBox p{
-  color:#6B7280;
-  font-size:14px;
-}
-
-.successBox button{
-  margin-top:20px;
-}
-
-@keyframes scaleIn{
-  from{transform:scale(0.7);opacity:0;}
-  to{transform:scale(1);opacity:1;}
+  font-size:28px;
 }
 </style>
 </head>
@@ -152,133 +67,31 @@ button:disabled{
   <div class="title">FT Tracker</div>
 </header>
 
-<div class="container" id="home">
-  <div class="card" onclick="openForm('daily')">
+<div class="container">
+  <div class="card">
     <div class="card-icon">📋</div>
     <div>
-      <h3>التشييك اليومي</h3>
-      <p>متابعة الحالة اليومية للنادي</p>
+      <strong>التشييك اليومي</strong><br>
+      متابعة الحالة اليومية للنادي
     </div>
   </div>
 
-  <div class="card" onclick="openForm('detailed')">
+  <div class="card">
     <div class="card-icon">🛠️</div>
     <div>
-      <h3>التشييك الدقيق</h3>
-      <p>فحص الأجهزة والمرافق</p>
+      <strong>التشييك الدقيق</strong><br>
+      فحص الأجهزة والمرافق
     </div>
   </div>
 
-  <div class="card" onclick="openForm('leads')">
+  <div class="card">
     <div class="card-icon">🎯</div>
     <div>
-      <h3>العملاء المرشحين</h3>
-      <p>إضافة بيانات العملاء المحتملين</p>
+      <strong>العملاء المرشحين</strong><br>
+      إضافة بيانات العملاء المحتملين
     </div>
   </div>
 </div>
-
-<div class="container" id="formContainer" style="display:none;"></div>
-
-<!-- Success Overlay -->
-<div id="successOverlay">
-  <div class="successBox">
-    <div class="successIcon">✅</div>
-    <h2>تم الإرسال بنجاح</h2>
-    <p>تم حفظ البيانات على Google Sheets</p>
-    <button onclick="goHome()">العودة للرئيسية</button>
-  </div>
-</div>
-
-<script>
-/* 🔴 ضع رابط Web App هنا */
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxBu6j9kNsaf8hVbFy1witztacqVdWvUiSz9LTxb8JWaXVDd6V1igIUWS1MK0drgSMarQ/exec";
-
-/* Navigation */
-function openForm(type){
-  document.getElementById("home").style.display="none";
-  const c = document.getElementById("formContainer");
-  c.style.display="block";
-
-  if(type==="daily"){
-    c.innerHTML = `
-    <form onsubmit="submitDaily(event)">
-      <input id="trainer" placeholder="اسم المدرب" required>
-      <input id="emp" placeholder="الرقم الوظيفي" required>
-      <input id="branch" placeholder="اسم الفرع" required>
-      <input id="area" placeholder="منطقة التشييك" required>
-      <textarea id="notes" placeholder="ملاحظات"></textarea>
-      <button type="submit">إرسال</button>
-    </form>`;
-  }
-
-  if(type==="leads"){
-    c.innerHTML = `
-    <form onsubmit="submitLead(event)">
-      <input id="trainer" placeholder="اسم المدرب" required>
-      <input id="branch" placeholder="اسم الفرع" required>
-      <input id="client" placeholder="اسم العميل" required>
-      <input id="phone" placeholder="رقم الجوال" required>
-      <textarea id="notes" placeholder="ملاحظات"></textarea>
-      <button type="submit">إرسال</button>
-    </form>`;
-  }
-}
-
-function goHome(){
-  document.getElementById("successOverlay").style.display="none";
-  document.getElementById("formContainer").style.display="none";
-  document.getElementById("home").style.display="block";
-}
-
-/* Send to Google Sheets */
-function sendData(sheet, values){
-  fetch(SCRIPT_URL,{
-    method:"POST",
-    body:JSON.stringify({sheet:sheet, values:values})
-  })
-  .then(r=>r.json())
-  .then(d=>{
-    if(d.status==="success"){
-      showSuccess();
-    } else {
-      alert("حدث خطأ أثناء الإرسال");
-    }
-  })
-  .catch(()=>alert("فشل الاتصال"));
-}
-
-/* Submit Handlers */
-function submitDaily(e){
-  e.preventDefault();
-  sendData("Daily_Check",[
-    trainer.value,
-    emp.value,
-    branch.value,
-    new Date().toLocaleDateString(),
-    new Date().toLocaleTimeString(),
-    area.value,
-    notes.value
-  ]);
-}
-
-function submitLead(e){
-  e.preventDefault();
-  sendData("Leads",[
-    trainer.value,
-    branch.value,
-    client.value,
-    phone.value,
-    notes.value
-  ]);
-}
-
-/* Success UI */
-function showSuccess(){
-  document.getElementById("successOverlay").style.display="flex";
-  setTimeout(goHome,2000);
-}
-</script>
 
 </body>
 </html>
