@@ -1,175 +1,102 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <title>FT Tracker</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FT Tracker</title>
 
-  <!-- Open Graph (أيقونة الشير) -->
-  <meta property="og:title" content="FT Tracker">
-  <meta property="og:description" content="نظام متابعة وتشييك وقت اللياقة">
-  <meta property="og:image" content="data:image/svg+xml;utf8,
-  <svg xmlns='http://www.w3.org/2000/svg' width='512' height='512'>
-    <rect width='512' height='512' fill='%23c62828'/>
-    <text x='50%' y='60%' text-anchor='middle' fill='white'
-      font-size='220' font-family='Arial' font-weight='bold'>FT</text>
-  </svg>">
+<!-- ICON -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23c62828'/%3E%3Ctext x='50' y='65' font-size='50' fill='white' text-anchor='middle' font-family='Arial'%3EFT%3C/text%3E%3C/svg%3E">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
-    }
-
-    header {
-      background: #c62828;
-      color: white;
-      text-align: center;
-      padding: 20px;
-      font-size: 28px;
-      font-weight: bold;
-    }
-
-    .container {
-      padding: 20px;
-    }
-
-    .card {
-      background: white;
-      border-radius: 16px;
-      padding: 20px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-      cursor: pointer;
-    }
-
-    .card-text {
-      max-width: 75%;
-    }
-
-    .card-title {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 5px;
-    }
-
-    .card-sub {
-      color: #555;
-      font-size: 14px;
-    }
-
-    .icon {
-      width: 60px;
-      height: 60px;
-      background: #c62828;
-      color: white;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-    }
-
-    /* رسالة تم الإرسال */
-    #successBox {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.4);
-      align-items: center;
-      justify-content: center;
-      z-index: 999;
-    }
-
-    .success-content {
-      background: #e8f5e9;
-      padding: 30px 40px;
-      border-radius: 16px;
-      text-align: center;
-    }
-
-    .check {
-      font-size: 60px;
-      color: #2e7d32;
-    }
-
-    .success-text {
-      font-size: 22px;
-      font-weight: bold;
-      margin-top: 10px;
-      color: #2e7d32;
-    }
-  </style>
+<style>
+body{margin:0;font-family:Arial;background:#f4f4f4}
+header{background:#c62828;color:#fff;text-align:center;padding:20px}
+.container{padding:15px}
+.card{
+background:#fff;border-radius:15px;padding:20px;
+margin-bottom:15px;display:flex;align-items:center;
+cursor:pointer;box-shadow:0 3px 8px rgba(0,0,0,.15)
+}
+.icon{
+width:60px;height:60px;background:#c62828;color:#fff;
+border-radius:15px;display:flex;align-items:center;justify-content:center;
+font-size:28px;margin-left:15px
+}
+.hidden{display:none}
+.back{
+background:#c62828;color:#fff;border:none;
+padding:10px 20px;border-radius:10px;cursor:pointer
+}
+iframe{
+width:100%;height:85vh;border:none;border-radius:15px
+}
+</style>
 </head>
 
 <body>
 
 <header>
-  FT Tracker
+<h1>FT Tracker</h1>
 </header>
 
 <div class="container">
 
-  <!-- Daily Check -->
+<!-- الصفحة الرئيسية -->
+<div id="home">
   <div class="card" onclick="openForm('daily')">
-    <div class="card-text">
-      <div class="card-title">التشييك اليومي</div>
-      <div class="card-sub">متابعة الحالة اليومية للنادي</div>
-    </div>
     <div class="icon">📋</div>
+    <div>
+      <h3>التشييك اليومي</h3>
+      <p>متابعة الحالة اليومية للنادي</p>
+    </div>
   </div>
 
-  <!-- Detailed Check -->
   <div class="card" onclick="openForm('detailed')">
-    <div class="card-text">
-      <div class="card-title">التشييك الدقيق</div>
-      <div class="card-sub">فحص الأجهزة والمرافق</div>
+    <div class="icon">🛠</div>
+    <div>
+      <h3>التشييك الدقيق</h3>
+      <p>فحص الأجهزة والمرافق</p>
     </div>
-    <div class="icon">🛠️</div>
   </div>
 
-  <!-- Leads -->
   <div class="card" onclick="openForm('leads')">
-    <div class="card-text">
-      <div class="card-title">العملاء المرشحين</div>
-      <div class="card-sub">إضافة بيانات العملاء المحتملين</div>
-    </div>
     <div class="icon">🎯</div>
+    <div>
+      <h3>العملاء المرشحين</h3>
+      <p>إضافة بيانات العملاء المحتملين</p>
+    </div>
   </div>
-
 </div>
 
-<!-- Success Message -->
-<div id="successBox">
-  <div class="success-content">
-    <div class="check">✔</div>
-    <div class="success-text">تم الإرسال</div>
-  </div>
+<!-- Daily -->
+<div id="daily" class="hidden">
+<button class="back" onclick="goHome()">العودة للرئيسية</button>
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/viewform?embedded=true"></iframe>
+</div>
+
+<!-- Detailed -->
+<div id="detailed" class="hidden">
+<button class="back" onclick="goHome()">العودة للرئيسية</button>
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/viewform?embedded=true"></iframe>
+</div>
+
+<!-- Leads -->
+<div id="leads" class="hidden">
+<button class="back" onclick="goHome()">العودة للرئيسية</button>
+<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/viewform?embedded=true"></iframe>
+</div>
+
 </div>
 
 <script>
-  const forms = {
-    daily: "https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/viewform",
-    detailed: "https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/viewform",
-    leads: "https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/viewform"
-  };
+function openForm(id){
+document.getElementById('home').style.display='none';
+document.getElementById(id).style.display='block';
+}
 
-  function openForm(type) {
-    window.location.href = forms[type];
-  }
-
-  // لو رجع من الفورم وفيه success باللينك
-  if (window.location.search.includes("submitted=true")) {
-    const box = document.getElementById("successBox");
-    box.style.display = "flex";
-    setTimeout(() => {
-      window.location.href = window.location.pathname;
-    }, 1500);
-  }
+function goHome(){
+location.reload();
+}
 </script>
 
 </body>
