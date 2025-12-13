@@ -1,156 +1,31 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FT Tracker</title>
-
-<style>
-*{box-sizing:border-box}
-body{margin:0;font-family:Arial;background:#F4F6F8;color:#111}
-header{background:#D32F2F;color:#fff;padding:18px;text-align:center;position:relative}
-.logo{font-size:42px;font-weight:900}
-.sub{font-size:16px;opacity:.9}
-.lang-btn{position:absolute;right:16px;top:16px;background:#fff;color:#D32F2F;
-border:none;border-radius:20px;padding:6px 12px;font-weight:700;cursor:pointer}
-
-.container,.page{padding:16px}
-.page{display:none}
-
-.card{background:#fff;border-radius:16px;padding:16px;margin-bottom:14px;
-display:flex;gap:14px;align-items:center;box-shadow:0 6px 16px rgba(0,0,0,.08);cursor:pointer}
-.icon{width:60px;height:60px;border-radius:14px;background:#D32F2F;
-color:#fff;display:flex;align-items:center;justify-content:center;font-size:28px}
-
-input,select,textarea{
-width:100%;padding:12px;margin-bottom:10px;border-radius:10px;border:1px solid #ccc
-}
-
-.btn{background:#D32F2F;color:#fff;border:none;padding:14px;
-border-radius:12px;font-size:16px;font-weight:700;width:100%;cursor:pointer}
-.btn-sec{background:#E5E7EB;color:#111;margin-bottom:10px}
-
-.device-box,.lead-box{
-background:#F9FAFB;border:1px dashed #D32F2F;
-padding:12px;border-radius:12px;margin-bottom:10px;position:relative
-}
-.remove{position:absolute;top:8px;left:8px;cursor:pointer;color:#D32F2F;font-weight:900}
-
-.success{display:none;text-align:center;padding:40px}
-.success span{font-size:70px}
-</style>
+  <meta charset="UTF-8">
+  <title>FT Tracker Test</title>
 </head>
-
 <body>
 
-<header>
-  <div class="logo">FT</div>
-  <div class="sub" id="title">FT Tracker</div>
-  <button class="lang-btn" onclick="toggleLang()">EN</button>
-</header>
+<h2>اختبار إرسال البيانات</h2>
 
-<!-- HOME -->
-<div class="container" id="home">
-  <div class="card" onclick="openPage('daily')"><div class="icon">📋</div><b id="d1">التشييك اليومي</b></div>
-  <div class="card" onclick="openPage('detailed')"><div class="icon">🛠️</div><b id="d2">التشييك الدقيق</b></div>
-  <div class="card" onclick="openPage('leads')"><div class="icon">🎯</div><b id="d3">العملاء المرشحين</b></div>
-</div>
-
-<!-- DAILY -->
-<div class="page" id="daily">
-<button class="btn-sec" onclick="goHome()">⬅ العودة</button>
-<input placeholder="اسم المدرب">
-<input placeholder="الرقم الوظيفي">
-
-<b>مناطق التشييك</b><br>
-<label><input type="checkbox"> Dumbbells & Bars</label><br>
-<label><input type="checkbox"> Accessories</label><br>
-<label><input type="checkbox"> Selection</label><br>
-<label><input type="checkbox"> Pure Strength</label><br>
-<label><input type="checkbox"> Cardio</label><br>
-<label><input type="checkbox"> Group Classes</label><br>
-<label><input type="checkbox"> FTZ</label><br>
-<label><input type="checkbox"> TV</label><br>
-<label><input type="checkbox"> Coaches Office</label><br>
-
-<textarea placeholder="ملاحظات (اختياري)"></textarea>
-<button class="btn" onclick="showSuccess()">إرسال</button>
-</div>
-
-<!-- DETAILED -->
-<div class="page" id="detailed">
-<button class="btn-sec" onclick="goHome()">⬅ العودة</button>
-
-<input placeholder="اسم المدرب">
-<input placeholder="الرقم الوظيفي">
-<input placeholder="اسم الفرع">
-
-<select id="deviceStatus" onchange="toggleDevices()">
-<option value="">حالة الأجهزة</option>
-<option value="good">جيدة</option>
-<option value="maintenance">صيانة</option>
-</select>
-
-<div id="devices"></div>
-<button class="btn-sec" onclick="addDevice()">➕ إضافة جهاز</button>
-
-<button class="btn" onclick="showSuccess()">إرسال</button>
-</div>
-
-<!-- LEADS -->
-<div class="page" id="leads">
-<button class="btn-sec" onclick="goHome()">⬅ العودة</button>
-<input placeholder="اسم المدرب">
-
-<div id="leadsBox"></div>
-<button class="btn-sec" onclick="addLead()">➕ إضافة مرشح</button>
-
-<button class="btn" onclick="showSuccess()">إرسال البيانات</button>
-</div>
-
-<!-- SUCCESS -->
-<div class="success" id="success">
-<span>✅</span>
-<h2>تم الإرسال بنجاح</h2>
-<button class="btn" onclick="goHome()">العودة للرئيسية</button>
-</div>
+<button onclick="sendTest()">إرسال اختبار</button>
 
 <script>
-let lang='ar';
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwvoDDLDtRZih_e2FgPLdTP_RBanb5SUQvS_4xxdL894JoO1-Ov7VOQ3cvwELYdPPGh/exec";
 
-function openPage(id){home.style.display='none';document.querySelectorAll('.page').forEach(p=>p.style.display='none');document.getElementById(id).style.display='block'}
-function goHome(){document.querySelectorAll('.page').forEach(p=>p.style.display='none');success.style.display='none';home.style.display='block'}
-function showSuccess(){document.querySelectorAll('.page').forEach(p=>p.style.display='none');success.style.display='block'}
-
-function toggleDevices(){
-devices.innerHTML='';
-if(deviceStatus.value==='maintenance') addDevice();
-}
-
-function addDevice(){
-if(deviceStatus.value!=='maintenance')return;
-devices.innerHTML+=`
-<div class="device-box">
-<span class="remove" onclick="this.parentElement.remove()">🗑️</span>
-<input placeholder="اسم الجهاز">
-<input placeholder="رقم السيريال">
-<input placeholder="رقم الطلب">
-</div>`;
-}
-
-function addLead(){
-leadsBox.innerHTML+=`
-<div class="lead-box">
-<span class="remove" onclick="this.parentElement.remove()">🗑️</span>
-<input placeholder="اسم المرشح">
-<input placeholder="رقم الجوال">
-</div>`;
-}
-
-function toggleLang(){
-lang=lang==='ar'?'en':'ar';
-document.documentElement.lang=lang;
-title.innerText=lang==='ar'?'FT Tracker':'FT Tracker';
+function sendTest() {
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      type: "test",
+      coach: "Mohamed",
+      sentAt: new Date().toLocaleString()
+    })
+  })
+  .then(r => r.json())
+  .then(d => alert("تم الإرسال ✅"))
+  .catch(e => alert("خطأ ❌"));
 }
 </script>
 
