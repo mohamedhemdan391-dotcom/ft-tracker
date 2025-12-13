@@ -6,112 +6,109 @@
 <title>FT Tracker</title>
 
 <style>
+:root{
+  --red:#c62828;
+  --gray:#f5f5f5;
+  --blue:#1976d2;
+}
 body{
   margin:0;
-  font-family:Arial, sans-serif;
-  background:#f4f4f4;
+  font-family: "Segoe UI", Tahoma, Arial;
+  background:#fafafa;
 }
-
 header{
-  background:#c62828;
+  background:var(--red);
   color:#fff;
   padding:20px;
   text-align:center;
   position:relative;
 }
-
 .lang-btn{
   position:absolute;
-  left:15px;
   top:15px;
+  left:15px;
   background:#fff;
-  color:#c62828;
-  border:none;
-  padding:6px 12px;
+  color:#000;
   border-radius:20px;
+  padding:6px 14px;
   font-weight:bold;
+  cursor:pointer;
 }
-
 .container{
   padding:20px;
 }
-
-.card{
-  background:#fff;
-  border-radius:12px;
-  padding:16px;
-  margin-bottom:16px;
-  box-shadow:0 2px 6px rgba(0,0,0,0.1);
-}
-
-.card-btn{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  cursor:pointer;
-}
-
-.card-btn h3{margin:0}
-
-.section{display:none}
-
 .back-btn{
-  background:#c62828;
+  background:var(--red);
   color:#fff;
   padding:10px 16px;
   border-radius:8px;
   display:inline-block;
-  margin-bottom:15px;
-  cursor:pointer;
+  margin-bottom:20px;
   font-weight:bold;
 }
-
+h2{
+  margin-top:10px;
+}
 input, select, textarea{
   width:100%;
-  padding:10px;
-  margin:8px 0;
+  padding:12px;
+  margin-top:10px;
   border-radius:8px;
   border:1px solid #ccc;
-}
-
-button{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:#1976d2;
-  color:#fff;
   font-size:16px;
+}
+button{
+  background:var(--blue);
+  color:#fff;
+  border:none;
+  padding:14px;
+  border-radius:10px;
+  width:100%;
+  font-size:18px;
+  margin-top:20px;
   cursor:pointer;
 }
-
-.check{
+.checkbox-row{
   display:flex;
   align-items:center;
-  gap:10px;
-  margin:10px 0;
+  justify-content:space-between;
+  padding:10px 0;
+  border-bottom:1px solid #eee;
 }
-
-.small-btn{
+.checkbox-row label{
+  font-size:18px;
+}
+.checkbox-row input{
+  width:22px;
+  height:22px;
+}
+.device{
+  background:#f1f1f1;
+  padding:10px;
+  margin-top:10px;
+  border-radius:8px;
+}
+.add-btn, .remove-btn{
   background:#555;
-  margin-top:8px;
+  margin-top:10px;
 }
-
 .remove-btn{
-  background:#b71c1c;
-  margin-top:6px;
+  background:#999;
 }
-
 .success{
-  display:none;
   position:fixed;
   inset:0;
-  background:rgba(0,0,0,0.6);
-  color:#fff;
-  font-size:22px;
+  background:rgba(0,0,0,.5);
+  display:none;
   align-items:center;
   justify-content:center;
-  z-index:1000;
+  color:#fff;
+  font-size:26px;
+}
+.success span{
+  background:#2e7d32;
+  padding:20px 30px;
+  border-radius:12px;
 }
 </style>
 </head>
@@ -119,135 +116,86 @@ button{
 <body>
 
 <header>
-  <button class="lang-btn" onclick="toggleLang()">EN</button>
+  <div class="lang-btn" onclick="toggleLang()">EN</div>
   <h1>FT Tracker</h1>
 </header>
 
 <div class="container">
 
-<!-- HOME -->
-<div id="home" class="section" style="display:block">
-  <div class="card card-btn" onclick="show('daily')"><h3>التشييك اليومي</h3></div>
-  <div class="card card-btn" onclick="show('detailed')"><h3>التشييك الدقيق</h3></div>
-  <div class="card card-btn" onclick="show('leads')"><h3>العملاء المرشحين</h3></div>
-</div>
+<a class="back-btn" href="index.html">العودة للرئيسية</a>
 
-<!-- DAILY -->
-<div id="daily" class="section">
-  <div class="back-btn" onclick="goHome()">العودة للرئيسية</div>
-  <h2>التشييك اليومي</h2>
+<h2>التشييك اليومي</h2>
 
-  <input placeholder="اسم المدرب">
-  <input id="dailyTime" readonly>
+<input placeholder="اسم المدرب" required>
+<input id="dt1" readonly>
 
-  <div class="check"><input type="checkbox"><span>الدمبلز والبارات</span></div>
-  <div class="check"><input type="checkbox"><span>الاكسسوارات</span></div>
-  <div class="check"><input type="checkbox"><span>Selection</span></div>
-  <div class="check"><input type="checkbox"><span>الحصص الجماعية</span></div>
-  <div class="check"><input type="checkbox"><span>FTZ</span></div>
-  <div class="check"><input type="checkbox"><span>TV</span></div>
-  <div class="check"><input type="checkbox"><span>مكتب المدربين</span></div>
+<div class="checkbox-row"><label>الدمبلز والبارات</label><input type="checkbox"></div>
+<div class="checkbox-row"><label>الاكسسوارات</label><input type="checkbox"></div>
+<div class="checkbox-row"><label>Selection</label><input type="checkbox"></div>
+<div class="checkbox-row"><label>الحصص الجماعية</label><input type="checkbox"></div>
+<div class="checkbox-row"><label>FTZ</label><input type="checkbox"></div>
+<div class="checkbox-row"><label>TV</label><input type="checkbox"></div>
+<div class="checkbox-row"><label>مكتب المدربين</label><input type="checkbox"></div>
 
-  <textarea placeholder="ملاحظات"></textarea>
-  <button onclick="submit()">إرسال</button>
-</div>
+<textarea placeholder="ملاحظات"></textarea>
+<button onclick="send()">إرسال</button>
 
-<!-- DETAILED -->
-<div id="detailed" class="section">
-  <div class="back-btn" onclick="goHome()">العودة للرئيسية</div>
-  <h2>التشييك الدقيق</h2>
+<hr>
 
-  <input placeholder="اسم المدرب">
-  <input placeholder="اسم الفرع">
-  <input readonly value="" id="detailedTime">
+<h2>التشييك الدقيق</h2>
 
-  <select id="status" onchange="toggleMaintenance()">
-    <option value="">حالة الأجهزة</option>
-    <option value="good">جيدة</option>
-    <option value="maintenance">صيانة</option>
-  </select>
+<input placeholder="اسم المدرب" required>
+<input placeholder="اسم الفرع" required>
 
-  <div id="maintenanceBox" style="display:none">
-    <div id="devices"></div>
-    <button class="small-btn" onclick="addDevice()">+ إضافة جهاز</button>
-  </div>
+<select id="status" onchange="toggleDevices()">
+  <option value="">حالة الأجهزة</option>
+  <option>جيدة</option>
+  <option>صيانة</option>
+</select>
 
-  <button onclick="submit()">إرسال</button>
-</div>
+<div id="devices"></div>
+<button class="add-btn" onclick="addDevice()">➕ إضافة جهاز</button>
 
-<!-- LEADS -->
-<div id="leads" class="section">
-  <div class="back-btn" onclick="goHome()">العودة للرئيسية</div>
-  <h2>العملاء المرشحين</h2>
-
-  <input placeholder="اسم المدرب">
-  <input readonly id="leadsTime">
-
-  <div id="leadsList"></div>
-  <button class="small-btn" onclick="addLead()">+ إضافة مرشح</button>
-
-  <button onclick="submit()">إرسال</button>
-</div>
+<button onclick="send()">إرسال</button>
 
 </div>
 
-<div class="success" id="success">✅ تم الإرسال</div>
+<div class="success" id="success">
+  <span>✔ تم الإرسال</span>
+</div>
 
 <script>
-function show(id){
-  document.querySelectorAll('.section').forEach(s=>s.style.display='none');
-  document.getElementById(id).style.display='block';
-}
-
-function goHome(){
-  show('home');
-}
-
 function now(){
-  return new Date().toLocaleString('ar-EG');
+  const d=new Date();
+  return d.toLocaleString("ar-EG");
 }
-dailyTime.value = now();
-detailedTime.value = now();
-leadsTime.value = now();
+document.getElementById("dt1").value=now();
 
-function toggleMaintenance(){
-  document.getElementById('maintenanceBox').style.display =
-    status.value === 'maintenance' ? 'block' : 'none';
+function toggleDevices(){
+  const v=document.getElementById("status").value;
+  document.getElementById("devices").style.display = v==="صيانة"?"block":"none";
 }
 
 function addDevice(){
-  const d = document.createElement('div');
-  d.className='card';
+  const d=document.createElement("div");
+  d.className="device";
   d.innerHTML=`
     <input placeholder="اسم الجهاز">
     <input placeholder="رقم السيريال">
     <input placeholder="رقم الطلب">
     <button class="remove-btn" onclick="this.parentElement.remove()">حذف</button>
   `;
-  devices.appendChild(d);
+  document.getElementById("devices").appendChild(d);
 }
 
-function addLead(){
-  const l = document.createElement('div');
-  l.className='card';
-  l.innerHTML=`
-    <input placeholder="اسم العميل">
-    <input placeholder="رقم الجوال">
-    <button class="remove-btn" onclick="this.parentElement.remove()">حذف</button>
-  `;
-  leadsList.appendChild(l);
-}
-
-function submit(){
-  success.style.display='flex';
-  setTimeout(()=>{
-    success.style.display='none';
-    goHome();
-  },1500);
+function send(){
+  const s=document.getElementById("success");
+  s.style.display="flex";
+  setTimeout(()=>s.style.display="none",2000);
 }
 
 function toggleLang(){
-  alert("النسخة الإنجليزية المرحلة القادمة");
+  alert("التحويل للإنجليزية سيتم بالمرحلة القادمة");
 }
 </script>
 
