@@ -7,29 +7,28 @@
 <body>
 
 <h2>اختبار إرسال البيانات</h2>
-
-<button onclick="sendTest()">إرسال اختبار</button>
+<button onclick="send()">إرسال اختبار</button>
 
 <script>
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyQ1UHqqKd4hnsv2qh2GNPK_XhzsZMubW6CaBgffidueP6IdOyZ6HTY9UvKeJ7FcvHUQA/exec";
+const SCRIPT_URL = "PUT_NEW_WEB_APP_URL_HERE";
 
-function sendTest() {
+function send() {
   fetch(SCRIPT_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({
       type: "test",
       coach: "Mohamed",
       sentAt: new Date().toLocaleString()
     })
-  })
-  .then(r => r.json())
-  .then(d => alert("تم الإرسال ✅"))
-  .catch(e => alert("خطأ ❌"));
+  });
+
+  alert("تم الإرسال (تحقق من الشيت)");
 }
 </script>
 
 </body>
 </html>
-
-
