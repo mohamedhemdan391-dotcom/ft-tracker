@@ -6,92 +6,212 @@
 <title>FT Tracker</title>
 
 <style>
+*{box-sizing:border-box}
 body{
   margin:0;
-  font-family: Arial, sans-serif;
-  background:#F9FAFB;
+  font-family:Arial, sans-serif;
+  background:#F5F6F8;
   color:#1F2937;
 }
 
+/* ===== Header ===== */
 header{
   background:#D32F2F;
   color:#fff;
   text-align:center;
-  padding:20px 10px;
+  padding:24px 12px;
 }
-
 .logo{
-  font-size:42px;
+  font-size:46px;
   font-weight:900;
 }
-
-.title{
+.subtitle{
   font-size:18px;
-  margin-top:5px;
+  opacity:.95;
 }
 
+/* ===== Containers ===== */
 .container{
-  padding:16px;
+  padding:18px;
+}
+.page{
+  display:none;
+  padding:18px;
 }
 
+/* ===== Cards ===== */
 .card{
   background:#fff;
-  border-radius:16px;
-  padding:20px;
+  border-radius:18px;
+  padding:18px;
   margin-bottom:16px;
-  box-shadow:0 6px 16px rgba(0,0,0,0.08);
+  box-shadow:0 8px 20px rgba(0,0,0,.08);
   display:flex;
   align-items:center;
   gap:16px;
   cursor:pointer;
+  transition:.2s;
 }
-
+.card:active{transform:scale(.98)}
 .card-icon{
-  width:60px;
-  height:60px;
-  border-radius:14px;
+  width:64px;
+  height:64px;
+  border-radius:16px;
   background:#D32F2F;
   color:#fff;
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size:28px;
+  font-size:30px;
+}
+.card-title{
+  font-size:18px;
+  font-weight:700;
+}
+.card-desc{
+  font-size:14px;
+  color:#6B7280;
+}
+
+/* ===== Buttons ===== */
+.btn{
+  width:100%;
+  background:#D32F2F;
+  color:#fff;
+  border:none;
+  padding:14px;
+  border-radius:12px;
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+}
+.btn-secondary{
+  background:#E5E7EB;
+  color:#111;
+  margin-bottom:12px;
+}
+
+/* ===== Forms ===== */
+input, textarea{
+  width:100%;
+  padding:12px;
+  margin-bottom:12px;
+  border-radius:10px;
+  border:1px solid #D1D5DB;
+  font-size:14px;
+}
+
+/* ===== Success ===== */
+.success{
+  display:none;
+  text-align:center;
+  padding:40px 20px;
+}
+.success span{
+  font-size:72px;
+}
+.success h2{
+  color:#16A34A;
+  margin-top:12px;
 }
 </style>
 </head>
 
 <body>
 
+<!-- ===== HEADER ===== -->
 <header>
   <div class="logo">FT</div>
-  <div class="title">FT Tracker</div>
+  <div class="subtitle">FT Tracker</div>
 </header>
 
-<div class="container">
-  <div class="card">
+<!-- ===== HOME ===== -->
+<div class="container" id="home">
+  <div class="card" onclick="openPage('daily')">
     <div class="card-icon">📋</div>
     <div>
-      <strong>التشييك اليومي</strong><br>
-      متابعة الحالة اليومية للنادي
+      <div class="card-title">التشييك اليومي</div>
+      <div class="card-desc">متابعة الحالة اليومية للنادي</div>
     </div>
   </div>
 
-  <div class="card">
+  <div class="card" onclick="openPage('detailed')">
     <div class="card-icon">🛠️</div>
     <div>
-      <strong>التشييك الدقيق</strong><br>
-      فحص الأجهزة والمرافق
+      <div class="card-title">التشييك الدقيق</div>
+      <div class="card-desc">فحص الأجهزة والمرافق</div>
     </div>
   </div>
 
-  <div class="card">
+  <div class="card" onclick="openPage('leads')">
     <div class="card-icon">🎯</div>
     <div>
-      <strong>العملاء المرشحين</strong><br>
-      إضافة بيانات العملاء المحتملين
+      <div class="card-title">العملاء المرشحين</div>
+      <div class="card-desc">إضافة بيانات العملاء المحتملين</div>
     </div>
   </div>
 </div>
+
+<!-- ===== DAILY ===== -->
+<div class="page" id="daily">
+  <button class="btn-secondary" onclick="goHome()">⬅️ العودة للرئيسية</button>
+  <h2>التشييك اليومي</h2>
+
+  <input placeholder="اسم المدرب">
+  <input placeholder="اسم الفرع">
+  <textarea placeholder="ملاحظات"></textarea>
+
+  <button class="btn" onclick="showSuccess()">إرسال التشييك</button>
+</div>
+
+<!-- ===== DETAILED ===== -->
+<div class="page" id="detailed">
+  <button class="btn-secondary" onclick="goHome()">⬅️ العودة للرئيسية</button>
+  <h2>التشييك الدقيق</h2>
+
+  <input placeholder="اسم المدرب">
+  <input placeholder="اسم الجهاز">
+  <input placeholder="رقم السيريال">
+  <textarea placeholder="ملاحظات"></textarea>
+
+  <button class="btn" onclick="showSuccess()">إرسال التشييك</button>
+</div>
+
+<!-- ===== LEADS ===== -->
+<div class="page" id="leads">
+  <button class="btn-secondary" onclick="goHome()">⬅️ العودة للرئيسية</button>
+  <h2>العملاء المرشحين</h2>
+
+  <input placeholder="اسم المدرب">
+  <input placeholder="اسم العميل">
+  <input placeholder="رقم الجوال">
+
+  <button class="btn" onclick="showSuccess()">إرسال البيانات</button>
+</div>
+
+<!-- ===== SUCCESS ===== -->
+<div class="success" id="success">
+  <span>✅</span>
+  <h2>تم الإرسال بنجاح</h2>
+  <button class="btn" onclick="goHome()">العودة للرئيسية</button>
+</div>
+
+<script>
+function openPage(id){
+  document.getElementById('home').style.display='none';
+  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+  document.getElementById(id).style.display='block';
+}
+function goHome(){
+  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+  document.getElementById('success').style.display='none';
+  document.getElementById('home').style.display='block';
+}
+function showSuccess(){
+  document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+  document.getElementById('success').style.display='block';
+}
+</script>
 
 </body>
 </html>
