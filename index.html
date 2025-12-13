@@ -1,54 +1,62 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FT Tracker</title>
 
 <style>
-:root{--red:#c40000}
-body{margin:0;font-family:Arial;background:#f5f5f5;direction:rtl}
-header{background:var(--red);color:#fff;padding:18px;text-align:center;position:relative}
-h1{margin:0}
-.container{padding:20px}
+:root{--red:#c40000;}
+body{margin:0;font-family:Arial;background:#f4f4f4}
+header{background:var(--red);color:#fff;text-align:center;padding:18px}
+.container{padding:16px}
 .page{display:none}
 .page.active{display:block}
-.back-btn{
-background:var(--red);color:#fff;
-padding:10px 16px;border-radius:10px;
-display:inline-block;margin-bottom:15px
+.card{
+  background:#fff;border-radius:16px;
+  padding:18px;margin-bottom:16px;
+  display:flex;align-items:center;gap:16px;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
+  cursor:pointer
 }
-input,textarea{
-width:100%;padding:12px;margin:8px 0;
-border-radius:8px;border:1px solid #ccc;font-size:15px
+.card-icon{
+  width:56px;height:56px;border-radius:14px;
+  background:var(--red);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px
+}
+input,textarea,select{
+  width:100%;padding:12px;margin:8px 0;
+  border-radius:10px;border:1px solid #ccc;font-size:16px
 }
 button{
-background:var(--red);color:#fff;border:none;
-padding:14px;width:100%;border-radius:10px;font-size:17px
+  width:100%;padding:14px;
+  border:none;border-radius:12px;
+  background:var(--red);color:#fff;
+  font-size:18px;cursor:pointer;margin-top:10px
 }
-.area-list{margin-top:10px}
+.back{
+  background:#b00000;margin-bottom:10px
+}
 .area-row{
-display:grid;
-grid-template-columns:40px 1fr;
-align-items:center;
-padding:12px 0;
-border-bottom:1px solid #e0e0e0
+  display:grid;
+  grid-template-columns: 26px 1fr;
+  align-items:center;
+  padding:10px 0;
+  border-bottom:1px solid #eee
 }
-.area-row input{width:22px;height:22px}
+.area-row label{font-size:17px}
 .success,.error{
-position:fixed;inset:0;
-background:rgba(0,0,0,.65);
-display:none;align-items:center;justify-content:center;
-color:#fff;font-size:24px;z-index:999
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.6);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:28px;z-index:999;display:none
 }
-.box{background:#2ecc71;padding:22px;border-radius:14px}
-.box.error{background:#c40000}
-.card{
-background:#fff;border-radius:14px;
-padding:18px;margin-bottom:14px;
-box-shadow:0 4px 10px rgba(0,0,0,.1);
-cursor:pointer
+.box{
+  background:#fff;padding:12px;border-radius:10px;
+  margin-top:10px;border:1px dashed #ccc
 }
+.small{width:auto;padding:8px 12px}
 </style>
 </head>
 
@@ -62,86 +70,164 @@ cursor:pointer
 
 <!-- HOME -->
 <div class="page active" id="home">
-  <div class="card" onclick="openPage('daily')">التشييك اليومي</div>
+  <div class="card" onclick="openPage('daily')">
+    <div class="card-icon">📋</div>
+    <div>
+      <b>التشييك اليومي</b><br>
+      متابعة الحالة اليومية للنادي
+    </div>
+  </div>
+
+  <div class="card" onclick="openPage('detailed')">
+    <div class="card-icon">🛠</div>
+    <div>
+      <b>التشييك الدقيق</b><br>
+      فحص الأجهزة والمرافق
+    </div>
+  </div>
+
+  <div class="card" onclick="openPage('leads')">
+    <div class="card-icon">🎯</div>
+    <div>
+      <b>العملاء المرشحين</b><br>
+      إضافة بيانات العملاء المحتملين
+    </div>
+  </div>
 </div>
 
 <!-- DAILY -->
 <div class="page" id="daily">
-<div class="back-btn" onclick="goHome()">العودة للرئيسية</div>
-
+<button class="back" onclick="goHome()">العودة للرئيسية</button>
 <h2>التشييك اليومي</h2>
 
-<label>اسم المدرب *</label>
-<input id="coach">
+<input id="d_coach" placeholder="اسم المدرب *">
+<input id="d_time" readonly>
 
-<label>التاريخ والوقت</label>
-<input id="datetime" readonly>
+<b>مناطق التشييك *</b>
 
-<label>مناطق التشييك *</label>
-<div class="area-list" id="areas">
-  <div class="area-row"><input type="checkbox" value="Dumbbells & Bars"><span>الدمبلز والبارات</span></div>
-  <div class="area-row"><input type="checkbox" value="Accessories"><span>الاكسسوارات</span></div>
-  <div class="area-row"><input type="checkbox" value="Selection Area"><span>Selection</span></div>
-  <div class="area-row"><input type="checkbox" value="Group Classes Area"><span>الحصص الجماعية</span></div>
-  <div class="area-row"><input type="checkbox" value="FTZ Area"><span>FTZ</span></div>
-  <div class="area-row"><input type="checkbox" value="TV"><span>TV</span></div>
-  <div class="area-row"><input type="checkbox" value="Coaches Office"><span>مكتب المدربين</span></div>
+<div id="areas">
+  <div class="area-row"><input type="checkbox" value="Dumbbells & Bars"><label>الدمبلز والبارات</label></div>
+  <div class="area-row"><input type="checkbox" value="Accessories"><label>الاكسسوارات</label></div>
+  <div class="area-row"><input type="checkbox" value="Selection Area"><label>Selection</label></div>
+  <div class="area-row"><input type="checkbox" value="Group Classes Area"><label>الحصص الجماعية</label></div>
+  <div class="area-row"><input type="checkbox" value="FTZ Area"><label>FTZ</label></div>
+  <div class="area-row"><input type="checkbox" value="TV"><label>TV</label></div>
+  <div class="area-row"><input type="checkbox" value="Coaches Office"><label>مكتب المدربين</label></div>
 </div>
 
-<textarea id="notes" placeholder="ملاحظات (اختياري)"></textarea>
+<textarea id="d_notes" placeholder="ملاحظات (اختياري)"></textarea>
+<button onclick="sendDaily()">إرسال</button>
+</div>
 
-<button onclick="submitDaily()">إرسال</button>
+<!-- DETAILED -->
+<div class="page" id="detailed">
+<button class="back" onclick="goHome()">العودة للرئيسية</button>
+<h2>التشييك الدقيق</h2>
+
+<input id="dt_coach" placeholder="اسم المدرب *">
+<input id="dt_branch" placeholder="اسم الفرع *">
+<input id="dt_time" readonly>
+
+<select id="dt_status" onchange="toggleDevices()">
+<option value="">حالة الأجهزة *</option>
+<option value="جيدة">جيدة</option>
+<option value="صيانة">تحتاج صيانة</option>
+</select>
+
+<div id="devices"></div>
+<button class="small" onclick="addDevice()">➕ إضافة جهاز</button>
+<button onclick="sendDetailed()">إرسال</button>
+</div>
+
+<!-- LEADS -->
+<div class="page" id="leads">
+<button class="back" onclick="goHome()">العودة للرئيسية</button>
+<h2>العملاء المرشحين</h2>
+
+<input id="l_coach" placeholder="اسم المدرب *">
+<input id="l_branch" placeholder="اسم الفرع *">
+<input id="l_time" readonly>
+
+<div id="leadList"></div>
+<button class="small" onclick="addLead()">➕ إضافة عميل</button>
+<button onclick="sendLeads()">إرسال</button>
 </div>
 
 </div>
 
-<div class="success" id="success"><div class="box">✔️ تم الإرسال</div></div>
-<div class="error" id="error"><div class="box error">❌ قم بإدخال كافة البيانات</div></div>
+<div class="success" id="success">✅ تم الإرسال</div>
+<div class="error" id="error">❌ قم بإدخال كافة البيانات</div>
 
 <script>
 function openPage(p){
-document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'))
-document.getElementById(p).classList.add('active')
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.getElementById(p).classList.add('active');
 }
 function goHome(){openPage('home')}
 
-function setDate(){
-document.getElementById("datetime").value=new Date().toLocaleString()
-}
-setDate()
+function now(){return new Date().toLocaleString()}
+d_time.value=dt_time.value=l_time.value=now()
 
-function showSuccess(){
-success.style.display="flex"
-setTimeout(()=>{success.style.display="none";goHome()},1500)
-}
-function showError(){
-error.style.display="flex"
-setTimeout(()=>error.style.display="none",1500)
+function show(el){
+  el.style.display='flex';
+  setTimeout(()=>{el.style.display='none';goHome()},2000)
 }
 
-function submitDaily(){
-let coach=coachInput.value.trim()
-let selected=[...document.querySelectorAll('#areas input:checked')].map(x=>x.value)
-if(!coach||selected.length===0){showError();return}
+/* DAILY */
+function sendDaily(){
+  const coach=d_coach.value.trim()
+  const checks=[...areas.querySelectorAll('input:checked')].map(x=>x.value)
+  if(!coach||checks.length===0){error.style.display='flex';setTimeout(()=>error.style.display='none',1500);return}
 
-fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",{
-method:"POST",mode:"no-cors",
-body:new URLSearchParams({
-"entry.1598276908":coach,
-"entry.670685014":datetime.value,
-"entry.793034521":selected.join(", "),
-"entry.987129842":notes.value
-})
-})
-
-coachInput.value=""
-notes.value=""
-document.querySelectorAll('#areas input').forEach(x=>x.checked=false)
-setDate()
-showSuccess()
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",{
+    method:"POST",mode:"no-cors",
+    body:new URLSearchParams({
+      "entry.1598276908":coach,
+      "entry.670685014":now(),
+      "entry.793034521":checks.join(", "),
+      "entry.987129842":d_notes.value
+    })
+  })
+  d_coach.value=d_notes.value=""
+  areas.querySelectorAll('input').forEach(x=>x.checked=false)
+  show(success)
 }
 
-const coachInput=document.getElementById("coach")
+/* DETAILED */
+function toggleDevices(){
+  devices.innerHTML=""
+  if(dt_status.value==="صيانة") addDevice()
+}
+function addDevice(){
+  const b=document.createElement("div")
+  b.className="box"
+  b.innerHTML=`
+    <input placeholder="اسم الجهاز *">
+    <input placeholder="رقم السيريال *">
+    <textarea placeholder="شرح العطل *"></textarea>
+    <input placeholder="رقم الطلب *">
+    <button class="small" onclick="this.parentElement.remove()">🗑 حذف</button>`
+  devices.appendChild(b)
+}
+function sendDetailed(){
+  if(!dt_coach.value||!dt_branch.value||!dt_status.value){error.style.display='flex';setTimeout(()=>error.style.display='none',1500);return}
+  show(success)
+}
+
+/* LEADS */
+function addLead(){
+  const b=document.createElement("div")
+  b.className="box"
+  b.innerHTML=`
+    <input placeholder="اسم العميل *">
+    <input placeholder="رقم الجوال *">
+    <button class="small" onclick="this.parentElement.remove()">🗑 حذف</button>`
+  leadList.appendChild(b)
+}
+function sendLeads(){
+  if(!l_coach.value||!l_branch.value||leadList.children.length===0){error.style.display='flex';setTimeout(()=>error.style.display='none',1500);return}
+  show(success)
+}
 </script>
 
 </body>
