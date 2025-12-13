@@ -8,87 +8,102 @@
 <style>
 :root{
   --red:#c40000;
-  --gray:#f5f5f5;
+  --light:#fff;
+  --bg:#f5f5f5;
 }
 body{
   margin:0;
-  font-family:Arial, sans-serif;
-  background:var(--gray);
+  font-family: Arial, sans-serif;
+  background:var(--bg);
 }
 header{
   background:var(--red);
   color:#fff;
-  text-align:center;
   padding:18px;
-  font-size:24px;
+  text-align:center;
+  font-size:26px;
   font-weight:bold;
 }
-.container{padding:20px}
+.container{padding:20px;}
+.page{display:none;}
+.page.active{display:block;}
+
 .card{
   background:#fff;
-  border-radius:14px;
+  border-radius:16px;
   padding:20px;
   margin-bottom:15px;
-  box-shadow:0 4px 10px rgba(0,0,0,.1);
+  box-shadow:0 4px 10px rgba(0,0,0,.08);
   cursor:pointer;
+  font-size:20px;
 }
-.card h3{margin:0;color:#000}
-.page{display:none}
-.page.active{display:block}
 
-input,textarea,select{
+h2{text-align:center;margin:10px 0 20px;}
+
+input, textarea{
   width:100%;
-  padding:12px;
-  margin:10px 0;
+  padding:14px;
   border-radius:10px;
   border:1px solid #ccc;
   font-size:16px;
+  margin-bottom:12px;
 }
+
+textarea{min-height:80px;}
+
+label.req::after{content:" *";color:red;}
+
+.checkbox-group{
+  background:#fff;
+  border-radius:12px;
+  padding:10px;
+  margin-bottom:15px;
+}
+.checkbox-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 0;
+  border-bottom:1px solid #eee;
+  font-size:18px;
+}
+.checkbox-row:last-child{border-bottom:none;}
+.checkbox-row input{width:20px;height:20px;}
+
 button{
   width:100%;
-  padding:14px;
+  padding:16px;
   border:none;
   border-radius:12px;
   background:var(--red);
   color:#fff;
-  font-size:18px;
+  font-size:20px;
   cursor:pointer;
 }
+
 .back{
-  margin-top:10px;
-  background:#333;
+  background:#b00000;
+  margin-bottom:15px;
 }
-.area{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:10px 0;
-  border-bottom:1px solid #eee;
-}
-.area label{font-size:16px}
-.box{
-  border:1px dashed #ccc;
-  padding:10px;
-  border-radius:10px;
-  margin-bottom:10px;
-}
-.small{
-  background:#666;
-  margin-bottom:10px;
-}
+
 .overlay{
-  display:none;
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.6);
-  color:#fff;
+  display:none;
   align-items:center;
   justify-content:center;
-  font-size:22px;
   z-index:999;
 }
-.overlay.success{background:rgba(0,128,0,.8)}
-.overlay.error{background:rgba(200,0,0,.8)}
+.msg{
+  background:#fff;
+  padding:30px 40px;
+  border-radius:14px;
+  font-size:22px;
+  text-align:center;
+}
+.success{color:#0a8f08;}
+.error{color:#c40000;}
 </style>
 </head>
 
@@ -100,9 +115,9 @@ button{
 
 <!-- HOME -->
 <div class="page active" id="home">
-  <div class="card" onclick="openPage('daily')"><h3>التشييك اليومي</h3></div>
-  <div class="card" onclick="openPage('detailed')"><h3>التشييك الدقيق</h3></div>
-  <div class="card" onclick="openPage('leads')"><h3>العملاء المرشحين</h3></div>
+  <div class="card" onclick="openPage('daily')">التشييك اليومي</div>
+  <div class="card" onclick="openPage('detailed')">التشييك الدقيق</div>
+  <div class="card" onclick="openPage('leads')">العملاء المرشحين</div>
 </div>
 
 <!-- DAILY -->
@@ -110,182 +125,82 @@ button{
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 <h2>التشييك اليومي</h2>
 
-<label>اسم المدرب *</label>
+<label class="req">اسم المدرب</label>
 <input id="d_coach">
 
 <label>التاريخ والوقت</label>
 <input id="d_time" readonly>
 
-<label>مناطق التشييك *</label>
-<div id="areas">
-  <div class="area"><label>الدمبلز والبارات</label><input type="checkbox" value="Dumbbells & Bars"></div>
-  <div class="area"><label>الاكسسوارات</label><input type="checkbox" value="Accessories"></div>
-  <div class="area"><label>Selection</label><input type="checkbox" value="Selection Area"></div>
-  <div class="area"><label>الحصص الجماعية</label><input type="checkbox" value="Group Classes Area"></div>
-  <div class="area"><label>FTZ</label><input type="checkbox" value="FTZ Area"></div>
-  <div class="area"><label>TV</label><input type="checkbox" value="TV"></div>
-  <div class="area"><label>مكتب المدربين</label><input type="checkbox" value="Coaches Office"></div>
+<label class="req">مناطق التشييك</label>
+<div class="checkbox-group" id="areas">
+  <div class="checkbox-row"><span>الدمبلز والبارات</span><input type="checkbox" value="Dumbbells & Bars"></div>
+  <div class="checkbox-row"><span>الاكسسوارات</span><input type="checkbox" value="Accessories"></div>
+  <div class="checkbox-row"><span>Selection</span><input type="checkbox" value="Selection Area"></div>
+  <div class="checkbox-row"><span>الحصص الجماعية</span><input type="checkbox" value="Group Classes Area"></div>
+  <div class="checkbox-row"><span>FTZ</span><input type="checkbox" value="FTZ Area"></div>
+  <div class="checkbox-row"><span>TV</span><input type="checkbox" value="TV"></div>
+  <div class="checkbox-row"><span>مكتب المدربين</span><input type="checkbox" value="Coaches Office"></div>
 </div>
 
-<textarea id="d_notes" placeholder="ملاحظات (اختياري)"></textarea>
+<label>ملاحظات</label>
+<textarea id="d_notes"></textarea>
+
 <button onclick="sendDaily()">إرسال</button>
 </div>
 
-<!-- DETAILED -->
-<div class="page" id="detailed">
-<button class="back" onclick="goHome()">العودة للرئيسية</button>
-<h2>التشييك الدقيق</h2>
-
-<input id="dt_coach" placeholder="اسم المدرب *">
-<input id="dt_branch" placeholder="اسم الفرع *">
-
-<select id="dt_status" onchange="toggleDevices()">
-<option value="">حالة الأجهزة *</option>
-<option value="جيدة">جيدة</option>
-<option value="صيانة">تحتاج صيانة</option>
-</select>
-
-<div id="devices"></div>
-<button class="small" onclick="addDevice()">➕ إضافة جهاز</button>
-
-<button onclick="sendDetailed()">إرسال</button>
-</div>
-
-<!-- LEADS -->
-<div class="page" id="leads">
-<button class="back" onclick="goHome()">العودة للرئيسية</button>
-<h2>العملاء المرشحين</h2>
-
-<input id="l_coach" placeholder="اسم المدرب *">
-<input id="l_branch" placeholder="اسم الفرع *">
-
-<div id="leadList"></div>
-<button class="small" onclick="addLead()">➕ إضافة عميل</button>
-
-<button onclick="sendLeads()">إرسال</button>
+<!-- OVERLAY -->
+<div class="overlay" id="overlay">
+  <div class="msg" id="msg"></div>
 </div>
 
 </div>
-
-<div class="overlay success" id="success">✅ تم الإرسال</div>
-<div class="overlay error" id="error">❌ قم بإدخال كافة البيانات</div>
 
 <script>
-const dailyForm="https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse";
-const detailedForm="https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/formResponse";
-const leadsForm="https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse";
+function openPage(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+function goHome(){openPage('home');}
 
 function now(){
   return new Date().toLocaleString();
 }
-d_time.value=now();
+d_time.value = now();
 
-function openPage(p){
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  document.getElementById(p).classList.add('active');
-}
-function goHome(){openPage('home')}
-
-function show(el){
-  el.style.display="flex";
-  setTimeout(()=>{el.style.display="none";goHome()},1500);
+function show(type,text){
+  const o=document.getElementById("overlay");
+  const m=document.getElementById("msg");
+  m.className="msg "+type;
+  m.innerHTML=text;
+  o.style.display="flex";
+  setTimeout(()=>{o.style.display="none"; if(type==="success") goHome();},1800);
 }
 
-/* DAILY */
 function sendDaily(){
   const coach=d_coach.value.trim();
-  const notes=d_notes.value.trim()||"لا يوجد";
-  const checked=[...areas.querySelectorAll("input:checked")].map(c=>c.value);
-  if(!coach||checked.length===0){show(error);return;}
+  const notes=d_notes.value.trim() || "لا يوجد";
+  const areas=[...document.querySelectorAll("#areas input:checked")].map(x=>x.value);
 
-  fetch(dailyForm,{method:"POST",mode:"no-cors",
-    body:new URLSearchParams({
-      "entry.1598276908":coach,
-      "entry.670685014":now(),
-      "entry.793034521":checked.join(", "),
-      "entry.987129842":notes
-    })
-  });
-
-  d_coach.value="";d_notes.value="";
-  areas.querySelectorAll("input").forEach(c=>c.checked=false);
-  show(success);
-}
-
-/* DETAILED */
-function toggleDevices(){
-  devices.innerHTML="";
-  if(dt_status.value==="صيانة") addDevice();
-}
-function addDevice(){
-  const b=document.createElement("div");
-  b.className="box";
-  b.innerHTML=`
-    <input placeholder="اسم الجهاز *">
-    <input placeholder="رقم السيريال *">
-    <textarea placeholder="شرح العطل *"></textarea>
-    <input placeholder="رقم الطلب *">
-    <button class="small" onclick="this.parentElement.remove()">حذف</button>`;
-  devices.appendChild(b);
-}
-function sendDetailed(){
-  if(!dt_coach.value||!dt_branch.value||!dt_status.value){show(error);return;}
-  if(dt_status.value==="جيدة"){
-    postDetailed("","","","");
-  }else{
-    const boxes=[...devices.children];
-    if(boxes.some(b=>[...b.querySelectorAll("input,textarea")].some(i=>!i.value))){show(error);return;}
-    boxes.forEach(b=>{
-      const i=b.querySelectorAll("input,textarea");
-      postDetailed(i[0].value,i[1].value,i[2].value,i[3].value);
-    });
+  if(!coach || areas.length===0){
+    show("error","❌ قم بإدخال كافة البيانات");
+    return;
   }
-  dt_coach.value="";dt_branch.value="";dt_status.value="";devices.innerHTML="";
-  show(success);
-}
-function postDetailed(n,s,d,o){
-  fetch(detailedForm,{method:"POST",mode:"no-cors",
-    body:new URLSearchParams({
-      "entry.1110574157":dt_coach.value,
-      "entry.225813099":dt_branch.value,
-      "entry.472300684":now(),
-      "entry.1420106518":dt_status.value,
-      "entry.1117457821":n||"-",
-      "entry.1076673732":s||"-",
-      "entry.1904231182":d||"-",
-      "entry.1452213865":o||"-"
-    })
-  });
-}
 
-/* LEADS */
-function addLead(){
-  const b=document.createElement("div");
-  b.className="box";
-  b.innerHTML=`
-    <input placeholder="اسم العميل *">
-    <input placeholder="رقم الجوال *">
-    <button class="small" onclick="this.parentElement.remove()">حذف</button>`;
-  leadList.appendChild(b);
-}
-function sendLeads(){
-  if(!l_coach.value||!l_branch.value||leadList.children.length===0){show(error);return;}
-  [...leadList.children].forEach(b=>{
-    const i=b.querySelectorAll("input");
-    if(i[0].value&&i[1].value){
-      fetch(leadsForm,{method:"POST",mode:"no-cors",
-        body:new URLSearchParams({
-          "entry.1803783309":l_coach.value,
-          "entry.1531832061":l_branch.value,
-          "entry.1038119858":now(),
-          "entry.634489457":i[0].value,
-          "entry.2087664957":i[1].value
-        })
-      });
-    }
+  const data=new URLSearchParams();
+  data.append("entry.1598276908",coach);
+  data.append("entry.670685014",now());
+  areas.forEach(a=>data.append("entry.793034521",a));
+  data.append("entry.987129842",notes);
+
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",{
+    method:"POST",mode:"no-cors",body:data
   });
-  l_coach.value="";l_branch.value="";leadList.innerHTML="";
-  show(success);
+
+  d_coach.value="";
+  d_notes.value="";
+  document.querySelectorAll("#areas input").forEach(c=>c.checked=false);
+
+  show("success","✅ تم الإرسال");
 }
 </script>
 
