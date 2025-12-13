@@ -1,113 +1,90 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8" />
 <title>FT Tracker</title>
 
+<!-- ICON -->
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAA..." />
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
-body{
+body {
   margin:0;
   font-family: Arial, sans-serif;
   background:#f5f5f5;
 }
-header{
+
+header {
   background:#c62828;
   color:#fff;
-  padding:20px;
   text-align:center;
-  font-size:28px;
+  padding:25px;
+  font-size:26px;
   font-weight:bold;
 }
-.container{
+
+.container {
   padding:20px;
 }
-.card{
+
+.card {
   background:#fff;
   border-radius:14px;
   padding:20px;
-  margin-bottom:20px;
-  box-shadow:0 4px 10px rgba(0,0,0,.1);
-}
-.card-btn{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  cursor:pointer;
-}
-.card-btn h3{margin:0}
-.btn{
-  width:100%;
-  background:#1976d2;
-  color:#fff;
-  padding:14px;
-  border:none;
-  border-radius:10px;
-  font-size:18px;
-  cursor:pointer;
-}
-.back{
-  background:#c62828;
-  color:#fff;
-  padding:10px 14px;
-  border-radius:10px;
-  border:none;
   margin-bottom:15px;
-  cursor:pointer;
-}
-input,select,textarea{
-  width:100%;
-  padding:12px;
-  margin-top:10px;
-  border-radius:10px;
-  border:1px solid #ccc;
-  font-size:16px;
-}
-.checkbox-row{
   display:flex;
   align-items:center;
-  justify-content:space-between;
-  margin:10px 0;
+  cursor:pointer;
+  box-shadow:0 4px 8px rgba(0,0,0,0.08);
 }
-.checkbox-row label{
-  flex:1;
-  font-size:16px;
-}
-.checkbox-row input{
-  width:22px;
-  height:22px;
-}
-.hidden{display:none}
 
-.success{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  display:none;
+.icon {
+  width:60px;
+  height:60px;
+  background:#c62828;
+  border-radius:12px;
+  display:flex;
   align-items:center;
   justify-content:center;
   color:#fff;
   font-size:26px;
-  z-index:9999;
+  margin-left:15px;
 }
-.device-box,.lead-box{
-  border:1px dashed #ccc;
-  padding:10px;
-  margin-top:10px;
-  border-radius:10px;
+
+.title {
+  font-size:20px;
+  font-weight:bold;
 }
-.small-btn{
-  background:#c62828;
-  color:#fff;
-  border:none;
-  padding:6px 10px;
-  border-radius:6px;
-  margin-top:6px;
-  cursor:pointer;
+
+.sub {
+  font-size:14px;
+  color:#666;
 }
-.filter button{
-  margin:5px;
-  padding:6px 10px;
+
+.success {
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.4);
+  display:none;
+  align-items:center;
+  justify-content:center;
+}
+
+.success-box {
+  background:#e8f5e9;
+  padding:30px;
+  border-radius:14px;
+  text-align:center;
+  color:#2e7d32;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.success-box span {
+  font-size:50px;
+  display:block;
 }
 </style>
 </head>
@@ -118,168 +95,62 @@ input,select,textarea{
 
 <div class="container">
 
-<!-- الصفحة الرئيسية -->
-<div id="home">
-  <div class="card card-btn" onclick="openPage('daily')">
-    <h3>📋 التشييك اليومي</h3>
+  <!-- Daily -->
+  <div class="card" onclick="openForm('daily')">
+    <div class="icon">📋</div>
+    <div>
+      <div class="title">التشييك اليومي</div>
+      <div class="sub">متابعة الحالة اليومية للنادي</div>
+    </div>
   </div>
-  <div class="card card-btn" onclick="openPage('detailed')">
-    <h3>🛠 التشييك الدقيق</h3>
+
+  <!-- Detailed -->
+  <div class="card" onclick="openForm('detailed')">
+    <div class="icon">🛠️</div>
+    <div>
+      <div class="title">التشييك الدقيق</div>
+      <div class="sub">فحص الأجهزة والمرافق</div>
+    </div>
   </div>
-  <div class="card card-btn" onclick="openPage('leads')">
-    <h3>🎯 العملاء المرشحين</h3>
+
+  <!-- Leads -->
+  <div class="card" onclick="openForm('leads')">
+    <div class="icon">🎯</div>
+    <div>
+      <div class="title">العملاء المرشحين</div>
+      <div class="sub">إضافة بيانات العملاء المحتملين</div>
+    </div>
   </div>
-  <div class="card card-btn" onclick="openDashboard()">
-    <h3>📊 Dashboard</h3>
+
+</div>
+
+<!-- Success -->
+<div class="success" id="success">
+  <div class="success-box">
+    <span>✅</span>
+    تم الإرسال
   </div>
 </div>
-
-<!-- رسالة النجاح -->
-<div id="success" class="success">✓ تم الإرسال</div>
-
-<!-- ========== التشييك اليومي ========== -->
-<div id="daily" class="hidden">
-<button class="back" onclick="goHome()">العودة للرئيسية</button>
-
-<form action="https://docs.google.com/forms/d/e/FORM_DAILY_ID/formResponse"
-method="POST" target="hidden_iframe" onsubmit="return submitForm(this)">
-<input name="entry.TRAINER" placeholder="اسم المدرب" required>
-<input name="entry.TIME" id="time1" readonly>
-
-<div class="checkbox-row"><label>الدمبلز والبارات</label><input type="checkbox" name="entry.AREA" value="Dumbbells"></div>
-<div class="checkbox-row"><label>الاكسسوارات</label><input type="checkbox" name="entry.AREA" value="Accessories"></div>
-<div class="checkbox-row"><label>Selection</label><input type="checkbox" name="entry.AREA" value="Selection"></div>
-<div class="checkbox-row"><label>الحصص الجماعية</label><input type="checkbox" name="entry.AREA" value="Classes"></div>
-<div class="checkbox-row"><label>FTZ</label><input type="checkbox" name="entry.AREA" value="FTZ"></div>
-<div class="checkbox-row"><label>TV</label><input type="checkbox" name="entry.AREA" value="TV"></div>
-<div class="checkbox-row"><label>مكتب المدربين</label><input type="checkbox" name="entry.AREA" value="Office"></div>
-
-<textarea name="entry.NOTES" placeholder="ملاحظات"></textarea>
-<button class="btn">إرسال</button>
-</form>
-</div>
-
-<!-- ========== التشييك الدقيق ========== -->
-<div id="detailed" class="hidden">
-<button class="back" onclick="goHome()">العودة للرئيسية</button>
-
-<form action="https://docs.google.com/forms/d/e/FORM_DETAILED_ID/formResponse"
-method="POST" target="hidden_iframe" onsubmit="return submitForm(this)">
-
-<input name="entry.TRAINER" placeholder="اسم المدرب" required>
-<input name="entry.BRANCH" placeholder="اسم الفرع" required>
-<input id="time2" name="entry.TIME" readonly>
-
-<select name="entry.STATUS" onchange="toggleDevices(this)" required>
-<option value="">اختر الحالة</option>
-<option value="جيدة">جيدة</option>
-<option value="صيانة">صيانة</option>
-</select>
-
-<div id="devices" class="hidden"></div>
-<button type="button" class="small-btn" onclick="addDevice()">+ إضافة جهاز</button>
-
-<button class="btn">إرسال</button>
-</form>
-</div>
-
-<!-- ========== العملاء المرشحين ========== -->
-<div id="leads" class="hidden">
-<button class="back" onclick="goHome()">العودة للرئيسية</button>
-
-<form action="https://docs.google.com/forms/d/e/FORM_LEADS_ID/formResponse"
-method="POST" target="hidden_iframe" onsubmit="return submitForm(this)">
-
-<input name="entry.TRAINER" placeholder="اسم المدرب" required>
-<input id="time3" name="entry.TIME" readonly>
-
-<div id="leadBox"></div>
-<button type="button" class="small-btn" onclick="addLead()">+ إضافة عميل</button>
-
-<button class="btn">إرسال</button>
-</form>
-</div>
-
-<!-- ========== Dashboard ========== -->
-<div id="dashboard" class="hidden">
-<button class="back" onclick="goHome()">العودة للرئيسية</button>
-
-<div class="card">
-<div id="dashDate"></div>
-<div id="dashTime"></div>
-<div id="dashTrainer"></div>
-</div>
-
-<div class="filter">
-<button onclick="setFilter('day')">يومي</button>
-<button onclick="setFilter('week')">أسبوعي</button>
-<button onclick="setFilter('month')">شهري</button>
-</div>
-
-<div class="card" id="dashData">لا يوجد بيانات بعد</div>
-</div>
-
-<iframe name="hidden_iframe" style="display:none"></iframe>
 
 <script>
-function openPage(id){
-  document.querySelectorAll('.container > div').forEach(d=>d.classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');
+const forms = {
+  daily: "PUT_YOUR_DAILY_FORM_URL_HERE",
+  detailed: "PUT_YOUR_DETAILED_FORM_URL_HERE",
+  leads: "PUT_YOUR_LEADS_FORM_URL_HERE"
+};
+
+function openForm(type){
+  window.location.href = forms[type];
 }
-function goHome(){
-  document.querySelectorAll('.container > div').forEach(d=>d.classList.add('hidden'));
-  document.getElementById('home').classList.remove('hidden');
-}
-function submitForm(form){
-  document.getElementById('success').style.display="flex";
-  setTimeout(()=>{
-    document.getElementById('success').style.display="none";
-    form.reset();
-    goHome();
+
+// لو رجع من Google Form
+if (window.location.search.includes("submitted=true")) {
+  const s = document.getElementById("success");
+  s.style.display="flex";
+  setTimeout(()=> {
+    window.location.href = window.location.pathname;
   },1500);
-  return true;
 }
-function toggleDevices(sel){
-  document.getElementById('devices').classList.toggle('hidden', sel.value!=="صيانة");
-}
-function addDevice(){
-  const d=document.createElement('div');
-  d.className="device-box";
-  d.innerHTML=`
-    <input name="entry.DEVICE" placeholder="اسم الجهاز" required>
-    <input name="entry.SERIAL" placeholder="رقم السيريال" required>
-    <input name="entry.ISSUE" placeholder="شرح العطل" required>
-    <input name="entry.ORDER" placeholder="رقم الطلب" required>
-    <button type="button" class="small-btn" onclick="this.parentElement.remove()">حذف</button>
-  `;
-  devices.appendChild(d);
-}
-function addLead(){
-  const d=document.createElement('div');
-  d.className="lead-box";
-  d.innerHTML=`
-    <input name="entry.CLIENT" placeholder="اسم العميل" required>
-    <input name="entry.PHONE" placeholder="رقم الجوال" required>
-    <button type="button" class="small-btn" onclick="this.parentElement.remove()">حذف</button>
-  `;
-  leadBox.appendChild(d);
-}
-function openDashboard(){
-  const pin=prompt("أدخل الرقم السري");
-  if(pin==="2182"){
-    openPage('dashboard');
-    dashDate.innerText="📅 "+new Date().toLocaleDateString();
-    dashTime.innerText="⏰ "+new Date().toLocaleTimeString();
-    dashTrainer.innerText="👤 يتم عرض المدربين حسب التسجيل";
-  }
-}
-function setFilter(f){
-  dashData.innerText="عرض البيانات: "+f;
-}
-['time1','time2','time3'].forEach(id=>{
-  const el=document.getElementById(id);
-  if(el) el.value=new Date().toLocaleString();
-});
 </script>
 
 </body>
