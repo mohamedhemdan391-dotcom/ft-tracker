@@ -1,156 +1,175 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<title>FT Tracker</title>
+  <meta charset="UTF-8">
+  <title>FT Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<!-- ICON -->
-<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAA..." />
+  <!-- Open Graph (أيقونة الشير) -->
+  <meta property="og:title" content="FT Tracker">
+  <meta property="og:description" content="نظام متابعة وتشييك وقت اللياقة">
+  <meta property="og:image" content="data:image/svg+xml;utf8,
+  <svg xmlns='http://www.w3.org/2000/svg' width='512' height='512'>
+    <rect width='512' height='512' fill='%23c62828'/>
+    <text x='50%' y='60%' text-anchor='middle' fill='white'
+      font-size='220' font-family='Arial' font-weight='bold'>FT</text>
+  </svg>">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+    }
 
-<style>
-body {
-  margin:0;
-  font-family: Arial, sans-serif;
-  background:#f5f5f5;
-}
+    header {
+      background: #c62828;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      font-size: 28px;
+      font-weight: bold;
+    }
 
-header {
-  background:#c62828;
-  color:#fff;
-  text-align:center;
-  padding:25px;
-  font-size:26px;
-  font-weight:bold;
-}
+    .container {
+      padding: 20px;
+    }
 
-.container {
-  padding:20px;
-}
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      cursor: pointer;
+    }
 
-.card {
-  background:#fff;
-  border-radius:14px;
-  padding:20px;
-  margin-bottom:15px;
-  display:flex;
-  align-items:center;
-  cursor:pointer;
-  box-shadow:0 4px 8px rgba(0,0,0,0.08);
-}
+    .card-text {
+      max-width: 75%;
+    }
 
-.icon {
-  width:60px;
-  height:60px;
-  background:#c62828;
-  border-radius:12px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  font-size:26px;
-  margin-left:15px;
-}
+    .card-title {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 5px;
+    }
 
-.title {
-  font-size:20px;
-  font-weight:bold;
-}
+    .card-sub {
+      color: #555;
+      font-size: 14px;
+    }
 
-.sub {
-  font-size:14px;
-  color:#666;
-}
+    .icon {
+      width: 60px;
+      height: 60px;
+      background: #c62828;
+      color: white;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+    }
 
-.success {
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.4);
-  display:none;
-  align-items:center;
-  justify-content:center;
-}
+    /* رسالة تم الإرسال */
+    #successBox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
 
-.success-box {
-  background:#e8f5e9;
-  padding:30px;
-  border-radius:14px;
-  text-align:center;
-  color:#2e7d32;
-  font-size:22px;
-  font-weight:bold;
-}
+    .success-content {
+      background: #e8f5e9;
+      padding: 30px 40px;
+      border-radius: 16px;
+      text-align: center;
+    }
 
-.success-box span {
-  font-size:50px;
-  display:block;
-}
-</style>
+    .check {
+      font-size: 60px;
+      color: #2e7d32;
+    }
+
+    .success-text {
+      font-size: 22px;
+      font-weight: bold;
+      margin-top: 10px;
+      color: #2e7d32;
+    }
+  </style>
 </head>
 
 <body>
 
-<header>FT Tracker</header>
+<header>
+  FT Tracker
+</header>
 
 <div class="container">
 
-  <!-- Daily -->
+  <!-- Daily Check -->
   <div class="card" onclick="openForm('daily')">
-    <div class="icon">📋</div>
-    <div>
-      <div class="title">التشييك اليومي</div>
-      <div class="sub">متابعة الحالة اليومية للنادي</div>
+    <div class="card-text">
+      <div class="card-title">التشييك اليومي</div>
+      <div class="card-sub">متابعة الحالة اليومية للنادي</div>
     </div>
+    <div class="icon">📋</div>
   </div>
 
-  <!-- Detailed -->
+  <!-- Detailed Check -->
   <div class="card" onclick="openForm('detailed')">
-    <div class="icon">🛠️</div>
-    <div>
-      <div class="title">التشييك الدقيق</div>
-      <div class="sub">فحص الأجهزة والمرافق</div>
+    <div class="card-text">
+      <div class="card-title">التشييك الدقيق</div>
+      <div class="card-sub">فحص الأجهزة والمرافق</div>
     </div>
+    <div class="icon">🛠️</div>
   </div>
 
   <!-- Leads -->
   <div class="card" onclick="openForm('leads')">
-    <div class="icon">🎯</div>
-    <div>
-      <div class="title">العملاء المرشحين</div>
-      <div class="sub">إضافة بيانات العملاء المحتملين</div>
+    <div class="card-text">
+      <div class="card-title">العملاء المرشحين</div>
+      <div class="card-sub">إضافة بيانات العملاء المحتملين</div>
     </div>
+    <div class="icon">🎯</div>
   </div>
 
 </div>
 
-<!-- Success -->
-<div class="success" id="success">
-  <div class="success-box">
-    <span>✅</span>
-    تم الإرسال
+<!-- Success Message -->
+<div id="successBox">
+  <div class="success-content">
+    <div class="check">✔</div>
+    <div class="success-text">تم الإرسال</div>
   </div>
 </div>
 
 <script>
-const forms = {
-  daily: "PUT_YOUR_DAILY_FORM_URL_HERE",
-  detailed: "PUT_YOUR_DETAILED_FORM_URL_HERE",
-  leads: "PUT_YOUR_LEADS_FORM_URL_HERE"
-};
+  const forms = {
+    daily: "https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/viewform",
+    detailed: "https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/viewform",
+    leads: "https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/viewform"
+  };
 
-function openForm(type){
-  window.location.href = forms[type];
-}
+  function openForm(type) {
+    window.location.href = forms[type];
+  }
 
-// لو رجع من Google Form
-if (window.location.search.includes("submitted=true")) {
-  const s = document.getElementById("success");
-  s.style.display="flex";
-  setTimeout(()=> {
-    window.location.href = window.location.pathname;
-  },1500);
-}
+  // لو رجع من الفورم وفيه success باللينك
+  if (window.location.search.includes("submitted=true")) {
+    const box = document.getElementById("successBox");
+    box.style.display = "flex";
+    setTimeout(() => {
+      window.location.href = window.location.pathname;
+    }, 1500);
+  }
 </script>
 
 </body>
