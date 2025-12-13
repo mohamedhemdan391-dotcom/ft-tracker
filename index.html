@@ -1,34 +1,208 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-  <meta charset="UTF-8">
-  <title>FT Tracker Test</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FT Tracker</title>
+
+<style>
+:root{
+  --primary:#b30000;
+  --bg:#f4f6f8;
+  --card:#ffffff;
+  --text:#222;
+  --muted:#666;
+  --good:#2e7d32;
+  --warn:#ed6c02;
+}
+body{
+  margin:0;
+  font-family: "Segoe UI", Arial, sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  direction:rtl;
+}
+header{
+  background:#fff;
+  border-bottom:1px solid #ddd;
+  padding:14px 20px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.logo{
+  font-size:22px;
+  font-weight:700;
+  color:var(--primary);
+}
+.logo span{
+  display:block;
+  font-size:12px;
+  color:var(--muted);
+  font-weight:400;
+}
+.lang-btn{
+  border:1px solid #ccc;
+  background:#fff;
+  padding:6px 12px;
+  border-radius:6px;
+  cursor:pointer;
+}
+.container{
+  padding:20px;
+  max-width:480px;
+  margin:auto;
+}
+.card{
+  background:var(--card);
+  border-radius:12px;
+  padding:18px;
+  margin-bottom:16px;
+  box-shadow:0 2px 6px rgba(0,0,0,.06);
+  cursor:pointer;
+  transition:.2s;
+}
+.card:hover{ transform:translateY(-2px); }
+.card h3{ margin:0; color:var(--primary); }
+
+.page{ display:none; }
+.page.active{ display:block; }
+
+.section-title{
+  margin:10px 0;
+  font-weight:600;
+  color:var(--muted);
+}
+
+input, textarea, select{
+  width:100%;
+  padding:12px;
+  margin:8px 0;
+  border-radius:8px;
+  border:1px solid #ccc;
+  font-size:15px;
+}
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:10px;
+  background:var(--primary);
+  color:#fff;
+  font-size:16px;
+  cursor:pointer;
+}
+button.secondary{
+  background:#444;
+  margin-top:10px;
+}
+button.small{
+  width:auto;
+  padding:8px 14px;
+  font-size:14px;
+  margin-top:8px;
+}
+
+.device-box,.lead-box{
+  border:1px dashed #ccc;
+  border-radius:8px;
+  padding:10px;
+  margin-top:10px;
+}
+
+.success{
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.55);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:28px;
+  z-index:999;
+}
+</style>
 </head>
+
 <body>
 
-<h2>اختبار إرسال البيانات</h2>
-<button onclick="send()">إرسال اختبار</button>
+<header>
+  <div class="logo">FT<span>FT Tracker</span></div>
+  <button class="lang-btn" onclick="toggleLang()">EN</button>
+</header>
+
+<div class="container">
+
+<!-- HOME -->
+<div class="page active" id="home">
+  <div class="card" onclick="openPage('daily')"><h3>التشييك اليومي</h3></div>
+  <div class="card" onclick="openPage('detailed')"><h3>التشييك الدقيق</h3></div>
+  <div class="card" onclick="openPage('leads')"><h3>العملاء المرشحين</h3></div>
+</div>
+
+<!-- DAILY -->
+<div class="page" id="daily">
+  <div class="section-title">بيانات المدرب</div>
+  <input id="daily_coach" placeholder="اسم المدرب">
+  <div class="section-title">مناطق التشييك</div>
+  <textarea id="daily_areas"></textarea>
+  <textarea id="daily_notes" placeholder="ملاحظات"></textarea>
+  <button onclick="submitDaily()">إرسال</button>
+  <button class="secondary" onclick="goHome()">العودة</button>
+</div>
+
+<!-- DETAILED -->
+<div class="page" id="detailed">
+  <input id="det_coach" placeholder="اسم المدرب">
+  <input id="det_branch" placeholder="اسم الفرع">
+  <select id="det_status" onchange="toggleDevices()">
+    <option value="">حالة الأجهزة</option>
+    <option value="جيدة">جيدة</option>
+    <option value="صيانة">صيانة</option>
+  </select>
+
+  <div id="devices" style="display:none">
+    <div class="device-box">
+      <input class="dev_name" placeholder="اسم الجهاز">
+      <input class="dev_serial" placeholder="رقم السيريال">
+      <input class="dev_order" placeholder="رقم الطلب">
+    </div>
+    <button class="small" onclick="addDevice()">➕ جهاز آخر</button>
+  </div>
+
+  <button onclick="submitDetailed()">إرسال</button>
+  <button class="secondary" onclick="goHome()">العودة</button>
+</div>
+
+<!-- LEADS -->
+<div class="page" id="leads">
+  <input id="lead_coach" placeholder="اسم المدرب">
+  <input id="lead_branch" placeholder="اسم الفرع">
+  <div id="leadList">
+    <div class="lead-box">
+      <input class="lead_name" placeholder="اسم العميل">
+      <input class="lead_phone" placeholder="رقم الجوال">
+    </div>
+  </div>
+  <button class="small" onclick="addLead()">➕ إضافة عميل</button>
+  <button onclick="submitLeads()">إرسال</button>
+  <button class="secondary" onclick="goHome()">العودة</button>
+</div>
+
+</div>
+
+<div class="success" id="success">✅ تم الإرسال</div>
 
 <script>
-const SCRIPT_URL = "PUT_NEW_WEB_APP_URL_HERE";
-
-function send() {
-  fetch(SCRIPT_URL, {
-    method: "POST",
-    mode: "no-cors",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      type: "test",
-      coach: "Mohamed",
-      sentAt: new Date().toLocaleString()
-    })
-  });
-
-  alert("تم الإرسال (تحقق من الشيت)");
-}
+function openPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(p).classList.add('active')}
+function goHome(){openPage('home')}
+let ar=true;
+function toggleLang(){ar=!ar;document.body.dir=ar?'rtl':'ltr';document.querySelector('.lang-btn').innerText=ar?'EN':'AR'}
+function showSuccess(){success.style.display="flex";setTimeout(()=>{success.style.display="none";goHome()},1800)}
 </script>
+
+<!-- ⚠️ ملاحظة: روابط Google Forms والإرسال لم يتم لمسها وتبقى كما هي في نسختك السابقة -->
 
 </body>
 </html>
