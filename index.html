@@ -1,139 +1,68 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FT Tracker</title>
 
 <style>
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f4f4f4;
-}
-header{
-  background:#c40000;
-  color:#fff;
-  text-align:center;
-  padding:20px;
-}
-header h1{margin:0;font-size:32px}
-header span{opacity:.9}
-
+:root{--red:#c40000;}
+body{margin:0;font-family:Arial;background:#f4f4f4;direction:rtl}
+header{background:var(--red);color:#fff;padding:20px;text-align:center}
 .container{padding:20px}
-
-.card{
-  background:#fff;
-  padding:20px;
-  border-radius:14px;
-  margin-bottom:15px;
-  box-shadow:0 4px 12px rgba(0,0,0,.08);
-  cursor:pointer;
-}
-.card h3{margin:0;color:#c40000}
-
+.card{background:#fff;border-radius:14px;padding:18px;margin-bottom:14px;box-shadow:0 4px 10px rgba(0,0,0,.1);cursor:pointer}
 .page{display:none}
 .page.active{display:block}
-
-input,select,textarea{
-  width:100%;
-  padding:12px;
-  margin:8px 0;
-  border-radius:10px;
-  border:1px solid #ccc;
-  font-size:16px;
+input,select,textarea{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #ccc;font-size:15px}
+button{background:var(--red);color:#fff;border:none;padding:14px;width:100%;border-radius:10px;font-size:17px;cursor:pointer;margin-top:10px}
+.back{background:#555}
+.row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #eee}
+.row label{flex:1;text-align:right;padding-right:10px}
+.success,.error{
+position:fixed;inset:0;background:rgba(0,0,0,.65);
+display:none;align-items:center;justify-content:center;
+color:#fff;font-size:26px;z-index:999;text-align:center
 }
-
-.checkbox-row{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  margin:8px 0;
-}
-
-button{
-  width:100%;
-  background:#1976d2;
-  color:#fff;
-  border:none;
-  padding:14px;
-  border-radius:12px;
-  font-size:18px;
-  cursor:pointer;
-}
-
-.back{
-  margin-top:10px;
-  background:#c40000;
-}
-
-.small{
-  width:auto;
-  padding:8px 12px;
-  background:#555;
-  margin-top:5px;
-}
-
-.box{
-  border:1px dashed #ccc;
-  padding:10px;
-  border-radius:10px;
-  margin:10px 0;
-}
-
-.success{
-  display:none;
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.6);
-  align-items:center;
-  justify-content:center;
-  z-index:999;
-}
-.success div{
-  background:#e8f5e9;
-  color:#2e7d32;
-  padding:30px 40px;
-  border-radius:20px;
-  font-size:28px;
-  text-align:center;
-}
+.box{background:#1faa59;padding:20px;border-radius:12px}
+.box.error{background:#c40000}
+.device-box,.lead-box{border:1px dashed #ccc;padding:10px;border-radius:8px;margin:10px 0}
+.small{background:#777;padding:6px 10px;width:auto}
 </style>
 </head>
 
 <body>
 
 <header>
-  <h1>FT</h1>
-  <span>FT Tracker</span>
+<h1>FT</h1>
+<p>FT Tracker</p>
 </header>
 
 <div class="container">
 
 <!-- HOME -->
 <div class="page active" id="home">
-  <div class="card" onclick="openPage('daily')"><h3>التشييك اليومي</h3></div>
-  <div class="card" onclick="openPage('detailed')"><h3>التشييك الدقيق</h3></div>
-  <div class="card" onclick="openPage('leads')"><h3>العملاء المرشحين</h3></div>
+  <div class="card" onclick="openPage('daily')">التشييك اليومي</div>
+  <div class="card" onclick="openPage('detailed')">التشييك الدقيق</div>
+  <div class="card" onclick="openPage('leads')">العملاء المرشحين</div>
 </div>
 
 <!-- DAILY -->
 <div class="page" id="daily">
 <h3>التشييك اليومي</h3>
+<input id="d_coach" placeholder="اسم المدرب">
 
-<input id="daily_coach" placeholder="اسم المدرب">
+<h4>مناطق التشييك</h4>
+<div id="areas">
+<div class="row"><label>الدمبلز والبارات</label><input type="checkbox" value="Dumbbells & Bars"></div>
+<div class="row"><label>الاكسسوارات</label><input type="checkbox" value="Accessories"></div>
+<div class="row"><label>Selection</label><input type="checkbox" value="Selection Area"></div>
+<div class="row"><label>الحصص الجماعية</label><input type="checkbox" value="Group Classes Area"></div>
+<div class="row"><label>FTZ</label><input type="checkbox" value="FTZ Area"></div>
+<div class="row"><label>TV</label><input type="checkbox" value="TV"></div>
+<div class="row"><label>مكتب المدربين</label><input type="checkbox" value="Coaches Office"></div>
+</div>
 
-<p>مناطق التشييك</p>
-<div class="checkbox-row"><input type="checkbox" class="area" value="Dumbbells & Bars"> الدمبلز والبارات</div>
-<div class="checkbox-row"><input type="checkbox" class="area" value="Accessories"> الاكسسوارات</div>
-<div class="checkbox-row"><input type="checkbox" class="area" value="Selection Area"> Selection</div>
-<div class="checkbox-row"><input type="checkbox" class="area" value="Group Classes Area"> الحصص الجماعية</div>
-<div class="checkbox-row"><input type="checkbox" class="area" value="FTZ Area"> FTZ</div>
-<div class="checkbox-row"><input type="checkbox" class="area" value="TV"> TV</div>
-<div class="checkbox-row"><input type="checkbox" class="area" value="Coaches Office"> مكتب المدربين</div>
-
-<textarea id="daily_notes" placeholder="ملاحظات (اختياري)"></textarea>
-
+<textarea id="d_notes" placeholder="ملاحظات (اختياري)"></textarea>
 <button onclick="submitDaily()">إرسال</button>
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 </div>
@@ -141,26 +70,23 @@ button{
 <!-- DETAILED -->
 <div class="page" id="detailed">
 <h3>التشييك الدقيق</h3>
-
-<input id="det_coach" placeholder="اسم المدرب">
-<input id="det_branch" placeholder="اسم الفرع">
-
-<select id="det_status" onchange="toggleDevices()">
+<input id="dt_coach" placeholder="اسم المدرب">
+<select id="dt_status" onchange="toggleDevices()">
 <option value="">حالة الأجهزة</option>
 <option value="جيدة">جيدة</option>
-<option value="صيانة">صيانة</option>
+<option value="صيانة">تحتاج صيانة</option>
 </select>
 
 <div id="devices" style="display:none">
-  <div class="box">
-    <input class="dev_name" placeholder="اسم الجهاز">
-    <input class="dev_serial" placeholder="رقم السيريال">
-    <input class="dev_order" placeholder="رقم الطلب">
-    <button class="small" onclick="this.parentElement.remove()">🗑 حذف</button>
-  </div>
+<div class="device-box">
+<input class="dev_name" placeholder="اسم الجهاز">
+<input class="dev_serial" placeholder="رقم السيريال">
+<input class="dev_issue" placeholder="شرح العطل">
+<input class="dev_order" placeholder="رقم الطلب">
+<button class="small" onclick="this.parentElement.remove()">🗑 حذف</button>
 </div>
-
 <button class="small" onclick="addDevice()">➕ إضافة جهاز</button>
+</div>
 
 <button onclick="submitDetailed()">إرسال</button>
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
@@ -169,16 +95,14 @@ button{
 <!-- LEADS -->
 <div class="page" id="leads">
 <h3>العملاء المرشحين</h3>
-
-<input id="lead_coach" placeholder="اسم المدرب">
-<input id="lead_branch" placeholder="اسم الفرع">
+<input id="l_coach" placeholder="اسم المدرب">
 
 <div id="leadList">
-  <div class="box">
-    <input class="lead_name" placeholder="اسم العميل">
-    <input class="lead_phone" placeholder="رقم الجوال">
-    <button class="small" onclick="this.parentElement.remove()">🗑 حذف</button>
-  </div>
+<div class="lead-box">
+<input class="lead_name" placeholder="اسم العميل">
+<input class="lead_phone" placeholder="رقم الجوال">
+<button class="small" onclick="this.parentElement.remove()">🗑 حذف</button>
+</div>
 </div>
 
 <button class="small" onclick="addLead()">➕ إضافة عميل</button>
@@ -188,111 +112,69 @@ button{
 
 </div>
 
-<div class="success" id="success">
-  <div>✅ تم الإرسال</div>
-</div>
+<div class="success" id="success"><div class="box">✔️ تم الإرسال</div></div>
+<div class="error" id="error"><div class="box error">❌ قم بإدخال كافة البيانات</div></div>
 
 <script>
-function openPage(p){
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
-  document.getElementById(p).classList.add('active');
-}
+function openPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(p).classList.add('active')}
 function goHome(){openPage('home')}
+function showSuccess(){success.style.display="flex";setTimeout(()=>{success.style.display="none";goHome()},1500)}
+function showError(){error.style.display="flex";setTimeout(()=>error.style.display="none",1500)}
 
-function showSuccess(){
-  success.style.display="flex";
-  setTimeout(()=>{success.style.display="none";goHome()},1500);
-}
-
-/* DAILY */
 function submitDaily(){
-  const coach=daily_coach.value.trim();
-  const areas=document.querySelectorAll('.area:checked');
-  if(!coach||areas.length===0){alert("أكمل البيانات");return}
+let coach=d_coach.value.trim()
+let selected=[...document.querySelectorAll('#areas input:checked')].map(x=>x.value)
+if(!coach||selected.length==0){showError();return}
 
-  areas.forEach(a=>{
-    fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",{
-      method:"POST",mode:"no-cors",
-      body:new URLSearchParams({
-        "entry.1598276908":coach,
-        "entry.670685014":new Date().toLocaleString(),
-        "entry.793034521":a.value,
-        "entry.987129842":daily_notes.value||"لا يوجد"
-      })
-    })
-  });
-  showSuccess();
+fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",{
+method:"POST",mode:"no-cors",
+body:new URLSearchParams({
+"entry.1598276908":coach,
+"entry.670685014":new Date().toLocaleString(),
+"entry.793034521":selected.join(", "),
+"entry.987129842":d_notes.value
+})
+})
+d_coach.value="";d_notes.value="";document.querySelectorAll('#areas input').forEach(x=>x.checked=false)
+showSuccess()
 }
 
-/* DETAILED */
-function toggleDevices(){
-  devices.style.display=det_status.value==="صيانة"?"block":"none";
-}
+function toggleDevices(){devices.style.display=dt_status.value==="صيانة"?"block":"none"}
 function addDevice(){
-  const d=document.createElement("div");
-  d.className="box";
-  d.innerHTML=`
-    <input class="dev_name" placeholder="اسم الجهاز">
-    <input class="dev_serial" placeholder="رقم السيريال">
-    <input class="dev_order" placeholder="رقم الطلب">
-    <button class="small" onclick="this.parentElement.remove()">🗑 حذف</button>`;
-  devices.appendChild(d);
+let d=document.createElement("div")
+d.className="device-box"
+d.innerHTML='<input class="dev_name" placeholder="اسم الجهاز"><input class="dev_serial" placeholder="رقم السيريال"><input class="dev_issue" placeholder="شرح العطل"><input class="dev_order" placeholder="رقم الطلب"><button class="small" onclick="this.parentElement.remove()">🗑 حذف</button>'
+devices.insertBefore(d,devices.lastElementChild)
 }
-function submitDetailed(){
-  if(!det_coach.value||!det_branch.value||!det_status.value){alert("أكمل البيانات");return}
-  const t=new Date().toLocaleString();
-  if(det_status.value==="جيدة"){
-    sendDetailed(t,"جيدة","","","");
-  }else{
-    document.querySelectorAll(".box").forEach(b=>{
-      sendDetailed(t,"صيانة",
-        b.querySelector(".dev_name").value,
-        b.querySelector(".dev_serial").value,
-        b.querySelector(".dev_order").value
-      );
-    })
-  }
-  showSuccess();
-}
-function sendDetailed(t,s,n,se,o){
-fetch("https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/formResponse",{
-method:"POST",mode:"no-cors",
-body:new URLSearchParams({
-"entry.1110574157":det_coach.value,
-"entry.225813099":det_branch.value,
-"entry.472300684":t,
-"entry.1420106518":s,
-"entry.1117457821":n,
-"entry.1076673732":se,
-"entry.1452213865":o
-})
-})}
 
-/* LEADS */
-function addLead(){
-const l=document.createElement("div");
-l.className="box";
-l.innerHTML=`
-<input class="lead_name" placeholder="اسم العميل">
-<input class="lead_phone" placeholder="رقم الجوال">
-<button class="small" onclick="this.parentElement.remove()">🗑 حذف</button>`;
-leadList.appendChild(l);
+function submitDetailed(){
+if(!dt_coach.value||!dt_status.value){showError();return}
+if(dt_status.value==="صيانة"){
+let boxes=[...document.querySelectorAll('.device-box')]
+for(let b of boxes){
+if(!b.querySelector('.dev_name').value||!b.querySelector('.dev_serial').value||!b.querySelector('.dev_issue').value||!b.querySelector('.dev_order').value){showError();return}
 }
+}
+showSuccess()
+document.querySelectorAll('input,select').forEach(x=>x.value="")
+devices.style.display="none"
+}
+
+function addLead(){
+let l=document.createElement("div")
+l.className="lead-box"
+l.innerHTML='<input class="lead_name" placeholder="اسم العميل"><input class="lead_phone" placeholder="رقم الجوال"><button class="small" onclick="this.parentElement.remove()">🗑 حذف</button>'
+leadList.appendChild(l)
+}
+
 function submitLeads(){
-if(!lead_coach.value||!lead_branch.value){alert("أكمل البيانات");return}
-document.querySelectorAll(".box").forEach(l=>{
-fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",{
-method:"POST",mode:"no-cors",
-body:new URLSearchParams({
-"entry.1803783309":lead_coach.value,
-"entry.1531832061":lead_branch.value,
-"entry.1038119858":new Date().toLocaleString(),
-"entry.634489457":l.querySelector(".lead_name").value,
-"entry.2087664957":l.querySelector(".lead_phone").value
-})
-})
-})
-showSuccess();
+if(!l_coach.value){showError();return}
+let leads=[...document.querySelectorAll('.lead-box')]
+for(let l of leads){
+if(!l.querySelector('.lead_name').value||!l.querySelector('.lead_phone').value){showError();return}
+}
+showSuccess()
+document.querySelectorAll('input').forEach(x=>x.value="")
 }
 </script>
 
