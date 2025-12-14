@@ -8,48 +8,68 @@
 <style>
 :root{
   --red:#c40000;
+  --bg:#f4f4f4;
 }
 body{
   margin:0;
-  font-family: Arial, sans-serif;
-  background:#f5f5f5;
+  font-family:Arial, sans-serif;
+  background:var(--bg);
   direction:rtl;
 }
-
-/* ===== HEADER ===== */
 header{
   background:var(--red);
   color:#fff;
-  padding:18px;
   text-align:center;
+  padding:20px;
 }
-header h1{
-  margin:0;
-  font-size:28px;
-}
-header span{
-  font-size:14px;
-  opacity:.9;
-}
+header h1{margin:0;font-size:28px}
+header span{font-size:14px;opacity:.9}
 
-/* ===== GENERAL ===== */
-.container{ padding:20px; }
-.page{ display:none; }
-.page.active{ display:block; }
+.container{padding:20px}
+.page{display:none}
+.page.active{display:block}
 
-input, textarea, select{
+.card{
+  background:#fff;
+  border-radius:18px;
+  padding:18px;
+  margin-bottom:16px;
+  box-shadow:0 6px 14px rgba(0,0,0,.1);
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+.icon{
+  background:var(--red);
+  color:#fff;
+  width:56px;
+  height:56px;
+  border-radius:16px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:26px;
+}
+.card h3{margin:0}
+.card p{margin:6px 0 0;color:#777;font-size:14px}
+
+label{display:block;margin-top:12px;font-weight:bold}
+input,textarea,select{
   width:100%;
   padding:12px;
-  margin:6px 0 14px;
-  border-radius:8px;
+  border-radius:10px;
   border:1px solid #ccc;
   font-size:16px;
+  margin-top:6px;
 }
 
-label{
-  font-weight:bold;
-  display:block;
-  margin-top:10px;
+.checkbox-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:12px 0;
+  border-bottom:1px solid #eee;
 }
 
 button{
@@ -57,63 +77,30 @@ button{
   color:#fff;
   border:none;
   padding:14px;
-  width:100%;
-  border-radius:10px;
+  border-radius:14px;
   font-size:18px;
+  width:100%;
   cursor:pointer;
+  margin-top:20px;
 }
-
-.back{
-  background:#333;
+.small-btn{
+  width:auto;
+  padding:8px 14px;
+  font-size:14px;
   margin-top:10px;
 }
-
-/* ===== HOME CARDS ===== */
-.home-card{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  background:#fff;
-  border-radius:18px;
-  padding:20px;
-  margin-bottom:18px;
-  box-shadow:0 6px 16px rgba(0,0,0,.08);
-  cursor:pointer;
-}
-.home-text h3{
-  margin:0;
-  font-size:22px;
-}
-.home-text p{
-  margin-top:6px;
-  color:#666;
-}
-.home-icon{
-  width:64px;
-  height:64px;
-  background:var(--red);
-  border-radius:16px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  color:#fff;
-  font-size:30px;
+.back{
+  background:#333;
 }
 
-/* ===== CHECKBOX LIST ===== */
-.check-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:10px 0;
-  border-bottom:1px solid #eee;
-}
-.check-row span{
-  font-size:16px;
+.box{
+  border:1px dashed #ccc;
+  padding:12px;
+  margin-top:12px;
+  border-radius:10px;
 }
 
-/* ===== SUCCESS / ERROR ===== */
-.overlay{
+.success, .error{
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.6);
@@ -122,167 +109,247 @@ button{
   justify-content:center;
   z-index:999;
 }
-.message-box{
+.msg{
   background:#fff;
   padding:30px;
-  border-radius:14px;
+  border-radius:18px;
   text-align:center;
   font-size:22px;
 }
-.success{ color:green; }
-.error{ color:red; }
-
-.device-box, .lead-box{
-  border:1px dashed #ccc;
-  padding:10px;
-  border-radius:8px;
-  margin-bottom:10px;
-}
-.small-btn{
-  background:#666;
-  margin-bottom:10px;
-}
+.success .msg{color:green}
+.error .msg{color:red}
 </style>
 </head>
 
 <body>
 
 <header>
-  <h1>FT</h1>
-  <span>FT Tracker</span>
+<h1>FT</h1>
+<span>FT Tracker</span>
 </header>
 
 <div class="container">
 
-<!-- ===== HOME ===== -->
+<!-- HOME -->
 <div class="page active" id="home">
-  <div class="home-card" onclick="openPage('daily')">
-    <div class="home-text">
+  <div class="card" onclick="openPage('daily')">
+    <div class="icon">📋</div>
+    <div>
       <h3>التشييك اليومي</h3>
       <p>متابعة الحالة اليومية للنادي</p>
     </div>
-    <div class="home-icon">📋</div>
   </div>
 
-  <div class="home-card" onclick="openPage('detailed')">
-    <div class="home-text">
+  <div class="card" onclick="openPage('detailed')">
+    <div class="icon">🛠️</div>
+    <div>
       <h3>التشييك الدقيق</h3>
       <p>فحص الأجهزة والمرافق</p>
     </div>
-    <div class="home-icon">🛠️</div>
   </div>
 
-  <div class="home-card" onclick="openPage('leads')">
-    <div class="home-text">
+  <div class="card" onclick="openPage('leads')">
+    <div class="icon">🎯</div>
+    <div>
       <h3>العملاء المرشحين</h3>
       <p>إضافة بيانات العملاء المحتملين</p>
     </div>
-    <div class="home-icon">🎯</div>
   </div>
 </div>
 
-<!-- ===== DAILY ===== -->
+<!-- DAILY -->
 <div class="page" id="daily">
-  <h2>التشييك اليومي</h2>
+<h2>التشييك اليومي</h2>
 
-  <label>اسم المدرب *</label>
-  <input id="daily_coach">
+<label>اسم المدرب *</label>
+<input id="d_coach">
 
-  <label>التاريخ والوقت</label>
-  <input id="daily_time" readonly>
+<label>التاريخ والوقت</label>
+<input id="d_time" readonly>
 
-  <label>مناطق التشييك *</label>
-  <div id="areas">
-    <div class="check-row"><span>الدمبلز والبارات</span><input type="checkbox" value="Dumbbells & Bars"></div>
-    <div class="check-row"><span>الاكسسوارات</span><input type="checkbox" value="Accessories"></div>
-    <div class="check-row"><span>Selection</span><input type="checkbox" value="Selection Area"></div>
-    <div class="check-row"><span>الحصص الجماعية</span><input type="checkbox" value="Group Classes Area"></div>
-    <div class="check-row"><span>FTZ</span><input type="checkbox" value="FTZ Area"></div>
-    <div class="check-row"><span>TV</span><input type="checkbox" value="TV"></div>
-    <div class="check-row"><span>مكتب المدربين</span><input type="checkbox" value="Coaches Office"></div>
-  </div>
+<label>مناطق التشييك *</label>
+<div id="areas"></div>
 
-  <label>ملاحظات</label>
-  <textarea id="daily_notes"></textarea>
+<label>ملاحظات</label>
+<textarea id="d_notes"></textarea>
 
-  <button onclick="submitDaily()">إرسال</button>
-  <button class="back" onclick="goHome()">العودة للرئيسية</button>
+<button onclick="submitDaily()">إرسال</button>
+<button class="back" onclick="goHome()">العودة للرئيسية</button>
 </div>
 
-<!-- ===== DETAILED ===== -->
+<!-- DETAILED -->
 <div class="page" id="detailed">
-  <h2>التشييك الدقيق</h2>
+<h2>التشييك الدقيق</h2>
 
-  <label>اسم المدرب *</label>
-  <input id="det_coach">
+<label>اسم المدرب *</label>
+<input id="det_coach">
 
-  <label>اسم الفرع *</label>
-  <input id="det_branch">
+<label>اسم الفرع *</label>
+<input id="det_branch">
 
-  <label>حالة الأجهزة *</label>
-  <select id="det_status" onchange="toggleDevices()">
-    <option value="">اختر</option>
-    <option value="جيدة">جيدة</option>
-    <option value="يوجد صيانة">يوجد صيانة</option>
-  </select>
+<label>حالة الأجهزة *</label>
+<select id="det_status" onchange="toggleDevices()">
+<option value="">اختر</option>
+<option>جيدة</option>
+<option>يوجد صيانة</option>
+</select>
 
-  <div id="devices" style="display:none">
-    <div class="device-box">
-      <label>اسم الجهاز *</label>
-      <input class="dev_name">
-      <label>رقم السيريال *</label>
-      <input class="dev_serial">
-      <label>رقم الطلب *</label>
-      <input class="dev_order">
-      <label>شرح العطل *</label>
-      <textarea class="dev_issue"></textarea>
-      <button class="small-btn" onclick="this.parentElement.remove()">حذف</button>
-    </div>
-    <button class="small-btn" onclick="addDevice()">➕ إضافة جهاز</button>
-  </div>
-
-  <button onclick="submitDetailed()">إرسال</button>
-  <button class="back" onclick="goHome()">العودة للرئيسية</button>
+<div id="devices" style="display:none">
 </div>
 
-<!-- ===== LEADS ===== -->
+<button class="small-btn" onclick="addDevice()">➕ إضافة جهاز</button>
+
+<button onclick="submitDetailed()">إرسال</button>
+<button class="back" onclick="goHome()">العودة للرئيسية</button>
+</div>
+
+<!-- LEADS -->
 <div class="page" id="leads">
-  <h2>العملاء المرشحين</h2>
+<h2>العملاء المرشحين</h2>
 
-  <label>اسم المدرب *</label>
-  <input id="lead_coach">
+<label>اسم المدرب *</label>
+<input id="l_coach">
 
-  <label>اسم الفرع *</label>
-  <input id="lead_branch">
+<label>اسم الفرع *</label>
+<input id="l_branch">
 
-  <div id="leadList">
-    <div class="lead-box">
-      <label>اسم العميل *</label>
-      <input class="lead_name">
-      <label>رقم الجوال *</label>
-      <input class="lead_phone">
-      <button class="small-btn" onclick="this.parentElement.remove()">حذف</button>
-    </div>
-  </div>
+<div id="leadList"></div>
 
-  <button class="small-btn" onclick="addLead()">➕ إضافة عميل</button>
-  <button onclick="submitLeads()">إرسال</button>
-  <button class="back" onclick="goHome()">العودة للرئيسية</button>
+<button class="small-btn" onclick="addLead()">➕ إضافة عميل</button>
+
+<button onclick="submitLeads()">إرسال</button>
+<button class="back" onclick="goHome()">العودة للرئيسية</button>
 </div>
 
 </div>
 
-<!-- ===== MESSAGE ===== -->
-<div class="overlay" id="overlay">
-  <div class="message-box" id="msgBox"></div>
-</div>
+<div class="success" id="success"><div class="msg">✅ تم الإرسال</div></div>
+<div class="error" id="error"><div class="msg">❌ قم بإدخال كافة البيانات</div></div>
 
 <script>
+const areasList=[
+"Dumbbells & Bars","Accessories","Selection Area",
+"Group Classes Area","FTZ Area","TV","Coaches Office"
+];
+
 function openPage(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   document.getElementById(p).classList.add('active');
 }
-function goHome(){ openPage('home'); }
+function goHome(){openPage('home')}
 
-/* ===== TIME AUTO ===== */
-document.get
+function now(){
+  return new Date().toLocaleString();
+}
+d_time.value=now();
+
+areasList.forEach(a=>{
+  areas.innerHTML+=`
+  <div class="checkbox-row">
+    <span>${a}</span>
+    <input type="checkbox" value="${a}">
+  </div>`;
+});
+
+function show(id){
+  document.getElementById(id).style.display="flex";
+  setTimeout(()=>document.getElementById(id).style.display="none",2000);
+}
+
+function submitDaily(){
+  const checked=[...areas.querySelectorAll("input:checked")].map(x=>x.value);
+  if(!d_coach.value||checked.length===0){show("error");return;}
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",
+  {method:"POST",mode:"no-cors",
+   body:new URLSearchParams({
+    "entry.1598276908":d_coach.value,
+    "entry.670685014":now(),
+    "entry.793034521":checked.join(", "),
+    "entry.987129842":d_notes.value||"لا يوجد"
+   })});
+  d_coach.value="";d_notes.value="";
+  areas.querySelectorAll("input").forEach(x=>x.checked=false);
+  show("success");goHome();
+}
+
+function toggleDevices(){
+  devices.style.display=det_status.value==="يوجد صيانة"?"block":"none";
+}
+
+function addDevice(){
+  const d=document.createElement("div");
+  d.className="box";
+  d.innerHTML=`
+  <label>اسم الجهاز *</label><input class="dn">
+  <label>رقم السيريال *</label><input class="ds">
+  <label>رقم الطلب *</label><input class="do">
+  <label>شرح العطل *</label><textarea class="df"></textarea>
+  <button class="small-btn" onclick="this.parentElement.remove()">حذف</button>`;
+  devices.appendChild(d);
+}
+
+function submitDetailed(){
+  if(!det_coach.value||!det_branch.value||!det_status.value){show("error");return;}
+  if(det_status.value==="جيدة"){
+    sendDetailed("—","—","—","—");
+  }else{
+    if(devices.children.length===0){show("error");return;}
+    [...devices.children].forEach(b=>{
+      sendDetailed(
+        b.querySelector(".dn").value,
+        b.querySelector(".ds").value,
+        b.querySelector(".do").value,
+        b.querySelector(".df").value
+      );
+    });
+  }
+  det_coach.value="";det_branch.value="";det_status.value="";
+  devices.innerHTML="";devices.style.display="none";
+  show("success");goHome();
+}
+
+function sendDetailed(n,s,o,f){
+fetch("https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/formResponse",
+{method:"POST",mode:"no-cors",
+ body:new URLSearchParams({
+  "entry.1110574157":det_coach.value,
+  "entry.225813099":det_branch.value,
+  "entry.472300684":now(),
+  "entry.1420106518":det_status.value,
+  "entry.1131993998":n,
+  "entry.1894843047":s,
+  "entry.971797645":o,
+  "entry.95041345":f
+ })});
+}
+
+function addLead(){
+  const l=document.createElement("div");
+  l.className="box";
+  l.innerHTML=`
+  <label>اسم العميل *</label><input class="ln">
+  <label>رقم الجوال *</label><input class="lp">
+  <button class="small-btn" onclick="this.parentElement.remove()">حذف</button>`;
+  leadList.appendChild(l);
+}
+
+function submitLeads(){
+  if(!l_coach.value||!l_branch.value||leadList.children.length===0){show("error");return;}
+  [...leadList.children].forEach(l=>{
+    fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",
+    {method:"POST",mode:"no-cors",
+     body:new URLSearchParams({
+      "entry.1803783309":l_coach.value,
+      "entry.1531832061":l_branch.value,
+      "entry.1038119858":now(),
+      "entry.634489457":l.querySelector(".ln").value,
+      "entry.2087664957":l.querySelector(".lp").value
+     })});
+  });
+  l_coach.value="";l_branch.value="";leadList.innerHTML="";
+  show("success");goHome();
+}
+</script>
+
+</body>
+</html>
