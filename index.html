@@ -20,31 +20,18 @@ header{background:var(--red);color:#fff;text-align:center;padding:18px;font-size
   cursor:pointer;font-size:20px
 }
 
-label{
-  display:block;
-  margin-top:10px;
-  margin-bottom:5px;
-  font-weight:bold;
-}
+label{display:block;margin:10px 0 5px;font-weight:bold}
 
 input,textarea,select{
-  width:100%;
-  padding:12px;
-  border-radius:10px;
-  border:1px solid #ccc;
-  font-size:16px;
-  margin-bottom:10px
+  width:100%;padding:12px;
+  border-radius:10px;border:1px solid #ccc;
+  font-size:16px;margin-bottom:10px
 }
 
 button{
-  width:100%;
-  padding:14px;
-  border:none;
-  border-radius:12px;
-  background:var(--red);
-  color:#fff;
-  font-size:18px;
-  cursor:pointer
+  width:100%;padding:14px;border:none;
+  border-radius:12px;background:var(--red);
+  color:#fff;font-size:18px;cursor:pointer
 }
 
 .back{background:#b00000;margin-bottom:15px}
@@ -61,25 +48,19 @@ button{
 
 .device-box,.lead-box{
   border:1px dashed #ccc;
-  padding:10px;
-  border-radius:10px;
+  padding:10px;border-radius:10px;
   margin-bottom:10px
 }
 
 .overlay{
   position:fixed;inset:0;
   background:rgba(0,0,0,.6);
-  display:none;
-  align-items:center;
-  justify-content:center;
+  display:none;align-items:center;justify-content:center;
   z-index:999
 }
 .msg{
-  background:#fff;
-  padding:30px 40px;
-  border-radius:14px;
-  font-size:22px;
-  text-align:center
+  background:#fff;padding:30px 40px;
+  border-radius:14px;font-size:22px;text-align:center
 }
 .success{color:#0a8f08}
 .error{color:#c40000}
@@ -99,7 +80,7 @@ button{
   <div class="card" onclick="openPage('leads')">العملاء المرشحين</div>
 </div>
 
-<!-- DAILY -->
+<!-- DAILY (كما هو – شغال) -->
 <div class="page" id="daily">
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 <h2>التشييك اليومي</h2>
@@ -151,23 +132,6 @@ button{
 <button onclick="sendDetailed()">إرسال</button>
 </div>
 
-<!-- LEADS -->
-<div class="page" id="leads">
-<button class="back" onclick="goHome()">العودة للرئيسية</button>
-<h2>العملاء المرشحين</h2>
-
-<label>اسم المدرب *</label>
-<input id="l_coach">
-
-<label>اسم الفرع *</label>
-<input id="l_branch">
-
-<div id="leadList"></div>
-<button class="small" onclick="addLead()">➕ إضافة عميل</button>
-
-<button onclick="sendLeads()">إرسال</button>
-</div>
-
 </div>
 
 <div class="overlay" id="overlay">
@@ -212,7 +176,7 @@ function sendDaily(){
   show("success","✅ تم الإرسال")
 }
 
-/* DETAILED */
+/* DETAILED – IDs الجديدة */
 function toggleMaintenance(){
   devices.innerHTML=""
   if(dt_status.value==="يوجد صيانة") addDevice()
@@ -236,12 +200,10 @@ function sendDetailed(){
     show("error","❌ قم بإدخال كافة البيانات");return
   }
 
-  if(dt_status.value==="جيدة"){
-    postDetailed("","","","")
-  }else{
-    const boxes=[...document.querySelectorAll(".device-box")]
-    if(boxes.length===0){show("error","❌ أضف جهاز واحد على الأقل");return}
+  const boxes=[...document.querySelectorAll(".device-box")]
 
+  if(dt_status.value==="يوجد صيانة"){
+    if(boxes.length===0){show("error","❌ أضف جهاز واحد على الأقل");return}
     for(const b of boxes){
       const n=b.querySelector(".dev_name").value
       const s=b.querySelector(".dev_serial").value
@@ -250,6 +212,8 @@ function sendDetailed(){
       if(!n||!s||!o||!i){show("error","❌ أكمل بيانات الصيانة");return}
       postDetailed(n,s,o,i)
     }
+  } else {
+    postDetailed("—","—","—","—")
   }
 
   dt_coach.value=dt_branch.value=dt_status.value=""
@@ -266,55 +230,12 @@ function postDetailed(name,serial,order,issue){
         "entry.225813099":dt_branch.value,
         "entry.472300684":now(),
         "entry.1420106518":dt_status.value,
-        "entry.1117457821":name||"—",
-        "entry.1076673732":serial||"—",
-        "entry.1452213865":order||"—",
-        "entry.1904231182":issue||"—"
+        "entry.1131993998":name,
+        "entry.1894843047":serial,
+        "entry.971797645":order,
+        "entry.95041345":issue
       })
     })
-}
-
-/* LEADS */
-function addLead(){
-  const l=document.createElement("div")
-  l.className="lead-box"
-  l.innerHTML=`
-    <label>اسم العميل *</label><input class="lead_name">
-    <label>رقم الجوال *</label><input class="lead_phone">
-    <button class="small" onclick="this.parentElement.remove()">🗑 حذف العميل</button>
-  `
-  leadList.appendChild(l)
-}
-
-function sendLeads(){
-  if(!l_coach.value||!l_branch.value){
-    show("error","❌ قم بإدخال كافة البيانات");return
-  }
-
-  const leads=[...document.querySelectorAll(".lead-box")]
-  if(leads.length===0){show("error","❌ أضف عميل واحد على الأقل");return}
-
-  for(const l of leads){
-    const n=l.querySelector(".lead_name").value
-    const p=l.querySelector(".lead_phone").value
-    if(!n||!p){show("error","❌ أكمل بيانات العملاء");return}
-
-    fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",
-      {
-        method:"POST",mode:"no-cors",
-        body:new URLSearchParams({
-          "entry.1803783309":l_coach.value,
-          "entry.1531832061":l_branch.value,
-          "entry.1038119858":now(),
-          "entry.634489457":n,
-          "entry.2087664957":p
-        })
-      })
-  }
-
-  l_coach.value=l_branch.value=""
-  leadList.innerHTML=""
-  show("success","✅ تم الإرسال")
 }
 </script>
 
