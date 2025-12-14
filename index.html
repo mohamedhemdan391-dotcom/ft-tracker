@@ -47,13 +47,6 @@ button{
 .box{
  border:1px dashed #ccc;border-radius:12px;padding:12px;margin-top:12px
 }
-.row-actions{
- display:flex;gap:10px;margin-top:10px
-}
-.small-btn{
- background:#666;color:#fff;border:none;padding:8px 14px;
- border-radius:10px;cursor:pointer;font-size:14px
-}
 
 .success,.error{
  position:fixed;inset:0;display:none;align-items:center;justify-content:center;
@@ -65,6 +58,7 @@ button{
 </head>
 
 <body>
+
 <header>FT Tracker</header>
 
 <div class="container">
@@ -75,13 +69,10 @@ button{
   <div class="card-icon">📋</div>
   <div><h3>التشييك اليومي</h3></div>
  </div>
+
  <div class="card" onclick="openPage('detailed')">
   <div class="card-icon">🛠️</div>
   <div><h3>التشييك الدقيق</h3></div>
- </div>
- <div class="card" onclick="openPage('leads')">
-  <div class="card-icon">🎯</div>
-  <div><h3>العملاء المرشحين</h3></div>
  </div>
 </div>
 
@@ -94,7 +85,7 @@ button{
  <input id="daily_coach">
 
  <label>التاريخ والوقت</label>
- <input readonly id="daily_time">
+ <input id="daily_time" readonly>
 
  <label>مناطق التشييك *</label>
  <div class="area-row"><span>Dumbbells & Bars</span><input type="checkbox" value="Dumbbells & Bars"></div>
@@ -111,21 +102,25 @@ button{
  <button onclick="submitDaily()">إرسال</button>
 </div>
 
-<!-- LEADS -->
-<div class="page" id="leads">
+<!-- DETAILED (مُصلَح بالكامل – لا شاشة بيضاء) -->
+<div class="page" id="detailed">
  <div class="back-top" onclick="goHome()">العودة للرئيسية</div>
- <h2>العملاء المرشحين</h2>
+ <h2>التشييك الدقيق</h2>
 
  <label>اسم المدرب *</label>
- <input id="lead_coach">
+ <input id="det_coach">
 
  <label>اسم الفرع *</label>
- <input id="lead_branch">
+ <input id="det_branch">
 
- <div id="leadList"></div>
+ <label>حالة الأجهزة *</label>
+ <select id="det_status">
+  <option value="">اختر</option>
+  <option value="جيدة">جيدة</option>
+  <option value="يوجد صيانة">يوجد صيانة</option>
+ </select>
 
- <button onclick="addLead()">➕ إضافة عميل</button>
- <button onclick="submitLeads()">إرسال</button>
+ <button onclick="submitDetailed()">إرسال</button>
 </div>
 
 </div>
@@ -139,13 +134,14 @@ function openPage(p){
  document.getElementById(p).classList.add('active');
 }
 function goHome(){openPage('home')}
-daily_time.value=new Date().toLocaleString();
 
-/* DAILY */
+daily_time.value = new Date().toLocaleString();
+
+/* DAILY – إرسال واحد فقط */
 function submitDaily(){
- const coach=daily_coach.value.trim();
- const areas=[...document.querySelectorAll(".area-row input:checked")].map(x=>x.value);
- if(!coach||areas.length===0){show("error");return}
+ const coach = daily_coach.value.trim();
+ const areas = [...document.querySelectorAll(".area-row input:checked")].map(x=>x.value);
+ if(!coach || areas.length===0){show("error");return;}
 
  const areasText = areas.join(" , ");
 
@@ -153,10 +149,10 @@ function submitDaily(){
   method:"POST",
   mode:"no-cors",
   body:new URLSearchParams({
-    "entry.1598276908": coach,
-    "entry.670685014": daily_time.value,
-    "entry.793034521": areasText,
-    "entry.987129842": daily_notes.value || "لا يوجد"
+   "entry.1598276908": coach,
+   "entry.670685014": daily_time.value,
+   "entry.793034521": areasText,
+   "entry.987129842": daily_notes.value || "لا يوجد"
   })
  });
 
@@ -168,44 +164,25 @@ function submitDaily(){
  setTimeout(goHome,1500);
 }
 
-/* LEADS */
-function addLead(){
- const l=document.createElement("div");
- l.className="box";
- l.innerHTML=`
-  <label>اسم العميل *</label><input class="ln">
-  <label>رقم الجوال *</label><input class="lp">
-  <div class="row-actions">
-   <button class="small-btn" onclick="this.parentElement.parentElement.remove()">🗑 حذف</button>
-  </div>`;
- leadList.appendChild(l);
-}
-addLead();
-
-function submitLeads(){
- if(!lead_coach.value || !lead_branch.value){show("error");return}
-
- const ls=[...leadList.querySelectorAll(".box")];
- for(let l of ls){
-  if(!l.querySelector(".ln").value||!l.querySelector(".lp").value){show("error");return}
-
-  fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",{
-   method:"POST",
-   mode:"no-cors",
-   body:new URLSearchParams({
-     "entry.1803783309": lead_coach.value,
-     "entry.1531832061": lead_branch.value,
-     "entry.1038119858": new Date().toLocaleString(),
-     "entry.634489457": l.querySelector(".ln").value,
-     "entry.2087664957": l.querySelector(".lp").value
-   })
-  });
+/* DETAILED – بسيط ومستقر */
+function submitDetailed(){
+ if(!det_coach.value || !det_branch.value || !det_status.value){
+  show("error"); return;
  }
 
- lead_coach.value="";
- lead_branch.value="";
- leadList.innerHTML="";
- addLead();
+ fetch("https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/formResponse",{
+  method:"POST",
+  mode:"no-cors",
+  body:new URLSearchParams({
+   "entry.1110574157": det_coach.value,
+   "entry.225813099": det_branch.value,
+   "entry.1420106518": det_status.value
+  })
+ });
+
+ det_coach.value="";
+ det_branch.value="";
+ det_status.value="";
 
  show("success");
  setTimeout(goHome,1500);
@@ -214,7 +191,7 @@ function submitLeads(){
 function show(id){
  const e=document.getElementById(id);
  e.style.display="flex";
- setTimeout(()=>e.style.display="none",1500)
+ setTimeout(()=>e.style.display="none",1500);
 }
 </script>
 
