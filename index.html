@@ -87,7 +87,7 @@ button{
  </div>
 </div>
 
-<!-- DAILY (كما هو – بدون تعديل) -->
+<!-- DAILY CHECK -->
 <div class="page" id="daily">
  <div class="back-top" onclick="goHome()">العودة للرئيسية</div>
  <h2>التشييك اليومي</h2>
@@ -113,7 +113,7 @@ button{
  <button onclick="submitDaily()">إرسال</button>
 </div>
 
-<!-- DETAILED -->
+<!-- DETAILED CHECK -->
 <div class="page" id="detailed">
  <div class="back-top" onclick="goHome()">العودة للرئيسية</div>
  <h2>التشييك الدقيق</h2>
@@ -131,8 +131,7 @@ button{
   <option value="يوجد صيانة">يوجد صيانة</option>
  </select>
 
- <div id="devices" style="display:none">
- </div>
+ <div id="devices"></div>
 
  <button onclick="addDevice()" id="addDeviceBtn" style="display:none">➕ إضافة جهاز</button>
  <button onclick="submitDetailed()">إرسال</button>
@@ -170,15 +169,17 @@ function submitDaily(){
  const coach=daily_coach.value.trim();
  const areas=[...document.querySelectorAll(".area-row input:checked")].map(x=>x.value);
  if(!coach||areas.length===0){show("error");return}
- areas.forEach(a=>{
-  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",
-  {method:"POST",mode:"no-cors",body:new URLSearchParams({
-   "entry.1598276908":coach,
-   "entry.670685014":daily_time.value,
-   "entry.793034521":a,
-   "entry.987129842":daily_notes.value||"لا يوجد"
-  })});
- });
+
+ const areasText = areas.join(" , ");
+
+ fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",
+ {method:"POST",mode:"no-cors",body:new URLSearchParams({
+  "entry.1598276908":coach,
+  "entry.670685014":daily_time.value,
+  "entry.793034521":areasText,
+  "entry.987129842":daily_notes.value||"لا يوجد"
+ })});
+
  daily_coach.value="";daily_notes.value="";
  document.querySelectorAll(".area-row input").forEach(x=>x.checked=false);
  show("success");setTimeout(goHome,1500);
@@ -188,11 +189,9 @@ function submitDaily(){
 function toggleMaintenance(){
  devices.innerHTML="";
  if(det_status.value==="يوجد صيانة"){
-  devices.style.display="block";
   addDeviceBtn.style.display="block";
   addDevice();
  }else{
-  devices.style.display="none";
   addDeviceBtn.style.display="none";
  }
 }
@@ -204,13 +203,16 @@ function addDevice(){
  <label>رقم السيريال *</label><input class="ds">
  <label>رقم الطلب *</label><input class="do">
  <label>شرح العطل *</label><textarea class="dd"></textarea>
- <div class="row-actions"><button class="small-btn" onclick="this.parentElement.parentElement.remove()">🗑 حذف</button></div>`;
+ <div class="row-actions">
+  <button class="small-btn" onclick="this.parentElement.parentElement.remove()">🗑 حذف</button>
+ </div>`;
  devices.appendChild(d);
 }
 function submitDetailed(){
  if(!det_coach.value||!det_branch.value||!det_status.value){show("error");return}
+
  if(det_status.value==="يوجد صيانة"){
-  const boxes=[...document.querySelectorAll("#devices .box")];
+  const boxes=[...devices.querySelectorAll(".box")];
   for(let b of boxes){
    if(!b.querySelector(".dn").value||!b.querySelector(".ds").value||
       !b.querySelector(".do").value||!b.querySelector(".dd").value){
@@ -239,8 +241,9 @@ function submitDetailed(){
    "entry.95041345":"لا يوجد"
   })});
  }
+
  det_coach.value="";det_branch.value="";det_status.value="";
- devices.innerHTML="";devices.style.display="none";addDeviceBtn.style.display="none";
+ devices.innerHTML="";addDeviceBtn.style.display="none";
  show("success");setTimeout(goHome,1500);
 }
 
@@ -251,19 +254,23 @@ function addLead(){
  l.innerHTML=`
  <label>اسم العميل *</label><input class="ln">
  <label>رقم الجوال *</label><input class="lp">
- <div class="row-actions"><button class="small-btn" onclick="this.parentElement.parentElement.remove()">🗑 حذف</button></div>`;
+ <div class="row-actions">
+  <button class="small-btn" onclick="this.parentElement.parentElement.remove()">🗑 حذف</button>
+ </div>`;
  leadList.appendChild(l);
 }
 addLead();
 
 function submitLeads(){
  if(!lead_coach.value){show("error");return}
- const ls=[...document.querySelectorAll("#leadList .box")];
+ const ls=[...leadList.querySelectorAll(".box")];
  for(let l of ls){
   if(!l.querySelector(".ln").value||!l.querySelector(".lp").value){show("error");return}
   fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",
   {method:"POST",mode:"no-cors",body:new URLSearchParams({
    "entry.1803783309":lead_coach.value,
+   "entry.1531832061":"FT Tracker",
+   "entry.1038119858":new Date().toLocaleString(),
    "entry.634489457":l.querySelector(".ln").value,
    "entry.2087664957":l.querySelector(".lp").value
   })});
