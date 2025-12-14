@@ -20,18 +20,35 @@ header{background:var(--red);color:#fff;text-align:center;padding:18px;font-size
   cursor:pointer;font-size:20px
 }
 
+label{
+  display:block;
+  margin-top:10px;
+  margin-bottom:5px;
+  font-weight:bold;
+}
+
 input,textarea,select{
-  width:100%;padding:12px;margin:10px 0;
-  border-radius:10px;border:1px solid #ccc;font-size:16px
+  width:100%;
+  padding:12px;
+  border-radius:10px;
+  border:1px solid #ccc;
+  font-size:16px;
+  margin-bottom:10px
 }
 
 button{
-  width:100%;padding:14px;border:none;
-  border-radius:12px;background:var(--red);
-  color:#fff;font-size:18px;cursor:pointer
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:12px;
+  background:var(--red);
+  color:#fff;
+  font-size:18px;
+  cursor:pointer
 }
 
 .back{background:#b00000;margin-bottom:15px}
+.small{background:#666;margin-bottom:10px}
 
 .area-row{
   display:grid;
@@ -42,15 +59,27 @@ button{
   font-size:18px
 }
 
+.device-box,.lead-box{
+  border:1px dashed #ccc;
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:10px
+}
+
 .overlay{
   position:fixed;inset:0;
   background:rgba(0,0,0,.6);
-  display:none;align-items:center;justify-content:center;
+  display:none;
+  align-items:center;
+  justify-content:center;
   z-index:999
 }
 .msg{
-  background:#fff;padding:30px 40px;
-  border-radius:14px;font-size:22px;text-align:center
+  background:#fff;
+  padding:30px 40px;
+  border-radius:14px;
+  font-size:22px;
+  text-align:center
 }
 .success{color:#0a8f08}
 .error{color:#c40000}
@@ -75,9 +104,13 @@ button{
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 <h2>التشييك اليومي</h2>
 
-<input id="d_coach" placeholder="اسم المدرب *">
+<label>اسم المدرب *</label>
+<input id="d_coach">
+
+<label>التاريخ والوقت</label>
 <input id="d_time" readonly>
 
+<label>مناطق التشييك *</label>
 <div id="areas">
   <div class="area-row"><input type="checkbox" value="Dumbbells & Bars"><span>الدمبلز والبارات</span></div>
   <div class="area-row"><input type="checkbox" value="Accessories"><span>الاكسسوارات</span></div>
@@ -88,7 +121,9 @@ button{
   <div class="area-row"><input type="checkbox" value="Coaches Office"><span>مكتب المدربين</span></div>
 </div>
 
-<textarea id="d_notes" placeholder="ملاحظات (اختياري)"></textarea>
+<label>ملاحظات</label>
+<textarea id="d_notes"></textarea>
+
 <button onclick="sendDaily()">إرسال</button>
 </div>
 
@@ -97,22 +132,21 @@ button{
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 <h2>التشييك الدقيق</h2>
 
-<input id="dt_coach" placeholder="اسم المدرب *">
-<input id="dt_branch" placeholder="اسم الفرع *">
-<input id="dt_time" readonly>
+<label>اسم المدرب *</label>
+<input id="dt_coach">
 
+<label>اسم الفرع *</label>
+<input id="dt_branch">
+
+<label>حالة الأجهزة *</label>
 <select id="dt_status" onchange="toggleMaintenance()">
-  <option value="">حالة الأجهزة *</option>
+  <option value="">-- اختر --</option>
   <option value="جيدة">جيدة</option>
   <option value="يوجد صيانة">يوجد صيانة</option>
 </select>
 
-<div id="maintenanceFields" style="display:none">
-  <input id="dt_device" placeholder="اسم الجهاز *">
-  <input id="dt_serial" placeholder="رقم السيريال *">
-  <input id="dt_order" placeholder="رقم الطلب *">
-  <textarea id="dt_issue" placeholder="شرح العطل *"></textarea>
-</div>
+<div id="devices"></div>
+<button class="small" onclick="addDevice()">➕ إضافة جهاز</button>
 
 <button onclick="sendDetailed()">إرسال</button>
 </div>
@@ -122,12 +156,14 @@ button{
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 <h2>العملاء المرشحين</h2>
 
-<input id="l_coach" placeholder="اسم المدرب *">
-<input id="l_branch" placeholder="اسم الفرع *">
-<input id="l_time" readonly>
+<label>اسم المدرب *</label>
+<input id="l_coach">
 
-<input id="l_name" placeholder="اسم العميل *">
-<input id="l_phone" placeholder="رقم الجوال *">
+<label>اسم الفرع *</label>
+<input id="l_branch">
+
+<div id="leadList"></div>
+<button class="small" onclick="addLead()">➕ إضافة عميل</button>
 
 <button onclick="sendLeads()">إرسال</button>
 </div>
@@ -140,7 +176,7 @@ button{
 
 <script>
 function now(){return new Date().toLocaleString()}
-d_time.value=dt_time.value=l_time.value=now()
+d_time.value = now()
 
 function openPage(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'))
@@ -155,25 +191,21 @@ function show(type,text){
   setTimeout(()=>{overlay.style.display="none";goHome()},1800)
 }
 
-/* DAILY – الطريقة الصحيحة للـ Checkboxes */
+/* DAILY */
 function sendDaily(){
   const coach=d_coach.value.trim()
   const notes=d_notes.value.trim()||"لا يوجد"
   const areas=[...document.querySelectorAll("#areas input:checked")].map(x=>x.value)
+  if(!coach||areas.length===0){show("error","❌ قم بإدخال كافة البيانات");return}
 
-  if(!coach||areas.length===0){
-    show("error","❌ قم بإدخال كافة البيانات");return
-  }
+  const fd=new URLSearchParams()
+  fd.append("entry.1598276908",coach)
+  fd.append("entry.670685014",now())
+  areas.forEach(a=>fd.append("entry.793034521",a))
+  fd.append("entry.987129842",notes)
 
-  const formData=new URLSearchParams()
-  formData.append("entry.1598276908",coach)
-  formData.append("entry.670685014",now())
-  areas.forEach(a=>formData.append("entry.793034521",a))
-  formData.append("entry.987129842",notes)
-
-  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",{
-    method:"POST",mode:"no-cors",body:formData
-  })
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",
+    {method:"POST",mode:"no-cors",body:fd})
 
   d_coach.value="";d_notes.value=""
   document.querySelectorAll("#areas input").forEach(x=>x.checked=false)
@@ -182,8 +214,21 @@ function sendDaily(){
 
 /* DETAILED */
 function toggleMaintenance(){
-  maintenanceFields.style.display =
-    dt_status.value==="يوجد صيانة" ? "block" : "none"
+  devices.innerHTML=""
+  if(dt_status.value==="يوجد صيانة") addDevice()
+}
+
+function addDevice(){
+  const d=document.createElement("div")
+  d.className="device-box"
+  d.innerHTML=`
+    <label>اسم الجهاز *</label><input class="dev_name">
+    <label>رقم السيريال *</label><input class="dev_serial">
+    <label>رقم الطلب *</label><input class="dev_order">
+    <label>شرح العطل *</label><textarea class="dev_issue"></textarea>
+    <button class="small" onclick="this.parentElement.remove()">🗑 حذف الجهاز</button>
+  `
+  devices.appendChild(d)
 }
 
 function sendDetailed(){
@@ -191,50 +236,84 @@ function sendDetailed(){
     show("error","❌ قم بإدخال كافة البيانات");return
   }
 
-  if(dt_status.value==="يوجد صيانة"){
-    if(!dt_device.value||!dt_serial.value||!dt_order.value||!dt_issue.value){
-      show("error","❌ أكمل بيانات الصيانة");return
+  if(dt_status.value==="جيدة"){
+    postDetailed("","","","")
+  }else{
+    const boxes=[...document.querySelectorAll(".device-box")]
+    if(boxes.length===0){show("error","❌ أضف جهاز واحد على الأقل");return}
+
+    for(const b of boxes){
+      const n=b.querySelector(".dev_name").value
+      const s=b.querySelector(".dev_serial").value
+      const o=b.querySelector(".dev_order").value
+      const i=b.querySelector(".dev_issue").value
+      if(!n||!s||!o||!i){show("error","❌ أكمل بيانات الصيانة");return}
+      postDetailed(n,s,o,i)
     }
   }
 
-  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/formResponse",{
-    method:"POST",mode:"no-cors",
-    body:new URLSearchParams({
-      "entry.1110574157":dt_coach.value,
-      "entry.225813099":dt_branch.value,
-      "entry.472300684":now(),
-      "entry.1420106518":dt_status.value,
-      "entry.1117457821":dt_device.value||"",
-      "entry.1076673732":dt_serial.value||"",
-      "entry.1452213865":dt_order.value||"",
-      "entry.1904231182":dt_issue.value||""
-    })
-  })
-
   dt_coach.value=dt_branch.value=dt_status.value=""
-  dt_device.value=dt_serial.value=dt_order.value=dt_issue.value=""
-  maintenanceFields.style.display="none"
+  devices.innerHTML=""
   show("success","✅ تم الإرسال")
 }
 
+function postDetailed(name,serial,order,issue){
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/formResponse",
+    {
+      method:"POST",mode:"no-cors",
+      body:new URLSearchParams({
+        "entry.1110574157":dt_coach.value,
+        "entry.225813099":dt_branch.value,
+        "entry.472300684":now(),
+        "entry.1420106518":dt_status.value,
+        "entry.1117457821":name||"—",
+        "entry.1076673732":serial||"—",
+        "entry.1452213865":order||"—",
+        "entry.1904231182":issue||"—"
+      })
+    })
+}
+
 /* LEADS */
+function addLead(){
+  const l=document.createElement("div")
+  l.className="lead-box"
+  l.innerHTML=`
+    <label>اسم العميل *</label><input class="lead_name">
+    <label>رقم الجوال *</label><input class="lead_phone">
+    <button class="small" onclick="this.parentElement.remove()">🗑 حذف العميل</button>
+  `
+  leadList.appendChild(l)
+}
+
 function sendLeads(){
-  if(!l_coach.value||!l_branch.value||!l_name.value||!l_phone.value){
+  if(!l_coach.value||!l_branch.value){
     show("error","❌ قم بإدخال كافة البيانات");return
   }
 
-  fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",{
-    method:"POST",mode:"no-cors",
-    body:new URLSearchParams({
-      "entry.1803783309":l_coach.value,
-      "entry.1531832061":l_branch.value,
-      "entry.1038119858":now(),
-      "entry.634489457":l_name.value,
-      "entry.2087664957":l_phone.value
-    })
-  })
+  const leads=[...document.querySelectorAll(".lead-box")]
+  if(leads.length===0){show("error","❌ أضف عميل واحد على الأقل");return}
 
-  l_coach.value=l_branch.value=l_name.value=l_phone.value=""
+  for(const l of leads){
+    const n=l.querySelector(".lead_name").value
+    const p=l.querySelector(".lead_phone").value
+    if(!n||!p){show("error","❌ أكمل بيانات العملاء");return}
+
+    fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",
+      {
+        method:"POST",mode:"no-cors",
+        body:new URLSearchParams({
+          "entry.1803783309":l_coach.value,
+          "entry.1531832061":l_branch.value,
+          "entry.1038119858":now(),
+          "entry.634489457":n,
+          "entry.2087664957":p
+        })
+      })
+  }
+
+  l_coach.value=l_branch.value=""
+  leadList.innerHTML=""
   show("success","✅ تم الإرسال")
 }
 </script>
