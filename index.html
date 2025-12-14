@@ -13,11 +13,18 @@ header{background:var(--red);color:#fff;text-align:center;padding:18px;font-size
 .page{display:none}
 .page.active{display:block}
 
+/* 🔴 الصفحة الرئيسية */
 .card{
-  background:#fff;border-radius:14px;
-  padding:20px;margin-bottom:15px;
-  box-shadow:0 4px 10px rgba(0,0,0,.1);
-  cursor:pointer;font-size:20px
+  background:var(--red);
+  color:#fff;
+  border-radius:14px;
+  padding:20px;
+  margin-bottom:15px;
+  box-shadow:0 4px 10px rgba(0,0,0,.15);
+  cursor:pointer;
+  font-size:22px;
+  text-align:center;
+  font-weight:bold
 }
 
 input,textarea,select{
@@ -40,6 +47,19 @@ button{
   padding:10px 0;
   border-bottom:1px solid #eee;
   font-size:18px
+}
+
+.add-btn{
+  background:#444;
+  margin-bottom:10px;
+  font-size:16px
+}
+
+.lead-box{
+  border:1px dashed #ccc;
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:10px
 }
 
 .overlay{
@@ -70,7 +90,7 @@ button{
   <div class="card" onclick="openPage('leads')">العملاء المرشحين</div>
 </div>
 
-<!-- DAILY -->
+<!-- DAILY (كما هو) -->
 <div class="page" id="daily">
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 <h2>التشييك اليومي</h2>
@@ -92,7 +112,7 @@ button{
 <button onclick="sendDaily()">إرسال</button>
 </div>
 
-<!-- DETAILED -->
+<!-- DETAILED (كما هو) -->
 <div class="page" id="detailed">
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 <h2>التشييك الدقيق</h2>
@@ -117,7 +137,7 @@ button{
 <button onclick="sendDetailed()">إرسال</button>
 </div>
 
-<!-- LEADS -->
+<!-- LEADS (تمت الإضافة هنا فقط) -->
 <div class="page" id="leads">
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 <h2>العملاء المرشحين</h2>
@@ -126,9 +146,9 @@ button{
 <input id="l_branch" placeholder="اسم الفرع *">
 <input id="l_time" readonly>
 
-<input id="l_name" placeholder="اسم العميل *">
-<input id="l_phone" placeholder="رقم الجوال *">
+<div id="leadsContainer"></div>
 
+<button class="add-btn" onclick="addLead()">➕ إضافة عميل</button>
 <button onclick="sendLeads()">إرسال</button>
 </div>
 
@@ -155,7 +175,7 @@ function show(type,text){
   setTimeout(()=>{overlay.style.display="none";goHome()},1800)
 }
 
-/* DAILY – الطريقة الصحيحة للـ Checkboxes */
+/* DAILY – بدون تغيير */
 function sendDaily(){
   const coach=d_coach.value.trim()
   const notes=d_notes.value.trim()||"لا يوجد"
@@ -180,7 +200,7 @@ function sendDaily(){
   show("success","✅ تم الإرسال")
 }
 
-/* DETAILED */
+/* DETAILED – بدون تغيير */
 function toggleMaintenance(){
   maintenanceFields.style.display =
     dt_status.value==="يوجد صيانة" ? "block" : "none"
@@ -217,24 +237,46 @@ function sendDetailed(){
   show("success","✅ تم الإرسال")
 }
 
-/* LEADS */
+/* LEADS – إضافة + */
+function addLead(){
+  const box=document.createElement("div")
+  box.className="lead-box"
+  box.innerHTML=`
+    <input class="l_name" placeholder="اسم العميل *">
+    <input class="l_phone" placeholder="رقم الجوال *">
+  `
+  leadsContainer.appendChild(box)
+}
+addLead()
+
 function sendLeads(){
-  if(!l_coach.value||!l_branch.value||!l_name.value||!l_phone.value){
+  if(!l_coach.value||!l_branch.value){
     show("error","❌ قم بإدخال كافة البيانات");return
   }
 
-  fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",{
-    method:"POST",mode:"no-cors",
-    body:new URLSearchParams({
-      "entry.1803783309":l_coach.value,
-      "entry.1531832061":l_branch.value,
-      "entry.1038119858":now(),
-      "entry.634489457":l_name.value,
-      "entry.2087664957":l_phone.value
-    })
-  })
+  const boxes=[...document.querySelectorAll(".lead-box")]
+  for(const b of boxes){
+    const name=b.querySelector(".l_name").value
+    const phone=b.querySelector(".l_phone").value
+    if(!name||!phone){
+      show("error","❌ قم بإدخال كافة البيانات");return
+    }
 
-  l_coach.value=l_branch.value=l_name.value=l_phone.value=""
+    fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",{
+      method:"POST",mode:"no-cors",
+      body:new URLSearchParams({
+        "entry.1803783309":l_coach.value,
+        "entry.1531832061":l_branch.value,
+        "entry.1038119858":now(),
+        "entry.634489457":name,
+        "entry.2087664957":phone
+      })
+    })
+  }
+
+  l_coach.value=l_branch.value=""
+  leadsContainer.innerHTML=""
+  addLead()
   show("success","✅ تم الإرسال")
 }
 </script>
