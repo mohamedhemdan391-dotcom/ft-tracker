@@ -13,7 +13,6 @@ header{background:var(--red);color:#fff;text-align:center;padding:18px;font-size
 .page{display:none}
 .page.active{display:block}
 
-/* 🔴 الصفحة الرئيسية */
 .card{
   background:var(--red);
   color:#fff;
@@ -49,19 +48,6 @@ button{
   font-size:18px
 }
 
-.add-btn{
-  background:#444;
-  margin-bottom:10px;
-  font-size:16px
-}
-
-.lead-box{
-  border:1px dashed #ccc;
-  padding:12px;
-  border-radius:12px;
-  margin-bottom:10px
-}
-
 .overlay{
   position:fixed;inset:0;
   background:rgba(0,0,0,.6);
@@ -90,7 +76,7 @@ button{
   <div class="card" onclick="openPage('leads')">العملاء المرشحين</div>
 </div>
 
-<!-- DAILY (كما هو) -->
+<!-- DAILY -->
 <div class="page" id="daily">
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 <h2>التشييك اليومي</h2>
@@ -112,7 +98,7 @@ button{
 <button onclick="sendDaily()">إرسال</button>
 </div>
 
-<!-- DETAILED (كما هو) -->
+<!-- DETAILED -->
 <div class="page" id="detailed">
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 <h2>التشييك الدقيق</h2>
@@ -137,7 +123,7 @@ button{
 <button onclick="sendDetailed()">إرسال</button>
 </div>
 
-<!-- LEADS (تمت الإضافة هنا فقط) -->
+<!-- LEADS -->
 <div class="page" id="leads">
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 <h2>العملاء المرشحين</h2>
@@ -146,9 +132,9 @@ button{
 <input id="l_branch" placeholder="اسم الفرع *">
 <input id="l_time" readonly>
 
-<div id="leadsContainer"></div>
+<input id="l_name" placeholder="اسم العميل *">
+<input id="l_phone" placeholder="رقم الجوال *">
 
-<button class="add-btn" onclick="addLead()">➕ إضافة عميل</button>
 <button onclick="sendLeads()">إرسال</button>
 </div>
 
@@ -175,7 +161,7 @@ function show(type,text){
   setTimeout(()=>{overlay.style.display="none";goHome()},1800)
 }
 
-/* DAILY – بدون تغيير */
+/* DAILY */
 function sendDaily(){
   const coach=d_coach.value.trim()
   const notes=d_notes.value.trim()||"لا يوجد"
@@ -200,7 +186,7 @@ function sendDaily(){
   show("success","✅ تم الإرسال")
 }
 
-/* DETAILED – بدون تغيير */
+/* DETAILED – التعديل الوحيد هنا */
 function toggleMaintenance(){
   maintenanceFields.style.display =
     dt_status.value==="يوجد صيانة" ? "block" : "none"
@@ -211,10 +197,19 @@ function sendDetailed(){
     show("error","❌ قم بإدخال كافة البيانات");return
   }
 
+  let device="لا يوجد";
+  let serial="لا يوجد";
+  let order="لا يوجد";
+  let issue="لا يوجد";
+
   if(dt_status.value==="يوجد صيانة"){
     if(!dt_device.value||!dt_serial.value||!dt_order.value||!dt_issue.value){
       show("error","❌ أكمل بيانات الصيانة");return
     }
+    device=dt_device.value.trim();
+    serial=dt_serial.value.trim();
+    order=dt_order.value.trim();
+    issue=dt_issue.value.trim();
   }
 
   fetch("https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/formResponse",{
@@ -224,10 +219,10 @@ function sendDetailed(){
       "entry.225813099":dt_branch.value,
       "entry.472300684":now(),
       "entry.1420106518":dt_status.value,
-      "entry.1117457821":dt_device.value||"",
-      "entry.1076673732":dt_serial.value||"",
-      "entry.1452213865":dt_order.value||"",
-      "entry.1904231182":dt_issue.value||""
+      "entry.1131993998":device,
+      "entry.1894843047":serial,
+      "entry.971797645":order,
+      "entry.95041345":issue
     })
   })
 
@@ -237,46 +232,24 @@ function sendDetailed(){
   show("success","✅ تم الإرسال")
 }
 
-/* LEADS – إضافة + */
-function addLead(){
-  const box=document.createElement("div")
-  box.className="lead-box"
-  box.innerHTML=`
-    <input class="l_name" placeholder="اسم العميل *">
-    <input class="l_phone" placeholder="رقم الجوال *">
-  `
-  leadsContainer.appendChild(box)
-}
-addLead()
-
+/* LEADS */
 function sendLeads(){
-  if(!l_coach.value||!l_branch.value){
+  if(!l_coach.value||!l_branch.value||!l_name.value||!l_phone.value){
     show("error","❌ قم بإدخال كافة البيانات");return
   }
 
-  const boxes=[...document.querySelectorAll(".lead-box")]
-  for(const b of boxes){
-    const name=b.querySelector(".l_name").value
-    const phone=b.querySelector(".l_phone").value
-    if(!name||!phone){
-      show("error","❌ قم بإدخال كافة البيانات");return
-    }
-
-    fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",{
-      method:"POST",mode:"no-cors",
-      body:new URLSearchParams({
-        "entry.1803783309":l_coach.value,
-        "entry.1531832061":l_branch.value,
-        "entry.1038119858":now(),
-        "entry.634489457":name,
-        "entry.2087664957":phone
-      })
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",{
+    method:"POST",mode:"no-cors",
+    body:new URLSearchParams({
+      "entry.1803783309":l_coach.value,
+      "entry.1531832061":l_branch.value,
+      "entry.1038119858":now(),
+      "entry.634489457":l_name.value,
+      "entry.2087664957":l_phone.value
     })
-  }
+  })
 
-  l_coach.value=l_branch.value=""
-  leadsContainer.innerHTML=""
-  addLead()
+  l_coach.value=l_branch.value=l_name.value=l_phone.value=""
   show("success","✅ تم الإرسال")
 }
 </script>
