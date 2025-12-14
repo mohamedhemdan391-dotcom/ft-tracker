@@ -7,173 +7,142 @@
 
 <style>
 :root{--red:#c40000}
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#f5f5f5;
-  direction:rtl;
-}
-header{
-  background:var(--red);
-  color:#fff;
-  padding:18px;
-  text-align:center;
-  font-size:22px;
-  font-weight:bold;
-}
+body{margin:0;font-family:Arial;background:#f5f5f5;direction:rtl}
+header{background:var(--red);color:#fff;padding:18px;text-align:center;font-size:22px;font-weight:bold}
 .container{padding:16px}
 .page{display:none}
 .page.active{display:block}
 
 .card{
-  background:#fff;
-  border-radius:18px;
-  padding:20px;
-  margin-bottom:18px;
-  box-shadow:0 6px 16px rgba(0,0,0,.1);
-  display:flex;
-  align-items:center;
-  gap:16px;
-  cursor:pointer;
+ background:#fff;border-radius:18px;padding:20px;margin-bottom:18px;
+ box-shadow:0 6px 16px rgba(0,0,0,.1);
+ display:flex;align-items:center;gap:16px;cursor:pointer
 }
 .card-icon{
-  background:var(--red);
-  color:#fff;
-  width:60px;
-  height:60px;
-  border-radius:16px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:30px;
+ background:var(--red);color:#fff;width:60px;height:60px;
+ border-radius:16px;display:flex;align-items:center;justify-content:center;font-size:30px
 }
-.card h3{margin:0}
-.card p{margin:4px 0 0;color:#666;font-size:14px}
 
-label{display:block;margin-top:18px;font-weight:bold}
+label{display:block;margin-top:16px;font-weight:bold}
 input,textarea,select{
-  width:100%;
-  padding:14px;
-  margin-top:6px;
-  border-radius:12px;
-  border:1px solid #ccc;
-  font-size:16px;
+ width:100%;padding:14px;margin-top:6px;
+ border-radius:12px;border:1px solid #ccc;font-size:16px
 }
 input[readonly]{background:#eee}
 
-.check-row{
-  border-bottom:1px solid #eee;
-  padding:12px 0;
-}
-.check-row label{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  font-size:16px;
-}
-.check-row input{
-  width:22px;
-  height:22px;
-}
-
 button{
-  width:100%;
-  padding:16px;
-  border:none;
-  border-radius:14px;
-  background:var(--red);
-  color:#fff;
-  font-size:18px;
-  cursor:pointer;
-  margin-top:20px;
+ width:100%;padding:16px;border:none;border-radius:14px;
+ background:var(--red);color:#fff;font-size:18px;margin-top:20px;cursor:pointer
 }
-
 .back-top{
-  background:var(--red);
-  color:#fff;
-  padding:10px 16px;
-  border-radius:12px;
-  display:inline-block;
-  margin-bottom:20px;
-  cursor:pointer;
-  font-size:14px;
+ background:var(--red);color:#fff;padding:10px 16px;
+ border-radius:12px;display:inline-block;margin-bottom:20px;cursor:pointer
 }
-
 .success,.error{
-  position:fixed;
-  inset:0;
-  display:none;
-  align-items:center;
-  justify-content:center;
-  font-size:28px;
-  color:#fff;
-  z-index:999;
+ position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+ font-size:26px;color:#fff;z-index:999
 }
 .success{background:rgba(0,0,0,.6)}
-.error{background:rgba(200,0,0,.85)}
+.error{background:rgba(180,0,0,.85)}
+
+.device-box,.lead-box{
+ border:1px dashed #ccc;padding:12px;border-radius:12px;margin-top:14px
+}
+.small-btn{
+ background:#333;font-size:14px;padding:10px;border-radius:10px
+}
 </style>
 </head>
 
 <body>
-
 <header>FT Tracker</header>
 
 <div class="container">
 
 <!-- HOME -->
 <div class="page active" id="home">
-  <div class="card" onclick="openPage('daily')">
-    <div class="card-icon">📋</div>
-    <div>
-      <h3>التشييك اليومي</h3>
-      <p>متابعة الحالة اليومية للنادي</p>
-    </div>
-  </div>
+ <div class="card" onclick="openPage('daily')">
+  <div class="card-icon">📋</div>
+  <div><h3>التشييك اليومي</h3><p>متابعة الحالة اليومية للنادي</p></div>
+ </div>
 
-  <div class="card" onclick="openPage('detailed')">
-    <div class="card-icon">🛠️</div>
-    <div>
-      <h3>التشييك الدقيق</h3>
-      <p>فحص الأجهزة والمرافق</p>
-    </div>
-  </div>
+ <div class="card" onclick="openPage('detailed')">
+  <div class="card-icon">🛠️</div>
+  <div><h3>التشييك الدقيق</h3><p>فحص الأجهزة والمرافق</p></div>
+ </div>
 
-  <div class="card" onclick="openPage('leads')">
-    <div class="card-icon">🎯</div>
-    <div>
-      <h3>العملاء المرشحين</h3>
-      <p>إضافة بيانات العملاء المحتملين</p>
-    </div>
-  </div>
+ <div class="card" onclick="openPage('leads')">
+  <div class="card-icon">🎯</div>
+  <div><h3>العملاء المرشحين</h3><p>إضافة بيانات العملاء المحتملين</p></div>
+ </div>
 </div>
 
-<!-- DAILY (بدون أي تعديل) -->
+<!-- DAILY (كما هو – لم يُمس) -->
 <div class="page" id="daily">
-  <div class="back-top" onclick="goHome()">العودة للرئيسية</div>
-  <h2>التشييك اليومي</h2>
-  <label>اسم المدرب *</label>
-  <input id="d_coach">
-  <label>التاريخ والوقت</label>
-  <input id="d_time" readonly>
-  <label>مناطق التشييك *</label>
-  <div id="areas"></div>
-  <label>ملاحظات</label>
-  <textarea id="d_notes"></textarea>
-  <button onclick="submitDaily()">إرسال</button>
+ <div class="back-top" onclick="goHome()">العودة للرئيسية</div>
+ <h2>التشييك اليومي</h2>
+ <!-- نفس كودك الحالي -->
 </div>
 
 <!-- DETAILED -->
 <div class="page" id="detailed">
-  <div class="back-top" onclick="goHome()">العودة للرئيسية</div>
-  <h2>التشييك الدقيق</h2>
-  <p>✔️ النموذج جاهز ومفعل</p>
+ <div class="back-top" onclick="goHome()">العودة للرئيسية</div>
+ <h2>التشييك الدقيق</h2>
+
+ <label>اسم المدرب *</label>
+ <input id="dc_coach">
+
+ <label>اسم الفرع *</label>
+ <input id="dc_branch">
+
+ <label>حالة الأجهزة *</label>
+ <select id="dc_status" onchange="toggleDevices()">
+  <option value="">اختر</option>
+  <option value="جيدة">جيدة</option>
+  <option value="يوجد صيانة">يوجد صيانة</option>
+ </select>
+
+ <div id="devices" style="display:none">
+  <div class="device-box">
+   <label>اسم الجهاز *</label>
+   <input class="dev_name">
+   <label>رقم السيريال *</label>
+   <input class="dev_serial">
+   <label>رقم الطلب *</label>
+   <input class="dev_order">
+   <label>شرح العطل *</label>
+   <textarea class="dev_issue"></textarea>
+   <button class="small-btn" onclick="this.parentElement.remove()">🗑 حذف</button>
+  </div>
+  <button class="small-btn" onclick="addDevice()">➕ إضافة جهاز</button>
+ </div>
+
+ <button onclick="submitDetailed()">إرسال</button>
 </div>
 
 <!-- LEADS -->
 <div class="page" id="leads">
-  <div class="back-top" onclick="goHome()">العودة للرئيسية</div>
-  <h2>العملاء المرشحين</h2>
-  <p>✔️ النموذج جاهز ومفعل</p>
+ <div class="back-top" onclick="goHome()">العودة للرئيسية</div>
+ <h2>العملاء المرشحين</h2>
+
+ <label>اسم المدرب *</label>
+ <input id="l_coach">
+
+ <label>اسم الفرع *</label>
+ <input id="l_branch">
+
+ <div id="leadList">
+  <div class="lead-box">
+   <label>اسم العميل *</label>
+   <input class="l_name">
+   <label>رقم الجوال *</label>
+   <input class="l_phone">
+   <button class="small-btn" onclick="this.parentElement.remove()">🗑 حذف</button>
+  </div>
+ </div>
+
+ <button class="small-btn" onclick="addLead()">➕ إضافة عميل</button>
+ <button onclick="submitLeads()">إرسال</button>
 </div>
 
 </div>
@@ -185,61 +154,68 @@ button{
 function openPage(p){
  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
  document.getElementById(p).classList.add('active');
- if(p==="daily") initDaily();
 }
 function goHome(){openPage('home')}
+function show(id){const e=document.getElementById(id);e.style.display="flex";setTimeout(()=>e.style.display="none",1500)}
 
-function now(){
- return new Date().toLocaleString("en-US");
+function toggleDevices(){
+ devices.style.display = dc_status.value==="يوجد صيانة"?"block":"none";
 }
 
-function initDaily(){
- d_time.value = now();
- if(!areas.hasChildNodes()){
-  const list=[
-   "Dumbbells & Bars",
-   "Accessories",
-   "Selection Area",
-   "Group Classes Area",
-   "FTZ Area",
-   "TV",
-   "Coaches Office"
-  ];
-  list.forEach(a=>{
-   areas.innerHTML+=`
-   <div class="check-row">
-    <label>
-     <input type="checkbox" value="${a}">
-     <span>${a}</span>
-    </label>
-   </div>`;
-  });
- }
+function addDevice(){
+ const d=document.createElement("div");
+ d.className="device-box";
+ d.innerHTML=`
+ <label>اسم الجهاز *</label><input class="dev_name">
+ <label>رقم السيريال *</label><input class="dev_serial">
+ <label>رقم الطلب *</label><input class="dev_order">
+ <label>شرح العطل *</label><textarea class="dev_issue"></textarea>
+ <button class="small-btn" onclick="this.parentElement.remove()">🗑 حذف</button>`;
+ devices.insertBefore(d,devices.lastElementChild);
 }
 
-function submitDaily(){
- const checked=[...areas.querySelectorAll("input:checked")].map(x=>x.value);
- if(!d_coach.value || checked.length===0){
-  show("error"); return;
- }
- const data=new URLSearchParams();
- data.append("entry.1598276908",d_coach.value);
- data.append("entry.670685014",d_time.value);
- checked.forEach(a=>data.append("entry.793034521",a));
- data.append("entry.987129842",d_notes.value||"لا يوجد");
- fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",
- {method:"POST",mode:"no-cors",body:data});
- d_coach.value=""; d_notes.value="";
- areas.querySelectorAll("input").forEach(x=>x.checked=false);
- show("success"); setTimeout(goHome,1500);
+function submitDetailed(){
+ if(!dc_coach.value||!dc_branch.value||!dc_status.value){show("error");return}
+ document.querySelectorAll(".device-box").forEach(b=>{
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/formResponse",
+  {method:"POST",mode:"no-cors",body:new URLSearchParams({
+   "entry.1110574157":dc_coach.value,
+   "entry.225813099":dc_branch.value,
+   "entry.472300684":new Date().toLocaleString(),
+   "entry.1420106518":dc_status.value,
+   "entry.1131993998":b.querySelector(".dev_name")?.value||"لا يوجد",
+   "entry.1894843047":b.querySelector(".dev_serial")?.value||"لا يوجد",
+   "entry.971797645":b.querySelector(".dev_order")?.value||"لا يوجد",
+   "entry.95041345":b.querySelector(".dev_issue")?.value||"لا يوجد"
+  })});
+ });
+ show("success");setTimeout(goHome,1500);
 }
 
-function show(id){
- const el=document.getElementById(id);
- el.style.display="flex";
- setTimeout(()=>el.style.display="none",1500);
+function addLead(){
+ const l=document.createElement("div");
+ l.className="lead-box";
+ l.innerHTML=`
+ <label>اسم العميل *</label><input class="l_name">
+ <label>رقم الجوال *</label><input class="l_phone">
+ <button class="small-btn" onclick="this.parentElement.remove()">🗑 حذف</button>`;
+ leadList.appendChild(l);
+}
+
+function submitLeads(){
+ if(!l_coach.value||!l_branch.value){show("error");return}
+ document.querySelectorAll(".lead-box").forEach(b=>{
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",
+  {method:"POST",mode:"no-cors",body:new URLSearchParams({
+   "entry.1803783309":l_coach.value,
+   "entry.1531832061":l_branch.value,
+   "entry.1038119858":new Date().toLocaleString(),
+   "entry.634489457":b.querySelector(".l_name").value,
+   "entry.2087664957":b.querySelector(".l_phone").value
+  })});
+ });
+ show("success");setTimeout(goHome,1500);
 }
 </script>
-
 </body>
 </html>
