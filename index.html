@@ -48,6 +48,26 @@ button{
   font-size:18px
 }
 
+/* Leads */
+.lead-box{
+  border:1px dashed #ccc;
+  padding:12px;
+  border-radius:12px;
+  margin-bottom:10px
+}
+.lead-actions{
+  display:flex;
+  gap:10px;
+}
+.lead-actions button{
+  flex:1;
+  font-size:14px;
+  padding:10px;
+}
+.add-btn{
+  background:#555;
+}
+
 .overlay{
   position:fixed;inset:0;
   background:rgba(0,0,0,.6);
@@ -123,7 +143,7 @@ button{
 <button onclick="sendDetailed()">إرسال</button>
 </div>
 
-<!-- LEADS -->
+<!-- LEADS (التعديل الوحيد هنا) -->
 <div class="page" id="leads">
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 <h2>العملاء المرشحين</h2>
@@ -132,9 +152,9 @@ button{
 <input id="l_branch" placeholder="اسم الفرع *">
 <input id="l_time" readonly>
 
-<input id="l_name" placeholder="اسم العميل *">
-<input id="l_phone" placeholder="رقم الجوال *">
+<div id="leadsContainer"></div>
 
+<button class="add-btn" onclick="addLead()">➕ إضافة عميل</button>
 <button onclick="sendLeads()">إرسال</button>
 </div>
 
@@ -186,7 +206,7 @@ function sendDaily(){
   show("success","✅ تم الإرسال")
 }
 
-/* DETAILED – التعديل الوحيد هنا */
+/* DETAILED */
 function toggleMaintenance(){
   maintenanceFields.style.display =
     dt_status.value==="يوجد صيانة" ? "block" : "none"
@@ -197,19 +217,16 @@ function sendDetailed(){
     show("error","❌ قم بإدخال كافة البيانات");return
   }
 
-  let device="لا يوجد";
-  let serial="لا يوجد";
-  let order="لا يوجد";
-  let issue="لا يوجد";
+  let device="لا يوجد",serial="لا يوجد",order="لا يوجد",issue="لا يوجد"
 
   if(dt_status.value==="يوجد صيانة"){
     if(!dt_device.value||!dt_serial.value||!dt_order.value||!dt_issue.value){
       show("error","❌ أكمل بيانات الصيانة");return
     }
-    device=dt_device.value.trim();
-    serial=dt_serial.value.trim();
-    order=dt_order.value.trim();
-    issue=dt_issue.value.trim();
+    device=dt_device.value.trim()
+    serial=dt_serial.value.trim()
+    order=dt_order.value.trim()
+    issue=dt_issue.value.trim()
   }
 
   fetch("https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/formResponse",{
@@ -232,24 +249,49 @@ function sendDetailed(){
   show("success","✅ تم الإرسال")
 }
 
-/* LEADS */
+/* LEADS – إضافة + وحذف فقط */
+function addLead(){
+  const box=document.createElement("div")
+  box.className="lead-box"
+  box.innerHTML=`
+    <input class="l_name" placeholder="اسم العميل *">
+    <input class="l_phone" placeholder="رقم الجوال *">
+    <div class="lead-actions">
+      <button onclick="this.parentElement.parentElement.remove()">🗑 حذف</button>
+    </div>
+  `
+  leadsContainer.appendChild(box)
+}
+addLead()
+
 function sendLeads(){
-  if(!l_coach.value||!l_branch.value||!l_name.value||!l_phone.value){
+  if(!l_coach.value||!l_branch.value){
     show("error","❌ قم بإدخال كافة البيانات");return
   }
 
-  fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",{
-    method:"POST",mode:"no-cors",
-    body:new URLSearchParams({
-      "entry.1803783309":l_coach.value,
-      "entry.1531832061":l_branch.value,
-      "entry.1038119858":now(),
-      "entry.634489457":l_name.value,
-      "entry.2087664957":l_phone.value
-    })
-  })
+  const boxes=[...document.querySelectorAll(".lead-box")]
+  for(const b of boxes){
+    const name=b.querySelector(".l_name").value
+    const phone=b.querySelector(".l_phone").value
+    if(!name||!phone){
+      show("error","❌ قم بإدخال كافة البيانات");return
+    }
 
-  l_coach.value=l_branch.value=l_name.value=l_phone.value=""
+    fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",{
+      method:"POST",mode:"no-cors",
+      body:new URLSearchParams({
+        "entry.1803783309":l_coach.value,
+        "entry.1531832061":l_branch.value,
+        "entry.1038119858":now(),
+        "entry.634489457":name,
+        "entry.2087664957":phone
+      })
+    })
+  }
+
+  l_coach.value=l_branch.value=""
+  leadsContainer.innerHTML=""
+  addLead()
   show("success","✅ تم الإرسال")
 }
 </script>
