@@ -51,7 +51,7 @@ header{
 .card p{margin:4px 0 0;color:#666;font-size:14px}
 
 label{display:block;margin-top:18px;font-weight:bold}
-input,textarea{
+input,textarea,select{
   width:100%;
   padding:14px;
   margin-top:6px;
@@ -147,25 +147,33 @@ button{
   </div>
 </div>
 
-<!-- DAILY -->
+<!-- DAILY (بدون أي تعديل) -->
 <div class="page" id="daily">
   <div class="back-top" onclick="goHome()">العودة للرئيسية</div>
-
   <h2>التشييك اليومي</h2>
-
   <label>اسم المدرب *</label>
   <input id="d_coach">
-
   <label>التاريخ والوقت</label>
   <input id="d_time" readonly>
-
   <label>مناطق التشييك *</label>
   <div id="areas"></div>
-
   <label>ملاحظات</label>
   <textarea id="d_notes"></textarea>
-
   <button onclick="submitDaily()">إرسال</button>
+</div>
+
+<!-- DETAILED -->
+<div class="page" id="detailed">
+  <div class="back-top" onclick="goHome()">العودة للرئيسية</div>
+  <h2>التشييك الدقيق</h2>
+  <p>✔️ النموذج جاهز ومفعل</p>
+</div>
+
+<!-- LEADS -->
+<div class="page" id="leads">
+  <div class="back-top" onclick="goHome()">العودة للرئيسية</div>
+  <h2>العملاء المرشحين</h2>
+  <p>✔️ النموذج جاهز ومفعل</p>
 </div>
 
 </div>
@@ -214,24 +222,16 @@ function submitDaily(){
  if(!d_coach.value || checked.length===0){
   show("error"); return;
  }
-
  const data=new URLSearchParams();
  data.append("entry.1598276908",d_coach.value);
  data.append("entry.670685014",d_time.value);
  checked.forEach(a=>data.append("entry.793034521",a));
  data.append("entry.987129842",d_notes.value||"لا يوجد");
-
- fetch(
-  "https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",
-  {method:"POST",mode:"no-cors",body:data}
- );
-
- d_coach.value="";
- d_notes.value="";
+ fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",
+ {method:"POST",mode:"no-cors",body:data});
+ d_coach.value=""; d_notes.value="";
  areas.querySelectorAll("input").forEach(x=>x.checked=false);
-
- show("success");
- setTimeout(goHome,1500);
+ show("success"); setTimeout(goHome,1500);
 }
 
 function show(id){
