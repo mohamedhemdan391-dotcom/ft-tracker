@@ -6,104 +6,56 @@
 <title>FT Tracker</title>
 
 <style>
-:root{
-  --red:#c40000;
-  --light:#fff;
-  --bg:#f5f5f5;
-}
-body{
-  margin:0;
-  font-family: Arial, sans-serif;
-  background:var(--bg);
-}
-header{
-  background:var(--red);
-  color:#fff;
-  padding:18px;
-  text-align:center;
-  font-size:26px;
-  font-weight:bold;
-}
-.container{padding:20px;}
-.page{display:none;}
-.page.active{display:block;}
+:root{--red:#c40000}
+body{margin:0;font-family:Arial;background:#f5f5f5}
+header{background:var(--red);color:#fff;text-align:center;padding:18px;font-size:24px}
+.container{padding:20px}
+.page{display:none}
+.page.active{display:block}
 
 .card{
-  background:#fff;
-  border-radius:16px;
-  padding:20px;
-  margin-bottom:15px;
-  box-shadow:0 4px 10px rgba(0,0,0,.08);
-  cursor:pointer;
-  font-size:20px;
+  background:#fff;border-radius:14px;
+  padding:20px;margin-bottom:15px;
+  box-shadow:0 4px 10px rgba(0,0,0,.1);
+  cursor:pointer;font-size:20px
 }
 
-h2{text-align:center;margin:10px 0 20px;}
-
-input, textarea{
-  width:100%;
-  padding:14px;
-  border-radius:10px;
-  border:1px solid #ccc;
-  font-size:16px;
-  margin-bottom:12px;
+input,textarea,select{
+  width:100%;padding:12px;margin:10px 0;
+  border-radius:10px;border:1px solid #ccc;font-size:16px
 }
 
-textarea{min-height:80px;}
-
-label.req::after{content:" *";color:red;}
-
-.checkbox-group{
-  background:#fff;
-  border-radius:12px;
-  padding:10px;
-  margin-bottom:15px;
+button{
+  width:100%;padding:14px;border:none;
+  border-radius:12px;background:var(--red);
+  color:#fff;font-size:18px;cursor:pointer
 }
-.checkbox-row{
-  display:flex;
-  justify-content:space-between;
+
+.back{background:#b00000;margin-bottom:15px}
+
+.area-row{
+  display:grid;
+  grid-template-columns:30px 1fr;
   align-items:center;
   padding:10px 0;
   border-bottom:1px solid #eee;
-  font-size:18px;
-}
-.checkbox-row:last-child{border-bottom:none;}
-.checkbox-row input{width:20px;height:20px;}
-
-button{
-  width:100%;
-  padding:16px;
-  border:none;
-  border-radius:12px;
-  background:var(--red);
-  color:#fff;
-  font-size:20px;
-  cursor:pointer;
-}
-
-.back{
-  background:#b00000;
-  margin-bottom:15px;
+  font-size:18px
 }
 
 .overlay{
-  position:fixed;
-  inset:0;
+  position:fixed;inset:0;
   background:rgba(0,0,0,.6);
-  display:none;
-  align-items:center;
-  justify-content:center;
-  z-index:999;
+  display:none;align-items:center;justify-content:center;
+  z-index:999
 }
 .msg{
-  background:#fff;
-  padding:30px 40px;
-  border-radius:14px;
-  font-size:22px;
-  text-align:center;
+  background:#fff;padding:30px 40px;
+  border-radius:14px;font-size:22px;text-align:center
 }
-.success{color:#0a8f08;}
-.error{color:#c40000;}
+.success{color:#0a8f08}
+.error{color:#c40000}
+.box{border:1px dashed #ccc;padding:10px;border-radius:10px;margin-bottom:10px}
+.small{background:#666;margin-bottom:10px}
 </style>
 </head>
 
@@ -125,82 +77,146 @@ button{
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 <h2>التشييك اليومي</h2>
 
-<label class="req">اسم المدرب</label>
-<input id="d_coach">
-
-<label>التاريخ والوقت</label>
+<input id="d_coach" placeholder="اسم المدرب *">
 <input id="d_time" readonly>
 
-<label class="req">مناطق التشييك</label>
-<div class="checkbox-group" id="areas">
-  <div class="checkbox-row"><span>الدمبلز والبارات</span><input type="checkbox" value="Dumbbells & Bars"></div>
-  <div class="checkbox-row"><span>الاكسسوارات</span><input type="checkbox" value="Accessories"></div>
-  <div class="checkbox-row"><span>Selection</span><input type="checkbox" value="Selection Area"></div>
-  <div class="checkbox-row"><span>الحصص الجماعية</span><input type="checkbox" value="Group Classes Area"></div>
-  <div class="checkbox-row"><span>FTZ</span><input type="checkbox" value="FTZ Area"></div>
-  <div class="checkbox-row"><span>TV</span><input type="checkbox" value="TV"></div>
-  <div class="checkbox-row"><span>مكتب المدربين</span><input type="checkbox" value="Coaches Office"></div>
+<div id="areas">
+  <div class="area-row"><input type="checkbox" value="Dumbbells & Bars"><span>الدمبلز والبارات</span></div>
+  <div class="area-row"><input type="checkbox" value="Accessories"><span>الاكسسوارات</span></div>
+  <div class="area-row"><input type="checkbox" value="Selection Area"><span>Selection</span></div>
+  <div class="area-row"><input type="checkbox" value="Group Classes Area"><span>الحصص الجماعية</span></div>
+  <div class="area-row"><input type="checkbox" value="FTZ Area"><span>FTZ</span></div>
+  <div class="area-row"><input type="checkbox" value="TV"><span>TV</span></div>
+  <div class="area-row"><input type="checkbox" value="Coaches Office"><span>مكتب المدربين</span></div>
 </div>
 
-<label>ملاحظات</label>
-<textarea id="d_notes"></textarea>
-
+<textarea id="d_notes" placeholder="ملاحظات (اختياري)"></textarea>
 <button onclick="sendDaily()">إرسال</button>
 </div>
 
-<!-- OVERLAY -->
+<!-- DETAILED -->
+<div class="page" id="detailed">
+<button class="back" onclick="goHome()">العودة للرئيسية</button>
+<h2>التشييك الدقيق</h2>
+
+<input id="dt_coach" placeholder="اسم المدرب *">
+<input id="dt_branch" placeholder="اسم الفرع *">
+<input id="dt_time" readonly>
+
+<select id="dt_status">
+  <option value="">حالة الأجهزة *</option>
+  <option value="جيدة">جيدة</option>
+  <option value="يوجد صيانة">يوجد صيانة</option>
+</select>
+
+<input id="dt_device" placeholder="اسم الجهاز">
+<input id="dt_serial" placeholder="رقم السيريال">
+<input id="dt_order" placeholder="رقم الطلب">
+
+<button onclick="sendDetailed()">إرسال</button>
+</div>
+
+<!-- LEADS -->
+<div class="page" id="leads">
+<button class="back" onclick="goHome()">العودة للرئيسية</button>
+<h2>العملاء المرشحين</h2>
+
+<input id="l_coach" placeholder="اسم المدرب *">
+<input id="l_branch" placeholder="اسم الفرع *">
+<input id="l_time" readonly>
+
+<input id="l_name" placeholder="اسم العميل *">
+<input id="l_phone" placeholder="رقم الجوال *">
+
+<button onclick="sendLeads()">إرسال</button>
+</div>
+
+</div>
+
 <div class="overlay" id="overlay">
   <div class="msg" id="msg"></div>
 </div>
 
-</div>
-
 <script>
-function openPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-function goHome(){openPage('home');}
+function now(){return new Date().toLocaleString()}
+d_time.value=dt_time.value=l_time.value=now()
 
-function now(){
-  return new Date().toLocaleString();
+function openPage(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'))
+  document.getElementById(p).classList.add('active')
 }
-d_time.value = now();
+function goHome(){openPage('home')}
 
 function show(type,text){
-  const o=document.getElementById("overlay");
-  const m=document.getElementById("msg");
-  m.className="msg "+type;
-  m.innerHTML=text;
-  o.style.display="flex";
-  setTimeout(()=>{o.style.display="none"; if(type==="success") goHome();},1800);
+  msg.className="msg "+type
+  msg.innerHTML=text
+  overlay.style.display="flex"
+  setTimeout(()=>{overlay.style.display="none";goHome()},1800)
 }
 
+/* DAILY – سطر واحد */
 function sendDaily(){
-  const coach=d_coach.value.trim();
-  const notes=d_notes.value.trim() || "لا يوجد";
-  const areas=[...document.querySelectorAll("#areas input:checked")].map(x=>x.value);
+  const coach=d_coach.value.trim()
+  const notes=d_notes.value.trim()||"لا يوجد"
+  const areas=[...document.querySelectorAll("#areas input:checked")].map(x=>x.value)
 
-  if(!coach || areas.length===0){
-    show("error","❌ قم بإدخال كافة البيانات");
-    return;
-  }
-
-  const data=new URLSearchParams();
-  data.append("entry.1598276908",coach);
-  data.append("entry.670685014",now());
-  areas.forEach(a=>data.append("entry.793034521",a));
-  data.append("entry.987129842",notes);
+  if(!coach||areas.length===0){show("error","❌ قم بإدخال كافة البيانات");return}
 
   fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",{
-    method:"POST",mode:"no-cors",body:data
-  });
+    method:"POST",mode:"no-cors",
+    body:new URLSearchParams({
+      "entry.1598276908":coach,
+      "entry.670685014":now(),
+      "entry.793034521":areas.join(", "),
+      "entry.987129842":notes
+    })
+  })
 
-  d_coach.value="";
-  d_notes.value="";
-  document.querySelectorAll("#areas input").forEach(c=>c.checked=false);
+  d_coach.value="";d_notes.value=""
+  document.querySelectorAll("#areas input").forEach(x=>x.checked=false)
+  show("success","✅ تم الإرسال")
+}
 
-  show("success","✅ تم الإرسال");
+/* DETAILED */
+function sendDetailed(){
+  if(!dt_coach.value||!dt_branch.value||!dt_status.value){show("error","❌ قم بإدخال كافة البيانات");return}
+
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/formResponse",{
+    method:"POST",mode:"no-cors",
+    body:new URLSearchParams({
+      "entry.1110574157":dt_coach.value,
+      "entry.225813099":dt_branch.value,
+      "entry.472300684":now(),
+      "entry.1420106518":dt_status.value,
+      "entry.1117457821":dt_device.value,
+      "entry.1076673732":dt_serial.value,
+      "entry.1452213865":dt_order.value
+    })
+  })
+
+  dt_coach.value=dt_branch.value=dt_status.value=dt_device.value=dt_serial.value=dt_order.value=""
+  show("success","✅ تم الإرسال")
+}
+
+/* LEADS */
+function sendLeads(){
+  if(!l_coach.value||!l_branch.value||!l_name.value||!l_phone.value){
+    show("error","❌ قم بإدخال كافة البيانات");return
+  }
+
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",{
+    method:"POST",mode:"no-cors",
+    body:new URLSearchParams({
+      "entry.1803783309":l_coach.value,
+      "entry.1531832061":l_branch.value,
+      "entry.1038119858":now(),
+      "entry.634489457":l_name.value,
+      "entry.2087664957":l_phone.value
+    })
+  })
+
+  l_coach.value=l_branch.value=l_name.value=l_phone.value=""
+  show("success","✅ تم الإرسال")
 }
 </script>
 
