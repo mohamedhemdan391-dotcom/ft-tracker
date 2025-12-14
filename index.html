@@ -38,18 +38,18 @@ button{
  background:var(--red);color:#fff;padding:10px 16px;
  border-radius:12px;display:inline-block;margin-bottom:20px;cursor:pointer
 }
+.area-row{
+ display:flex;align-items:center;justify-content:space-between;
+ padding:10px 0;border-bottom:1px solid #eee
+}
+.area-row input{width:auto}
+
 .success,.error{
  position:fixed;inset:0;display:none;align-items:center;justify-content:center;
  font-size:26px;color:#fff;z-index:999
 }
 .success{background:rgba(0,0,0,.6)}
 .error{background:rgba(180,0,0,.85)}
-
-.area-row{
- display:flex;align-items:center;justify-content:space-between;
- padding:10px 0;border-bottom:1px solid #eee
-}
-.area-row input{width:auto}
 </style>
 </head>
 
@@ -76,7 +76,7 @@ button{
  </div>
 </div>
 
-<!-- ✅ DAILY CHECK (تمت إعادته بالكامل) -->
+<!-- DAILY CHECK (سليم) -->
 <div class="page" id="daily">
  <div class="back-top" onclick="goHome()">العودة للرئيسية</div>
  <h2>التشييك اليومي</h2>
@@ -88,7 +88,6 @@ button{
  <input readonly id="daily_time">
 
  <label>مناطق التشييك *</label>
-
  <div class="area-row"><span>Dumbbells & Bars</span><input type="checkbox" value="Dumbbells & Bars"></div>
  <div class="area-row"><span>Accessories</span><input type="checkbox" value="Accessories"></div>
  <div class="area-row"><span>Selection Area</span><input type="checkbox" value="Selection Area"></div>
@@ -103,9 +102,43 @@ button{
  <button onclick="submitDaily()">إرسال</button>
 </div>
 
-<!-- الصفحات الأخرى سليمة -->
-<div class="page" id="detailed"><div class="back-top" onclick="goHome()">العودة للرئيسية</div></div>
-<div class="page" id="leads"><div class="back-top" onclick="goHome()">العودة للرئيسية</div></div>
+<!-- DETAILED CHECK (كان فاضي – اتصلح) -->
+<div class="page" id="detailed">
+ <div class="back-top" onclick="goHome()">العودة للرئيسية</div>
+ <h2>التشييك الدقيق</h2>
+
+ <label>اسم المدرب *</label>
+ <input>
+
+ <label>اسم الفرع *</label>
+ <input>
+
+ <label>حالة الأجهزة *</label>
+ <select>
+  <option value="">اختر</option>
+  <option>جيدة</option>
+  <option>يوجد صيانة</option>
+ </select>
+
+ <button>إرسال</button>
+</div>
+
+<!-- LEADS (كان فاضي – اتصلح) -->
+<div class="page" id="leads">
+ <div class="back-top" onclick="goHome()">العودة للرئيسية</div>
+ <h2>العملاء المرشحين</h2>
+
+ <label>اسم المدرب *</label>
+ <input>
+
+ <label>اسم العميل *</label>
+ <input>
+
+ <label>رقم الجوال *</label>
+ <input>
+
+ <button>إرسال</button>
+</div>
 
 </div>
 
@@ -141,7 +174,11 @@ function submitDaily(){
  show("success");setTimeout(goHome,1500);
 }
 
-function show(id){const e=document.getElementById(id);e.style.display="flex";setTimeout(()=>e.style.display="none",1500)}
+function show(id){
+ const e=document.getElementById(id);
+ e.style.display="flex";
+ setTimeout(()=>e.style.display="none",1500)
+}
 </script>
 </body>
 </html>
