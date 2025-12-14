@@ -54,8 +54,6 @@ button{
 }
 .success{color:#0a8f08}
 .error{color:#c40000}
-.box{border:1px dashed #ccc;padding:10px;border-radius:10px;margin-bottom:10px}
-.small{background:#666;margin-bottom:10px}
 </style>
 </head>
 
@@ -103,15 +101,18 @@ button{
 <input id="dt_branch" placeholder="اسم الفرع *">
 <input id="dt_time" readonly>
 
-<select id="dt_status">
+<select id="dt_status" onchange="toggleMaintenance()">
   <option value="">حالة الأجهزة *</option>
   <option value="جيدة">جيدة</option>
   <option value="يوجد صيانة">يوجد صيانة</option>
 </select>
 
-<input id="dt_device" placeholder="اسم الجهاز">
-<input id="dt_serial" placeholder="رقم السيريال">
-<input id="dt_order" placeholder="رقم الطلب">
+<div id="maintenanceFields" style="display:none">
+  <input id="dt_device" placeholder="اسم الجهاز *">
+  <input id="dt_serial" placeholder="رقم السيريال *">
+  <input id="dt_order" placeholder="رقم الطلب *">
+  <textarea id="dt_issue" placeholder="شرح العطل *"></textarea>
+</div>
 
 <button onclick="sendDetailed()">إرسال</button>
 </div>
@@ -154,22 +155,24 @@ function show(type,text){
   setTimeout(()=>{overlay.style.display="none";goHome()},1800)
 }
 
-/* DAILY – سطر واحد */
+/* DAILY – الطريقة الصحيحة للـ Checkboxes */
 function sendDaily(){
   const coach=d_coach.value.trim()
   const notes=d_notes.value.trim()||"لا يوجد"
   const areas=[...document.querySelectorAll("#areas input:checked")].map(x=>x.value)
 
-  if(!coach||areas.length===0){show("error","❌ قم بإدخال كافة البيانات");return}
+  if(!coach||areas.length===0){
+    show("error","❌ قم بإدخال كافة البيانات");return
+  }
+
+  const formData=new URLSearchParams()
+  formData.append("entry.1598276908",coach)
+  formData.append("entry.670685014",now())
+  areas.forEach(a=>formData.append("entry.793034521",a))
+  formData.append("entry.987129842",notes)
 
   fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",{
-    method:"POST",mode:"no-cors",
-    body:new URLSearchParams({
-      "entry.1598276908":coach,
-      "entry.670685014":now(),
-      "entry.793034521":areas.join(", "),
-      "entry.987129842":notes
-    })
+    method:"POST",mode:"no-cors",body:formData
   })
 
   d_coach.value="";d_notes.value=""
@@ -178,8 +181,21 @@ function sendDaily(){
 }
 
 /* DETAILED */
+function toggleMaintenance(){
+  maintenanceFields.style.display =
+    dt_status.value==="يوجد صيانة" ? "block" : "none"
+}
+
 function sendDetailed(){
-  if(!dt_coach.value||!dt_branch.value||!dt_status.value){show("error","❌ قم بإدخال كافة البيانات");return}
+  if(!dt_coach.value||!dt_branch.value||!dt_status.value){
+    show("error","❌ قم بإدخال كافة البيانات");return
+  }
+
+  if(dt_status.value==="يوجد صيانة"){
+    if(!dt_device.value||!dt_serial.value||!dt_order.value||!dt_issue.value){
+      show("error","❌ أكمل بيانات الصيانة");return
+    }
+  }
 
   fetch("https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/formResponse",{
     method:"POST",mode:"no-cors",
@@ -188,13 +204,16 @@ function sendDetailed(){
       "entry.225813099":dt_branch.value,
       "entry.472300684":now(),
       "entry.1420106518":dt_status.value,
-      "entry.1117457821":dt_device.value,
-      "entry.1076673732":dt_serial.value,
-      "entry.1452213865":dt_order.value
+      "entry.1117457821":dt_device.value||"",
+      "entry.1076673732":dt_serial.value||"",
+      "entry.1452213865":dt_order.value||"",
+      "entry.1904231182":dt_issue.value||""
     })
   })
 
-  dt_coach.value=dt_branch.value=dt_status.value=dt_device.value=dt_serial.value=dt_order.value=""
+  dt_coach.value=dt_branch.value=dt_status.value=""
+  dt_device.value=dt_serial.value=dt_order.value=dt_issue.value=""
+  maintenanceFields.style.display="none"
   show("success","✅ تم الإرسال")
 }
 
