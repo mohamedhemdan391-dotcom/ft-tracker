@@ -14,16 +14,11 @@ header{background:var(--red);color:#fff;text-align:center;padding:18px;font-size
 .page.active{display:block}
 
 .card{
-  background:var(--red);
-  color:#fff;
-  border-radius:14px;
-  padding:20px;
-  margin-bottom:15px;
+  background:var(--red);color:#fff;border-radius:14px;
+  padding:20px;margin-bottom:15px;
   box-shadow:0 4px 10px rgba(0,0,0,.15);
-  cursor:pointer;
-  font-size:22px;
-  text-align:center;
-  font-weight:bold
+  cursor:pointer;font-size:22px;
+  text-align:center;font-weight:bold
 }
 
 input,textarea,select{
@@ -40,39 +35,21 @@ button{
 .back{background:#b00000;margin-bottom:15px}
 
 .area-row{
-  display:grid;
-  grid-template-columns:30px 1fr;
-  align-items:center;
-  padding:10px 0;
-  border-bottom:1px solid #eee;
-  font-size:18px
+  display:grid;grid-template-columns:30px 1fr;
+  align-items:center;padding:10px 0;
+  border-bottom:1px solid #eee;font-size:18px
 }
 
-/* Leads */
 .lead-box{
-  border:1px dashed #ccc;
-  padding:12px;
-  border-radius:12px;
-  margin-bottom:10px
+  border:1px dashed #ccc;padding:12px;
+  border-radius:12px;margin-bottom:10px
 }
-.lead-actions{
-  display:flex;
-  gap:10px;
-}
-.lead-actions button{
-  flex:1;
-  font-size:14px;
-  padding:10px;
-}
-.add-btn{
-  background:#555;
-}
+.lead-actions{display:flex;gap:10px}
+.lead-actions button{flex:1;font-size:14px}
 
 .overlay{
-  position:fixed;inset:0;
-  background:rgba(0,0,0,.6);
-  display:none;align-items:center;justify-content:center;
-  z-index:999
+  position:fixed;inset:0;background:rgba(0,0,0,.6);
+  display:none;align-items:center;justify-content:center;z-index:999
 }
 .msg{
   background:#fff;padding:30px 40px;
@@ -101,7 +78,18 @@ button{
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 <h2>التشييك اليومي</h2>
 
-<input id="d_coach" placeholder="اسم المدرب *">
+<select id="d_coach" onchange="toggleOther(this,'d_other')">
+  <option value="">اختر المدرب *</option>
+  <option>Mohamed Hamdan</option>
+  <option>Mohamed Amine</option>
+  <option>Ghassan Bin Reda</option>
+  <option>Mohamed Ali</option>
+  <option>Akram Balmane</option>
+  <option>Mohamed Hussein</option>
+  <option value="other">آخر (إدخال يدوي)</option>
+</select>
+<input id="d_other" placeholder="اسم المدرب" style="display:none">
+
 <input id="d_time" readonly>
 
 <div id="areas">
@@ -123,7 +111,18 @@ button{
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 <h2>التشييك الدقيق</h2>
 
-<input id="dt_coach" placeholder="اسم المدرب *">
+<select id="dt_coach" onchange="toggleOther(this,'dt_other')">
+  <option value="">اختر المدرب *</option>
+  <option>Mohamed Hamdan</option>
+  <option>Mohamed Amine</option>
+  <option>Ghassan Bin Reda</option>
+  <option>Mohamed Ali</option>
+  <option>Akram Balmane</option>
+  <option>Mohamed Hussein</option>
+  <option value="other">آخر (إدخال يدوي)</option>
+</select>
+<input id="dt_other" placeholder="اسم المدرب" style="display:none">
+
 <input id="dt_branch" placeholder="اسم الفرع *">
 <input id="dt_time" readonly>
 
@@ -143,156 +142,148 @@ button{
 <button onclick="sendDetailed()">إرسال</button>
 </div>
 
-<!-- LEADS (التعديل الوحيد هنا) -->
+<!-- LEADS -->
 <div class="page" id="leads">
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 <h2>العملاء المرشحين</h2>
 
-<input id="l_coach" placeholder="اسم المدرب *">
+<select id="l_coach" onchange="toggleOther(this,'l_other')">
+  <option value="">اختر المدرب *</option>
+  <option>Mohamed Hamdan</option>
+  <option>Mohamed Amine</option>
+  <option>Ghassan Bin Reda</option>
+  <option>Mohamed Ali</option>
+  <option>Akram Balmane</option>
+  <option>Mohamed Hussein</option>
+  <option value="other">آخر (إدخال يدوي)</option>
+</select>
+<input id="l_other" placeholder="اسم المدرب" style="display:none">
+
 <input id="l_branch" placeholder="اسم الفرع *">
 <input id="l_time" readonly>
 
 <div id="leadsContainer"></div>
-
-<button class="add-btn" onclick="addLead()">➕ إضافة عميل</button>
+<button onclick="addLead()">➕ إضافة عميل</button>
 <button onclick="sendLeads()">إرسال</button>
 </div>
 
 </div>
 
-<div class="overlay" id="overlay">
-  <div class="msg" id="msg"></div>
-</div>
+<div class="overlay" id="overlay"><div class="msg" id="msg"></div></div>
 
 <script>
 function now(){return new Date().toLocaleString()}
 d_time.value=dt_time.value=l_time.value=now()
 
 function openPage(p){
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'))
-  document.getElementById(p).classList.add('active')
+ document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'))
+ document.getElementById(p).classList.add('active')
 }
 function goHome(){openPage('home')}
 
+function toggleOther(sel,id){
+ document.getElementById(id).style.display =
+   sel.value==="other" ? "block" : "none"
+}
+
+function getCoach(selectId,otherId){
+ const v=document.getElementById(selectId).value
+ if(v==="other") return document.getElementById(otherId).value.trim()
+ return v
+}
+
 function show(type,text){
-  msg.className="msg "+type
-  msg.innerHTML=text
-  overlay.style.display="flex"
-  setTimeout(()=>{overlay.style.display="none";goHome()},1800)
+ msg.className="msg "+type
+ msg.innerHTML=text
+ overlay.style.display="flex"
+ setTimeout(()=>{overlay.style.display="none";goHome()},1800)
 }
 
 /* DAILY */
 function sendDaily(){
-  const coach=d_coach.value.trim()
-  const notes=d_notes.value.trim()||"لا يوجد"
-  const areas=[...document.querySelectorAll("#areas input:checked")].map(x=>x.value)
+ const coach=getCoach("d_coach","d_other")
+ const areas=[...document.querySelectorAll("#areas input:checked")].map(x=>x.value)
+ const notes=d_notes.value||"لا يوجد"
+ if(!coach||areas.length===0){show("error","❌ قم بإدخال كافة البيانات");return}
 
-  if(!coach||areas.length===0){
-    show("error","❌ قم بإدخال كافة البيانات");return
-  }
+ const fd=new URLSearchParams()
+ fd.append("entry.1598276908",coach)
+ fd.append("entry.670685014",now())
+ areas.forEach(a=>fd.append("entry.793034521",a))
+ fd.append("entry.987129842",notes)
 
-  const formData=new URLSearchParams()
-  formData.append("entry.1598276908",coach)
-  formData.append("entry.670685014",now())
-  areas.forEach(a=>formData.append("entry.793034521",a))
-  formData.append("entry.987129842",notes)
-
-  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",{
-    method:"POST",mode:"no-cors",body:formData
-  })
-
-  d_coach.value="";d_notes.value=""
-  document.querySelectorAll("#areas input").forEach(x=>x.checked=false)
-  show("success","✅ تم الإرسال")
+ fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",{method:"POST",mode:"no-cors",body:fd})
+ show("success","✅ تم الإرسال")
 }
 
 /* DETAILED */
 function toggleMaintenance(){
-  maintenanceFields.style.display =
-    dt_status.value==="يوجد صيانة" ? "block" : "none"
+ maintenanceFields.style.display = dt_status.value==="يوجد صيانة"?"block":"none"
 }
 
 function sendDetailed(){
-  if(!dt_coach.value||!dt_branch.value||!dt_status.value){
-    show("error","❌ قم بإدخال كافة البيانات");return
-  }
+ const coach=getCoach("dt_coach","dt_other")
+ if(!coach||!dt_branch.value||!dt_status.value){show("error","❌ قم بإدخال كافة البيانات");return}
 
-  let device="لا يوجد",serial="لا يوجد",order="لا يوجد",issue="لا يوجد"
+ let d="لا يوجد",s="لا يوجد",o="لا يوجد",i="لا يوجد"
+ if(dt_status.value==="يوجد صيانة"){
+   if(!dt_device.value||!dt_serial.value||!dt_order.value||!dt_issue.value){
+     show("error","❌ أكمل بيانات الصيانة");return
+   }
+   d=dt_device.value;s=dt_serial.value;o=dt_order.value;i=dt_issue.value
+ }
 
-  if(dt_status.value==="يوجد صيانة"){
-    if(!dt_device.value||!dt_serial.value||!dt_order.value||!dt_issue.value){
-      show("error","❌ أكمل بيانات الصيانة");return
-    }
-    device=dt_device.value.trim()
-    serial=dt_serial.value.trim()
-    order=dt_order.value.trim()
-    issue=dt_issue.value.trim()
-  }
-
-  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/formResponse",{
-    method:"POST",mode:"no-cors",
-    body:new URLSearchParams({
-      "entry.1110574157":dt_coach.value,
-      "entry.225813099":dt_branch.value,
-      "entry.472300684":now(),
-      "entry.1420106518":dt_status.value,
-      "entry.1131993998":device,
-      "entry.1894843047":serial,
-      "entry.971797645":order,
-      "entry.95041345":issue
-    })
+ fetch("https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/formResponse",{
+  method:"POST",mode:"no-cors",
+  body:new URLSearchParams({
+    "entry.1110574157":coach,
+    "entry.225813099":dt_branch.value,
+    "entry.472300684":now(),
+    "entry.1420106518":dt_status.value,
+    "entry.1131993998":d,
+    "entry.1894843047":s,
+    "entry.971797645":o,
+    "entry.95041345":i
   })
-
-  dt_coach.value=dt_branch.value=dt_status.value=""
-  dt_device.value=dt_serial.value=dt_order.value=dt_issue.value=""
-  maintenanceFields.style.display="none"
-  show("success","✅ تم الإرسال")
+ })
+ show("success","✅ تم الإرسال")
 }
 
-/* LEADS – إضافة + وحذف فقط */
+/* LEADS */
 function addLead(){
-  const box=document.createElement("div")
-  box.className="lead-box"
-  box.innerHTML=`
-    <input class="l_name" placeholder="اسم العميل *">
-    <input class="l_phone" placeholder="رقم الجوال *">
-    <div class="lead-actions">
-      <button onclick="this.parentElement.parentElement.remove()">🗑 حذف</button>
-    </div>
-  `
-  leadsContainer.appendChild(box)
+ const box=document.createElement("div")
+ box.className="lead-box"
+ box.innerHTML=`
+  <input class="l_name" placeholder="اسم العميل *">
+  <input class="l_phone" placeholder="رقم الجوال *">
+  <div class="lead-actions">
+    <button onclick="this.parentElement.parentElement.remove()">🗑 حذف</button>
+  </div>`
+ leadsContainer.appendChild(box)
 }
 addLead()
 
 function sendLeads(){
-  if(!l_coach.value||!l_branch.value){
-    show("error","❌ قم بإدخال كافة البيانات");return
-  }
+ const coach=getCoach("l_coach","l_other")
+ if(!coach||!l_branch.value){show("error","❌ قم بإدخال كافة البيانات");return}
 
-  const boxes=[...document.querySelectorAll(".lead-box")]
-  for(const b of boxes){
-    const name=b.querySelector(".l_name").value
-    const phone=b.querySelector(".l_phone").value
-    if(!name||!phone){
-      show("error","❌ قم بإدخال كافة البيانات");return
-    }
+ for(const b of document.querySelectorAll(".lead-box")){
+   const n=b.querySelector(".l_name").value
+   const p=b.querySelector(".l_phone").value
+   if(!n||!p){show("error","❌ قم بإدخال كافة البيانات");return}
 
-    fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",{
-      method:"POST",mode:"no-cors",
-      body:new URLSearchParams({
-        "entry.1803783309":l_coach.value,
-        "entry.1531832061":l_branch.value,
-        "entry.1038119858":now(),
-        "entry.634489457":name,
-        "entry.2087664957":phone
-      })
-    })
-  }
-
-  l_coach.value=l_branch.value=""
-  leadsContainer.innerHTML=""
-  addLead()
-  show("success","✅ تم الإرسال")
+   fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",{
+     method:"POST",mode:"no-cors",
+     body:new URLSearchParams({
+       "entry.1803783309":coach,
+       "entry.1531832061":l_branch.value,
+       "entry.1038119858":now(),
+       "entry.634489457":n,
+       "entry.2087664957":p
+     })
+   })
+ }
+ show("success","✅ تم الإرسال")
 }
 </script>
 
