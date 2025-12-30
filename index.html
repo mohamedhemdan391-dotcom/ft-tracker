@@ -24,24 +24,36 @@ header{background:var(--red);color:#fff;text-align:center;padding:18px;font-size
 
 label{
   display:block;
-  margin-top:12px;
+  margin-top:14px;
   font-weight:bold
 }
 
 input,textarea,select{
-  width:100%;padding:12px;margin:8px 0;
+  width:100%;padding:12px;margin-top:6px;
   border-radius:10px;border:1px solid #ccc;font-size:16px
 }
 
 button{
   width:100%;padding:14px;border:none;
   border-radius:12px;background:var(--red);
-  color:#fff;font-size:18px;cursor:pointer;margin-top:10px
+  color:#fff;font-size:18px;cursor:pointer;margin-top:16px
 }
 
-.back{
-  background:#b00000;
-  margin-bottom:15px
+.back{background:#b00000;margin-bottom:15px}
+
+/* ✅ تنسيق مناطق التشييك */
+.area-row{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:12px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  margin-bottom:10px;
+  background:#fff
+}
+.area-row input{
+  width:20px;height:20px
 }
 
 .overlay{
@@ -86,80 +98,19 @@ button{
 
 <label>مناطق التشييك *</label>
 <div id="areas">
-  <label><input type="checkbox" value="Dumbbells & Bars"> الدمبلز والبارات</label>
-  <label><input type="checkbox" value="Accessories"> الاكسسوارات</label>
-  <label><input type="checkbox" value="Selection Area"> Selection</label>
-  <label><input type="checkbox" value="Group Classes Area"> الحصص الجماعية</label>
-  <label><input type="checkbox" value="FTZ Area"> FTZ</label>
-  <label><input type="checkbox" value="TV"> TV</label>
-  <label><input type="checkbox" value="Coaches Office"> مكتب المدربين</label>
+  <div class="area-row"><input type="checkbox" value="Dumbbells & Bars"><span>الدمبلز والبارات</span></div>
+  <div class="area-row"><input type="checkbox" value="Accessories"><span>الاكسسوارات</span></div>
+  <div class="area-row"><input type="checkbox" value="Selection Area"><span>Selection</span></div>
+  <div class="area-row"><input type="checkbox" value="Group Classes Area"><span>الحصص الجماعية</span></div>
+  <div class="area-row"><input type="checkbox" value="FTZ Area"><span>FTZ</span></div>
+  <div class="area-row"><input type="checkbox" value="TV"><span>TV</span></div>
+  <div class="area-row"><input type="checkbox" value="Coaches Office"><span>مكتب المدربين</span></div>
 </div>
 
 <label>ملاحظات</label>
 <textarea id="d_notes"></textarea>
 
 <button onclick="sendDaily()">إرسال</button>
-</div>
-
-<!-- DETAILED -->
-<div class="page" id="detailed">
-<button class="back" onclick="goHome()">العودة للرئيسية</button>
-<h2>التشييك الدقيق</h2>
-
-<label>اسم المدرب *</label>
-<input id="dt_coach">
-
-<label>اسم الفرع *</label>
-<input id="dt_branch">
-
-<label>التاريخ والوقت</label>
-<input id="dt_time" readonly>
-
-<label>حالة الأجهزة *</label>
-<select id="dt_status" onchange="toggleMaintenance()">
-  <option value="">اختر</option>
-  <option value="جيدة">جيدة</option>
-  <option value="يوجد صيانة">يوجد صيانة</option>
-</select>
-
-<div id="maintenanceFields" style="display:none">
-  <label>اسم الجهاز *</label>
-  <input id="dt_device">
-
-  <label>رقم السيريال *</label>
-  <input id="dt_serial">
-
-  <label>رقم الطلب *</label>
-  <input id="dt_order">
-
-  <label>شرح العطل *</label>
-  <textarea id="dt_issue"></textarea>
-</div>
-
-<button onclick="sendDetailed()">إرسال</button>
-</div>
-
-<!-- LEADS -->
-<div class="page" id="leads">
-<button class="back" onclick="goHome()">العودة للرئيسية</button>
-<h2>العملاء المرشحين</h2>
-
-<label>اسم المدرب *</label>
-<input id="l_coach">
-
-<label>اسم الفرع *</label>
-<input id="l_branch">
-
-<label>التاريخ والوقت</label>
-<input id="l_time" readonly>
-
-<label>اسم العميل *</label>
-<input id="l_name">
-
-<label>رقم الجوال *</label>
-<input id="l_phone">
-
-<button onclick="sendLeads()">إرسال</button>
 </div>
 
 <!-- BUSINESS PLAN -->
@@ -181,13 +132,16 @@ button{
   <option value="other">أخرى</option>
 </select>
 
-<input id="bp_coach_other" style="display:none" placeholder="اكتب اسم المدرب">
+<input id="bp_coach_other" placeholder="اكتب اسم المدرب" style="display:none">
 
 <label>اسم العميل *</label>
 <input id="bp_client">
 
 <label>رقم الجوال *</label>
 <input id="bp_phone">
+
+<label>ملاحظات</label>
+<textarea id="bp_notes"></textarea>
 
 <button onclick="sendBusiness()">إرسال</button>
 </div>
@@ -200,7 +154,7 @@ button{
 
 <script>
 function now(){return new Date().toLocaleString()}
-d_time.value=dt_time.value=l_time.value=now()
+d_time.value=now()
 
 function openPage(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'))
@@ -215,16 +169,53 @@ function show(type,text){
   setTimeout(()=>{overlay.style.display="none";goHome()},1800)
 }
 
-function toggleMaintenance(){
-  maintenanceFields.style.display =
-    dt_status.value==="يوجد صيانة" ? "block" : "none"
+/* DAILY */
+function sendDaily(){
+  const coach=d_coach.value.trim()
+  const areas=[...document.querySelectorAll("#areas input:checked")].map(x=>x.value)
+  const notes=d_notes.value||"لا يوجد"
+
+  if(!coach||areas.length===0){
+    show("error","قم بإدخال كافة البيانات");return
+  }
+
+  const fd=new URLSearchParams()
+  fd.append("entry.1598276908",coach)
+  fd.append("entry.670685014",now())
+  areas.forEach(a=>fd.append("entry.793034521",a))
+  fd.append("entry.987129842",notes)
+
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",
+  {method:"POST",mode:"no-cors",body:fd})
+
+  show("success","تم الإرسال")
 }
 
-/* Business Plan coach */
-bp_coach.addEventListener("change",()=>{
-  bp_coach_other.style.display =
-    bp_coach.value==="other"?"block":"none"
-})
+/* BUSINESS */
+bp_coach.onchange=()=>{
+  bp_coach_other.style.display = bp_coach.value==="other"?"block":"none"
+}
+
+function sendBusiness(){
+  const coach = bp_coach.value==="other" ? bp_coach_other.value : bp_coach.value
+
+  if(!coach||!bp_client.value||!bp_phone.value){
+    show("error","قم بإدخال كافة البيانات");return
+  }
+
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSc5x-yHCTEvn6ja4NrOIWijW4qIx3VQigznZqzpmlWa4PvmHw/formResponse",
+  {
+    method:"POST",mode:"no-cors",
+    body:new URLSearchParams({
+      "entry.604321945":coach,
+      "entry.527541380":bp_client.value,
+      "entry.1075210553":bp_phone.value,
+      "entry.1514819387":bp_notes.value||"لا يوجد"
+    })
+  })
+
+  show("success","تم الإرسال")
+}
 </script>
 
 </body>
