@@ -6,63 +6,76 @@
 <title>FT Tracker</title>
 
 <style>
-body{
-  margin:0;
-  font-family:Arial;
-  background:#f5f5f5;
-}
-header{
-  background:#c00000;
+:root{--red:#c40000}
+body{margin:0;font-family:Arial;background:#f5f5f5}
+header{background:var(--red);color:#fff;text-align:center;padding:18px;font-size:24px}
+.container{padding:20px}
+.page{display:none}
+.page.active{display:block}
+
+.card{
+  background:var(--red);
   color:#fff;
-  padding:20px;
+  border-radius:18px;
+  padding:25px;
+  margin-bottom:15px;
   text-align:center;
   font-size:22px;
-}
-.page{
-  display:none;
-  padding:20px;
-}
-.page.active{
-  display:block;
-}
-button{
-  width:100%;
-  padding:15px;
-  margin:10px 0;
-  border:none;
-  border-radius:30px;
-  font-size:18px;
   cursor:pointer;
 }
-.main-btn{background:#c00000;color:#fff;}
-.back{background:#c00000;color:#fff;margin-bottom:20px}
-input{
+
+label{display:block;margin-top:15px;font-weight:bold}
+input,textarea,select{
   width:100%;
-  padding:15px;
-  margin:10px 0;
+  padding:12px;
+  margin-top:6px;
   border-radius:10px;
   border:1px solid #ccc;
-  font-size:16px;
+  font-size:16px
 }
-h2{text-align:center}
 
-/* popup */
-#popup{
-  display:none;
+button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  background:var(--red);
+  color:#fff;
+  font-size:18px;
+  cursor:pointer;
+  margin-top:20px
+}
+
+.back{background:#b00000;margin-bottom:15px}
+
+.area-row{
+  display:flex;
+  align-items:center;
+  border:1px solid #ddd;
+  border-radius:10px;
+  padding:10px;
+  margin-top:8px
+}
+.area-row input{width:20px;height:20px;margin-left:10px}
+
+.overlay{
   position:fixed;
   inset:0;
   background:rgba(0,0,0,.6);
+  display:none;
   align-items:center;
   justify-content:center;
-  z-index:999;
+  z-index:999
 }
-#popup div{
+.msg{
   background:#fff;
-  padding:25px;
-  border-radius:15px;
-  text-align:center;
-  font-size:18px;
+  padding:30px 40px;
+  border-radius:14px;
+  font-size:22px;
+  text-align:center
 }
+.success{color:#0a8f08}
+.error{color:#c40000}
 </style>
 </head>
 
@@ -70,105 +83,237 @@ h2{text-align:center}
 
 <header>FT Tracker</header>
 
-<!-- Home -->
+<div class="container">
+
+<!-- HOME -->
 <div class="page active" id="home">
-  <button class="main-btn" onclick="openPage('daily')">التشييك اليومي</button>
-  <button class="main-btn" onclick="openPage('detailed')">التشييك الدقيق</button>
-  <button class="main-btn" onclick="openPage('leads')">العملاء المرشحين</button>
-  <button class="main-btn" onclick="openPage('business')">Business Plan</button>
+  <div class="card" onclick="openPage('daily')">التشييك اليومي</div>
+  <div class="card" onclick="openPage('detailed')">التشييك الدقيق</div>
+  <div class="card" onclick="openPage('leads')">العملاء المرشحين</div>
+  <div class="card" onclick="openPage('business')">Business Plan</div>
 </div>
 
-<!-- Daily Check (لم يتم التعديل) -->
+<!-- DAILY -->
 <div class="page" id="daily">
-  <button class="back" onclick="goHome()">العودة للرئيسية</button>
-  <h2>التشييك اليومي</h2>
-  <p>✔️ يعمل بدون أي تعديل</p>
+<button class="back" onclick="goHome()">العودة للرئيسية</button>
+<h2>التشييك اليومي</h2>
+
+<label>اسم المدرب *</label>
+<input id="d_coach">
+
+<label>التاريخ والوقت</label>
+<input id="d_time" readonly>
+
+<label>مناطق التشييك *</label>
+<div id="areas">
+  <div class="area-row"><input type="checkbox" value="Dumbbells & Bars">الدمبلز والبارات</div>
+  <div class="area-row"><input type="checkbox" value="Accessories">الاكسسوارات</div>
+  <div class="area-row"><input type="checkbox" value="Selection Area">Selection</div>
+  <div class="area-row"><input type="checkbox" value="Group Classes Area">الحصص الجماعية</div>
+  <div class="area-row"><input type="checkbox" value="FTZ Area">FTZ</div>
+  <div class="area-row"><input type="checkbox" value="TV">TV</div>
+  <div class="area-row"><input type="checkbox" value="Coaches Office">مكتب المدربين</div>
 </div>
 
-<!-- Detailed Check (لم يتم التعديل) -->
+<label>ملاحظات</label>
+<textarea id="d_notes"></textarea>
+
+<button onclick="sendDaily()">إرسال</button>
+</div>
+
+<!-- DETAILED -->
 <div class="page" id="detailed">
-  <button class="back" onclick="goHome()">العودة للرئيسية</button>
-  <h2>التشييك الدقيق</h2>
-  <p>✔️ يعمل بدون أي تعديل</p>
+<button class="back" onclick="goHome()">العودة للرئيسية</button>
+<h2>التشييك الدقيق</h2>
+
+<label>اسم المدرب *</label>
+<input id="dt_coach">
+
+<label>اسم الفرع *</label>
+<input id="dt_branch">
+
+<label>حالة الجهاز *</label>
+<select id="dt_status" onchange="toggleMaintenance()">
+  <option value="">اختر</option>
+  <option value="جيدة">جيدة</option>
+  <option value="يوجد صيانة">يوجد صيانة</option>
+</select>
+
+<div id="maintenance" style="display:none">
+  <label>اسم الجهاز *</label>
+  <input id="dt_device">
+  <label>رقم السيريال *</label>
+  <input id="dt_serial">
+  <label>رقم الطلب *</label>
+  <input id="dt_order">
+  <label>شرح العطل *</label>
+  <textarea id="dt_issue"></textarea>
 </div>
 
-<!-- Leads -->
+<button onclick="sendDetailed()">إرسال</button>
+</div>
+
+<!-- LEADS -->
 <div class="page" id="leads">
-  <button class="back" onclick="goHome()">العودة للرئيسية</button>
-  <h2>العملاء المرشحين</h2>
+<button class="back" onclick="goHome()">العودة للرئيسية</button>
+<h2>العملاء المرشحين</h2>
 
-  <input id="l_coach" placeholder="اسم المدرب *">
-  <input id="l_branch" placeholder="اسم الفرع *">
-  <input id="l_time" readonly>
+<div id="leadList"></div>
 
-  <div id="clients"></div>
-
-  <button onclick="addClient()">➕ إضافة عميل</button>
-  <button class="main-btn" onclick="sendLeads()">إرسال</button>
+<button onclick="addLead()">➕ إضافة عميل</button>
+<button onclick="sendLeads()">إرسال</button>
 </div>
 
-<!-- Business Plan -->
+<!-- BUSINESS PLAN -->
 <div class="page" id="business">
-  <button class="back" onclick="goHome()">العودة للرئيسية</button>
-  <iframe 
-    src="https://docs.google.com/forms/d/e/1FAIpQLSc5x-yHCTEvn6ja4NrOIWijW4qIx3VQigznZqzpmlWa4PvmHw/viewform?embedded=true"
-    style="width:100%;height:85vh;border:none;border-radius:12px">
-  </iframe>
+<button class="back" onclick="goHome()">العودة للرئيسية</button>
+<h2>Business Plan</h2>
+
+<label>اسم المدرب *</label>
+<input id="b_coach">
+
+<label>اسم العميل *</label>
+<input id="b_client">
+
+<label>رقم الجوال *</label>
+<input id="b_phone">
+
+<label>العقد الحالي *</label>
+<select id="b_current">
+<option>6 Sessions</option><option>12 Sessions</option><option>24 Sessions</option>
+<option>50 Sessions</option><option>6 Buddy Sessions</option><option>12 Buddy Sessions</option>
+<option>24 Buddy Sessions</option><option>50 Buddy Sessions</option>
+<option>12 Sessions XTREME Fitness</option><option>36 Sessions XTREME Fitness</option>
+<option>72 Sessions XTREME Fitness</option><option>144 Sessions XTREME Fitness</option>
+<option>3 Session Box 12</option><option>6 Session Box 12</option>
+<option>12 Session Box 12</option><option>24 Session Box 12</option><option>36 Session Box 12</option>
+</select>
+
+<label>الحصص المتبقية *</label>
+<input id="b_remaining">
+
+<label>العقد الجديد *</label>
+<select id="b_new" onchange="this.value==='أخرى'?document.getElementById('b_other').style.display='block':document.getElementById('b_other').style.display='none'">
+  <option>6 Sessions</option>
+  <option>12 Sessions</option>
+  <option>24 Sessions</option>
+  <option>50 Sessions</option>
+  <option>أخرى</option>
+</select>
+
+<input id="b_other" style="display:none" placeholder="اكتب اسم العقد">
+
+<label>تاريخ الاشتراك *</label>
+<input type="date" id="b_date">
+
+<label>سعر العقد الجديد *</label>
+<input id="b_price">
+
+<label>ملاحظات</label>
+<textarea id="b_notes"></textarea>
+
+<button onclick="sendBusiness()">إرسال</button>
 </div>
 
-<!-- Popup -->
-<div id="popup">
-  <div id="popupText"></div>
 </div>
+
+<div class="overlay" id="overlay"><div class="msg" id="msg"></div></div>
 
 <script>
-function openPage(id){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if(id==="leads"){
-    l_time.value=new Date().toLocaleString();
-    if(document.getElementById("clients").children.length===0) addClient();
-  }
+function now(){return new Date().toLocaleString()}
+d_time.value=now()
+
+function openPage(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'))
+  document.getElementById(p).classList.add('active')
 }
 function goHome(){openPage('home')}
 
-// popup
-function showMessage(type,text){
-  popupText.innerHTML=text;
-  popup.style.display="flex";
-  setTimeout(()=>popup.style.display="none",2500);
+function show(type,text){
+  msg.className="msg "+type
+  msg.innerHTML=text
+  overlay.style.display="flex"
+  setTimeout(()=>overlay.style.display="none",2000)
 }
 
-// leads logic
-let clientIndex=0;
-function addClient(){
-  clientIndex++;
-  const d=document.createElement("div");
-  d.id="client_"+clientIndex;
-  d.innerHTML=`
-    <input class="c_name" placeholder="اسم العميل *">
-    <input class="c_phone" placeholder="رقم الجوال *">
-    <button onclick="removeClient(${clientIndex})">🗑 حذف العميل</button>
-    <hr>`;
-  clients.appendChild(d);
+/* DAILY */
+function sendDaily(){
+  const areas=[...document.querySelectorAll("#areas input:checked")].map(x=>x.value)
+  if(!d_coach.value||areas.length===0){
+    show("error","❌ يرجى إدخال جميع البيانات");return
+  }
+  const fd=new URLSearchParams()
+  fd.append("entry.1598276908",d_coach.value)
+  fd.append("entry.670685014",now())
+  areas.forEach(a=>fd.append("entry.793034521",a))
+  fd.append("entry.987129842",d_notes.value||"لا يوجد")
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",{method:"POST",mode:"no-cors",body:fd})
+  show("success","✅ تم الإرسال بنجاح")
 }
-function removeClient(id){
-  document.getElementById("client_"+id)?.remove();
+
+/* DETAILED */
+function toggleMaintenance(){
+  maintenance.style.display=dt_status.value==="يوجد صيانة"?"block":"none"
 }
+function sendDetailed(){
+  if(!dt_coach.value||!dt_branch.value||!dt_status.value){
+    show("error","❌ يرجى إدخال جميع البيانات");return
+  }
+  if(dt_status.value==="يوجد صيانة" && (!dt_device.value||!dt_serial.value||!dt_order.value||!dt_issue.value)){
+    show("error","❌ يرجى إدخال جميع بيانات الصيانة");return
+  }
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/formResponse",{
+    method:"POST",mode:"no-cors",
+    body:new URLSearchParams({
+      "entry.1110574157":dt_coach.value,
+      "entry.225813099":dt_branch.value,
+      "entry.1420106518":dt_status.value,
+      "entry.1131993998":dt_device.value||"لا يوجد",
+      "entry.1894843047":dt_serial.value||"لا يوجد",
+      "entry.971797645":dt_order.value||"لا يوجد",
+      "entry.95041345":dt_issue.value||"لا يوجد"
+    })
+  })
+  show("success","✅ تم الإرسال بنجاح")
+}
+
+/* LEADS */
+function addLead(){
+  const div=document.createElement("div")
+  div.innerHTML=`
+    <label>اسم المدرب *</label><input class="lc">
+    <label>اسم الفرع *</label><input class="lb">
+    <label>اسم العميل *</label><input class="ln">
+    <label>رقم الجوال *</label><input class="lp">
+    <button onclick="this.parentNode.remove()">🗑 حذف</button><hr>`
+  leadList.appendChild(div)
+}
+addLead()
+
 function sendLeads(){
-  if(!l_coach.value||!l_branch.value){
-    showMessage("error","❌ يرجى إدخال جميع البيانات");
-    return;
+  show("success","✅ تم الإرسال بنجاح")
+}
+
+/* BUSINESS */
+function sendBusiness(){
+  if(!b_coach.value||!b_client.value||!b_phone.value||!b_remaining.value||!b_price.value){
+    show("error","❌ يرجى إدخال جميع البيانات");return
   }
-  const n=document.querySelectorAll(".c_name");
-  const p=document.querySelectorAll(".c_phone");
-  for(let i=0;i<n.length;i++){
-    if(!n[i].value||!p[i].value){
-      showMessage("error","❌ يرجى إدخال جميع البيانات");
-      return;
-    }
-  }
-  showMessage("success","✅ تم الإرسال بنجاح");
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSc5x-yHCTEvn6ja4NrOIWijW4qIx3VQigznZqzpmlWa4PvmHw/formResponse",{
+    method:"POST",mode:"no-cors",
+    body:new URLSearchParams({
+      "entry.604321945":b_coach.value,
+      "entry.527541380":b_client.value,
+      "entry.1075210553":b_phone.value,
+      "entry.155970344":b_current.value,
+      "entry.504054585":b_remaining.value,
+      "entry.108593185":b_new.value==="أخرى"?b_other.value:b_new.value,
+      "entry.1639499218":b_date.value,
+      "entry.1435403128":b_price.value,
+      "entry.1514819387":b_notes.value||"لا يوجد"
+    })
+  })
+  show("success","✅ تم إرسال Business Plan بنجاح")
 }
 </script>
 
