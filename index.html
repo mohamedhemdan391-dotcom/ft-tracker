@@ -14,30 +14,33 @@ header{background:var(--red);color:#fff;text-align:center;padding:18px;font-size
 .page.active{display:block}
 
 .card{
-  background:#c40000;
-  color:#fff;
-  border-radius:16px;
-  padding:22px;
-  margin-bottom:15px;
-  font-size:20px;
-  cursor:pointer;
-  box-shadow:0 6px 14px rgba(0,0,0,.15)
+  background:#c40000;color:#fff;
+  border-radius:18px;
+  padding:22px;margin-bottom:18px;
+  box-shadow:0 4px 12px rgba(0,0,0,.2);
+  cursor:pointer;font-size:22px;
+  text-align:center
+}
+
+label{
+  display:block;
+  margin-top:12px;
+  font-weight:bold
 }
 
 input,textarea,select{
-  width:100%;padding:12px;margin:10px 0;
+  width:100%;padding:12px;margin:8px 0;
   border-radius:10px;border:1px solid #ccc;font-size:16px
 }
 
 button{
   width:100%;padding:14px;border:none;
   border-radius:12px;background:var(--red);
-  color:#fff;font-size:18px;cursor:pointer
+  color:#fff;font-size:18px;cursor:pointer;margin-top:10px
 }
 
 .back{
-  background:#c40000;
-  color:#fff;
+  background:#b00000;
   margin-bottom:15px
 }
 
@@ -70,71 +73,121 @@ button{
   <div class="card" onclick="openPage('business')">Business Plan</div>
 </div>
 
+<!-- DAILY -->
+<div class="page" id="daily">
+<button class="back" onclick="goHome()">العودة للرئيسية</button>
+<h2>التشييك اليومي</h2>
+
+<label>اسم المدرب *</label>
+<input id="d_coach">
+
+<label>التاريخ والوقت</label>
+<input id="d_time" readonly>
+
+<label>مناطق التشييك *</label>
+<div id="areas">
+  <label><input type="checkbox" value="Dumbbells & Bars"> الدمبلز والبارات</label>
+  <label><input type="checkbox" value="Accessories"> الاكسسوارات</label>
+  <label><input type="checkbox" value="Selection Area"> Selection</label>
+  <label><input type="checkbox" value="Group Classes Area"> الحصص الجماعية</label>
+  <label><input type="checkbox" value="FTZ Area"> FTZ</label>
+  <label><input type="checkbox" value="TV"> TV</label>
+  <label><input type="checkbox" value="Coaches Office"> مكتب المدربين</label>
+</div>
+
+<label>ملاحظات</label>
+<textarea id="d_notes"></textarea>
+
+<button onclick="sendDaily()">إرسال</button>
+</div>
+
+<!-- DETAILED -->
+<div class="page" id="detailed">
+<button class="back" onclick="goHome()">العودة للرئيسية</button>
+<h2>التشييك الدقيق</h2>
+
+<label>اسم المدرب *</label>
+<input id="dt_coach">
+
+<label>اسم الفرع *</label>
+<input id="dt_branch">
+
+<label>التاريخ والوقت</label>
+<input id="dt_time" readonly>
+
+<label>حالة الأجهزة *</label>
+<select id="dt_status" onchange="toggleMaintenance()">
+  <option value="">اختر</option>
+  <option value="جيدة">جيدة</option>
+  <option value="يوجد صيانة">يوجد صيانة</option>
+</select>
+
+<div id="maintenanceFields" style="display:none">
+  <label>اسم الجهاز *</label>
+  <input id="dt_device">
+
+  <label>رقم السيريال *</label>
+  <input id="dt_serial">
+
+  <label>رقم الطلب *</label>
+  <input id="dt_order">
+
+  <label>شرح العطل *</label>
+  <textarea id="dt_issue"></textarea>
+</div>
+
+<button onclick="sendDetailed()">إرسال</button>
+</div>
+
+<!-- LEADS -->
+<div class="page" id="leads">
+<button class="back" onclick="goHome()">العودة للرئيسية</button>
+<h2>العملاء المرشحين</h2>
+
+<label>اسم المدرب *</label>
+<input id="l_coach">
+
+<label>اسم الفرع *</label>
+<input id="l_branch">
+
+<label>التاريخ والوقت</label>
+<input id="l_time" readonly>
+
+<label>اسم العميل *</label>
+<input id="l_name">
+
+<label>رقم الجوال *</label>
+<input id="l_phone">
+
+<button onclick="sendLeads()">إرسال</button>
+</div>
+
 <!-- BUSINESS PLAN -->
 <div class="page" id="business">
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 <h2>Business Plan</h2>
 
+<label>اسم المدرب *</label>
 <select id="bp_coach">
-  <option value="">اسم المدرب *</option>
-  <option>Mohamed Hemdan</option>
+  <option value="">اختر</option>
+  <option>Mohamed Hamdan</option>
   <option>Mohamed Amine</option>
   <option>Ghassan Bin Reda</option>
   <option>Mohamed Ali</option>
   <option>Akram Balmane</option>
   <option>Mohamed Hussein</option>
+  <option>Wael Graoui</option>
+  <option>Mohamed othman</option>
+  <option value="other">أخرى</option>
 </select>
 
-<input id="bp_client" placeholder="اسم العميل *">
-<input id="bp_phone" placeholder="رقم جوال العميل *">
+<input id="bp_coach_other" style="display:none" placeholder="اكتب اسم المدرب">
 
-<select id="bp_current">
-  <option value="">عدد الجلسات الحالي *</option>
-  <option>6 Sessions</option>
-  <option>12 Sessions</option>
-  <option>24 Sessions</option>
-  <option>50 Sessions</option>
-  <option>6 Buddy Sessions</option>
-  <option>12 Buddy Sessions</option>
-  <option>24 Buddy Sessions</option>
-  <option>50 Buddy Sessions</option>
-  <option>12 Sessions XTREME Fitness</option>
-  <option>36 Sessions XTREME Fitness</option>
-  <option>72 Sessions XTREME Fitness</option>
-  <option>144 Sessions XTREME Fitness</option>
-  <option>3 Session Box 12</option>
-  <option>6 Session Box 12</option>
-  <option>12 Session Box 12</option>
-  <option>24 Session Box 12</option>
-  <option>36 Session Box 12</option>
-</select>
+<label>اسم العميل *</label>
+<input id="bp_client">
 
-<input id="bp_remaining" placeholder="الحصص المتبقية *">
-
-<select id="bp_new">
-  <option value="">العقد الجديد *</option>
-  <option>6 Sessions</option>
-  <option>12 Sessions</option>
-  <option>24 Sessions</option>
-  <option>50 Sessions</option>
-  <option>6 Buddy Sessions</option>
-  <option>12 Buddy Sessions</option>
-  <option>24 Buddy Sessions</option>
-  <option>50 Buddy Sessions</option>
-  <option>12 Sessions XTREME Fitness</option>
-  <option>36 Sessions XTREME Fitness</option>
-  <option>72 Sessions XTREME Fitness</option>
-  <option>144 Sessions XTREME Fitness</option>
-  <option>3 Session Box 12</option>
-  <option>6 Session Box 12</option>
-  <option>12 Session Box 12</option>
-  <option>24 Session Box 12</option>
-  <option>36 Session Box 12</option>
-</select>
-
-<input id="bp_date" type="date">
-<input id="bp_price" placeholder="سعر العقد الجديد *">
-<textarea id="bp_notes" placeholder="ملاحظات"></textarea>
+<label>رقم الجوال *</label>
+<input id="bp_phone">
 
 <button onclick="sendBusiness()">إرسال</button>
 </div>
@@ -146,6 +199,9 @@ button{
 </div>
 
 <script>
+function now(){return new Date().toLocaleString()}
+d_time.value=dt_time.value=l_time.value=now()
+
 function openPage(p){
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'))
   document.getElementById(p).classList.add('active')
@@ -159,37 +215,16 @@ function show(type,text){
   setTimeout(()=>{overlay.style.display="none";goHome()},1800)
 }
 
-/* BUSINESS PLAN */
-function sendBusiness(){
-  if(
-    !bp_coach.value||!bp_client.value||!bp_phone.value||
-    !bp_current.value||!bp_remaining.value||
-    !bp_new.value||!bp_price.value
-  ){
-    show("error","❌ قم بإدخال كافة البيانات");return
-  }
-
-  fetch("https://docs.google.com/forms/d/e/1FAIpQLSc5x-yHCTEvn6ja4NrOIWijW4qIx3VQigznZqzpmlWa4PvmHw/formResponse",{
-    method:"POST",mode:"no-cors",
-    body:new URLSearchParams({
-      "entry.604321945":bp_coach.value,
-      "entry.527541380":bp_client.value,
-      "entry.1075210553":bp_phone.value,
-      "entry.155970344":bp_current.value,
-      "entry.504054585":bp_remaining.value,
-      "entry.108593185":bp_new.value,
-      "entry.1639499218":bp_date.value,
-      "entry.1435403128":bp_price.value,
-      "entry.1514819387":bp_notes.value||"لا يوجد"
-    })
-  })
-
-  bp_coach.value=bp_client.value=bp_phone.value=""
-  bp_current.value=bp_remaining.value=""
-  bp_new.value=bp_date.value=bp_price.value=""
-  bp_notes.value=""
-  show("success","✅ تم الإرسال")
+function toggleMaintenance(){
+  maintenanceFields.style.display =
+    dt_status.value==="يوجد صيانة" ? "block" : "none"
 }
+
+/* Business Plan coach */
+bp_coach.addEventListener("change",()=>{
+  bp_coach_other.style.display =
+    bp_coach.value==="other"?"block":"none"
+})
 </script>
 
 </body>
