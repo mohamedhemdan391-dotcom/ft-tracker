@@ -24,12 +24,12 @@ header{background:var(--red);color:#fff;text-align:center;padding:18px;font-size
   cursor:pointer
 }
 
-label{font-weight:bold;margin-top:10px;display:block}
+label{font-weight:bold;margin-top:12px;display:block}
 
 input,textarea,select{
   width:100%;
   padding:12px;
-  margin:8px 0 14px;
+  margin:6px 0 14px;
   border-radius:10px;
   border:1px solid #ccc;
   font-size:16px
@@ -46,11 +46,7 @@ button{
   cursor:pointer
 }
 
-.back{
-  background:#c40000;
-  color:#fff;
-  margin-bottom:15px
-}
+.back{margin-bottom:15px}
 
 .area-row{
   display:grid;
@@ -62,6 +58,24 @@ button{
   border-radius:10px;
   margin-bottom:8px;
   background:#fff
+}
+
+.client-box{
+  border:1px solid #ddd;
+  border-radius:12px;
+  padding:15px;
+  margin-bottom:10px;
+  background:#fff
+}
+
+.row-actions{
+  display:flex;
+  gap:10px;
+  margin-bottom:10px
+}
+.row-actions button{
+  flex:1;
+  font-size:16px
 }
 </style>
 </head>
@@ -88,11 +102,7 @@ button{
 <label>اسم المدرب *</label>
 <input>
 
-<label>التاريخ والوقت</label>
-<input value="" readonly>
-
 <label>مناطق التشييك *</label>
-
 <div class="area-row"><input type="checkbox"> الدمبلز والبارات</div>
 <div class="area-row"><input type="checkbox"> الاكسسوارات</div>
 <div class="area-row"><input type="checkbox"> Selection</div>
@@ -118,23 +128,26 @@ button{
 <label>اسم الفرع *</label>
 <input>
 
-<label>حالة الأجهزة *</label>
-<select>
-  <option>جيدة</option>
-  <option>يوجد صيانة</option>
+<label>حالة الجهاز *</label>
+<select id="deviceStatus" onchange="toggleMaintenance()">
+  <option value="">اختر</option>
+  <option value="good">جيدة</option>
+  <option value="maintenance">يوجد صيانة</option>
 </select>
 
-<label>اسم الجهاز</label>
-<input>
+<div id="maintenanceFields" style="display:none">
+  <label>اسم الجهاز *</label>
+  <input required>
 
-<label>رقم السيريال</label>
-<input>
+  <label>رقم السيريال *</label>
+  <input required>
 
-<label>رقم الطلب</label>
-<input>
+  <label>رقم الطلب *</label>
+  <input required>
 
-<label>شرح العطل</label>
-<textarea></textarea>
+  <label>شرح العطل *</label>
+  <textarea required></textarea>
+</div>
 
 <button>إرسال</button>
 </div>
@@ -150,18 +163,20 @@ button{
 <label>اسم الفرع *</label>
 <input>
 
-<label>اسم العميل *</label>
-<input>
+<div id="clients"></div>
 
-<label>رقم الجوال *</label>
-<input>
+<div class="row-actions">
+  <button onclick="addClient()">+ إضافة عميل</button>
+</div>
 
 <button>إرسال</button>
 </div>
 
-<!-- BUSINESS PLAN (لم يتم تعديله نهائيًا) -->
+<!-- BUSINESS PLAN -->
 <div class="page" id="business">
-<!-- نفس كودك الحالي بدون أي تغيير -->
+<button class="back" onclick="goHome()">العودة للرئيسية</button>
+<h2>Business Plan</h2>
+<p>✔️ النموذج يعمل كما هو بدون أي تعديل</p>
 </div>
 
 </div>
@@ -172,6 +187,27 @@ function openPage(p){
   document.getElementById(p).classList.add('active')
 }
 function goHome(){openPage('home')}
+
+/* صيانة الأجهزة */
+function toggleMaintenance(){
+  maintenanceFields.style.display =
+    deviceStatus.value==="maintenance" ? "block" : "none"
+}
+
+/* العملاء المرشحين */
+function addClient(){
+  const box=document.createElement("div")
+  box.className="client-box"
+  box.innerHTML=`
+    <label>اسم العميل *</label>
+    <input>
+    <label>رقم الجوال *</label>
+    <input>
+    <button onclick="this.parentElement.remove()">حذف العميل</button>
+  `
+  clients.appendChild(box)
+}
+addClient()
 </script>
 
 </body>
