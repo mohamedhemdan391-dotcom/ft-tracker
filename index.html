@@ -162,11 +162,14 @@ button{
 
 <div id="leadsContainer"></div>
 
-<button class="add-btn" onclick="addLead()">➕ إضافة عميل</button>
+<button class="add-btn" onclick="addLead()" style="margin-bottom:12px">
+  ➕ إضافة عميل
+</button>
+
 <button onclick="sendLeads()">إرسال</button>
 </div>
 
-<!-- BUSINESS PLAN (التعديل فقط هنا) -->
+<!-- BUSINESS PLAN -->
 <div class="page" id="business">
 <button class="back" onclick="goHome()">العودة للرئيسية</button>
 <h2>Business Plan</h2>
@@ -241,12 +244,174 @@ button{
 
 </div>
 
-<!-- Overlay + Scripts كما هي بدون أي تعديل -->
+<div class="overlay" id="overlay">
+  <div class="msg" id="msg"></div>
+</div>
+
 <script>
+/* GLOBAL */
 function now(){return new Date().toLocaleString()}
 d_time.value=dt_time.value=l_time.value=now()
-function openPage(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(p).classList.add('active')}
+
+function openPage(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'))
+  document.getElementById(p).classList.add('active')
+}
 function goHome(){openPage('home')}
+
+function show(type,text){
+  msg.className="msg "+type
+  msg.innerHTML=text
+  overlay.style.display="flex"
+  setTimeout(()=>overlay.style.display="none",1800)
+}
+
+/* DAILY */
+function sendDaily(){
+  const coach=d_coach.value.trim()
+  const notes=d_notes.value.trim()||"لا يوجد"
+  const areas=[...document.querySelectorAll("#areas input:checked")].map(x=>x.value)
+  if(!coach||areas.length===0){show("error","❌ قم بإدخال كافة البيانات");return}
+
+  const fd=new URLSearchParams()
+  fd.append("entry.1598276908",coach)
+  fd.append("entry.670685014",now())
+  areas.forEach(a=>fd.append("entry.793034521",a))
+  fd.append("entry.987129842",notes)
+
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfnfa-TV_a5gQ0qKTvgNRVsPWCLAFBCknL3MSDm3iGBy0kjnQ/formResponse",
+  {method:"POST",mode:"no-cors",body:fd})
+
+  d_coach.value="";d_notes.value=""
+  document.querySelectorAll("#areas input").forEach(x=>x.checked=false)
+  show("success","✅ تم الإرسال")
+}
+
+/* DETAILED */
+function toggleMaintenance(){
+  maintenanceFields.style.display =
+  dt_status.value==="يوجد صيانة"?"block":"none"
+}
+
+function sendDetailed(){
+  if(!dt_coach.value||!dt_branch.value||!dt_status.value){
+    show("error","❌ قم بإدخال كافة البيانات");return
+  }
+
+  let device="لا يوجد",serial="لا يوجد",order="لا يوجد",issue="لا يوجد"
+
+  if(dt_status.value==="يوجد صيانة"){
+    if(!dt_device.value||!dt_serial.value||!dt_order.value||!dt_issue.value){
+      show("error","❌ أكمل بيانات الصيانة");return
+    }
+    device=dt_device.value
+    serial=dt_serial.value
+    order=dt_order.value
+    issue=dt_issue.value
+  }
+
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSfW5kklovyvVTCTugqPhqZQQxYdsxxjCqKHlWwWzsFLRyMb6w/formResponse",
+  {
+    method:"POST",mode:"no-cors",
+    body:new URLSearchParams({
+      "entry.1110574157":dt_coach.value,
+      "entry.225813099":dt_branch.value,
+      "entry.472300684":now(),
+      "entry.1420106518":dt_status.value,
+      "entry.1131993998":device,
+      "entry.1894843047":serial,
+      "entry.971797645":order,
+      "entry.95041345":issue
+    })
+  })
+
+  dt_coach.value=dt_branch.value=dt_status.value=""
+  dt_device.value=dt_serial.value=dt_order.value=dt_issue.value=""
+  maintenanceFields.style.display="none"
+  show("success","✅ تم الإرسال")
+}
+
+/* LEADS */
+function addLead(){
+  const box=document.createElement("div")
+  box.className="lead-box"
+  box.innerHTML=`
+    <input class="l_name" placeholder="اسم العميل *">
+    <input class="l_phone" placeholder="رقم الجوال *">
+    <div class="lead-actions">
+      <button onclick="this.parentElement.parentElement.remove()">🗑 حذف</button>
+    </div>`
+  leadsContainer.appendChild(box)
+}
+addLead()
+
+function sendLeads(){
+  if(!l_coach.value||!l_branch.value){
+    show("error","❌ قم بإدخال كافة البيانات");return
+  }
+
+  const boxes=[...document.querySelectorAll(".lead-box")]
+  for(const b of boxes){
+    const name=b.querySelector(".l_name").value
+    const phone=b.querySelector(".l_phone").value
+    if(!name||!phone){
+      show("error","❌ قم بإدخال كافة البيانات");return
+    }
+
+    fetch("https://docs.google.com/forms/d/e/1FAIpQLSesXlFqpKwTxoMKyNmIJhAkuaZrzIA5KJmYwEM5dpdbZNhZFA/formResponse",
+    {
+      method:"POST",mode:"no-cors",
+      body:new URLSearchParams({
+        "entry.1803783309":l_coach.value,
+        "entry.1531832061":l_branch.value,
+        "entry.1038119858":now(),
+        "entry.634489457":name,
+        "entry.2087664957":phone
+      })
+    })
+  }
+
+  l_coach.value=l_branch.value=""
+  leadsContainer.innerHTML=""
+  addLead()
+  show("success","✅ تم الإرسال")
+}
+
+/* BUSINESS PLAN */
+function sendBusiness(){
+  if(
+    !b_current_coach.value||
+    !b_new_coach.value||
+    !b_phone.value||
+    !b_current_contract.value||
+    !b_remaining.value||
+    !b_new_contract.value||
+    !b_price.value
+  ){
+    show("error","❌ قم بإدخال كافة البيانات");return
+  }
+
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLSc5x-yHCTEvn6ja4NrOIWijW4qIx3VQigznZqzpmlWa4PvmHw/formResponse",
+  {
+    method:"POST",mode:"no-cors",
+    body:new URLSearchParams({
+      "entry.604321945":b_current_coach.value,
+      "entry.527541380":b_new_coach.value,
+      "entry.1075210553":b_phone.value,
+      "entry.155970344":b_current_contract.value,
+      "entry.504054585":b_remaining.value,
+      "entry.108593185":b_new_contract.value,
+      "entry.1639499218":b_start_date.value,
+      "entry.1435403128":b_price.value,
+      "entry.1514819387":b_notes.value||"لا يوجد"
+    })
+  })
+
+  b_current_coach.value=b_new_coach.value=b_phone.value=""
+  b_current_contract.value=b_remaining.value=b_new_contract.value=""
+  b_start_date.value=b_price.value=b_notes.value=""
+  show("success","✅ تم الإرسال")
+}
 </script>
 
 </body>
