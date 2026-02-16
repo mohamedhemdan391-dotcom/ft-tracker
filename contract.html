@@ -120,7 +120,7 @@ Follow up - Contract Extensions
 
 <!-- Mobile -->
 <label>Mobile Number - رقم الجوال *</label>
-<div class="desc">Please write number starting with 05</div>
+<div class="desc">يرجي كتابة رقم الجوال بالأنجليزية علي أن يبدأ ب 05</div>
 <input name="entry.307165346" pattern="05[0-9]{8}" required>
 
 <!-- Trainer -->
@@ -145,11 +145,12 @@ Follow up - Contract Extensions
 
 <!-- Expiry -->
 <label>Contract Expiration Date - تاريخ نهاية العقد *</label>
-<div class="desc">If contract expired last month or earlier, approval email required</div>
+<div class="desc">تنبيه : اذا كان تاريخ نهاية العقد الشهر الماضي او ما قبل يرجي أرسال ايميل لطلب الموافقة علي التمديد</div>
 <input type="date" name="entry.1069043705" required>
 
 <!-- Previous Extensions -->
 <label>Number of Previous Extensions - عدد مرات التمديد السابقة *</label>
+        <div class="desc">تنبيه : اذا كان التمديد للمرة الثالثة يرجي أرسال ايميل للموافقة - سيتم تجاهل الطلب اذا كانت المعلومات خاطئة </div>
 <input type="number" name="entry.466177843" required>
 
 <!-- Remaining -->
@@ -157,7 +158,8 @@ Follow up - Contract Extensions
 <input type="number" name="entry.194941931" required>
 
 <!-- Notes -->
-<label>Notes - ملاحظات</label>
+<label>سبب التمديد -  Reason for Extension</label>
+    <div class="desc">تنبيه : طلبات تحتاج اضافة مرفقات وايميل للموافقة  ( سفر عميل - سبب مرضي - أجازة مدرب )</div>
 <input name="entry.356004514">
 
 <button type="submit">إرسال</button>
