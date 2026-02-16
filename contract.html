@@ -8,14 +8,14 @@
 <style>
 body{
     margin:0;
-    font-family:Arial, sans-serif;
+    font-family:Arial;
     background:#f2f2f2;
 }
 
 .header{
     background:#d40000;
     color:#fff;
-    padding:25px;
+    padding:22px;
     text-align:center;
     font-size:26px;
     font-weight:bold;
@@ -29,21 +29,16 @@ body{
     border-radius:12px;
 }
 
-h2{
-    text-align:right;
-    margin-bottom:20px;
-}
-
 label{
     display:block;
-    margin-top:20px;
+    margin-top:18px;
     font-weight:bold;
 }
 
-input{
+input, select{
     width:100%;
     padding:12px;
-    margin-top:8px;
+    margin-top:6px;
     font-size:16px;
     border:1px solid #ccc;
     border-radius:6px;
@@ -71,42 +66,71 @@ Follow up - Contract Extensions
 
 <div class="container">
 
-<h2>Business Plan</h2>
-
 <form action="https://docs.google.com/forms/d/e/1FAIpQLSfVo_4pKXkrX6Od8WRTt5X39APUpjptsMqk0EoNXspzEZxbsA/formResponse"
-      method="POST"
-      target="hidden_iframe"
-      onsubmit="submitted=true;">
+method="POST"
+target="hidden_iframe">
 
-<!-- اسم المدرب -->
+<!-- Center Name -->
+<label>اسم المركز *</label>
+<select name="entry.1615855283" required>
+<option value="">اختر المركز</option>
+<option>Shatie Dammam FT</option>
+<option>Tarout FT</option>
+<option>Sihat PRO 16+</option>
+<option>Corniche FT 16+</option>
+<option>Olaya FT 16+</option>
+<option>Faisaliah FT 16+</option>
+<option>Noor FT</option>
+</select>
+
+<!-- Trainer -->
 <label>اسم المدرب *</label>
-<input name="entry.1178026807" value="محمد حمدان" required>
+<input name="entry.1178026807" required>
 
-<!-- اسم العميل -->
-<label>اسم العميل *</label>
-<input name="entry.144583990" required>
-
-<!-- رقم الجوال -->
+<!-- Phone -->
 <label>رقم الجوال *</label>
 <input name="entry.307165346" required>
 
-<!-- العقد الحالي -->
+<!-- Client -->
+<label>اسم العميل *</label>
+<input name="entry.144583990" required>
+
+<!-- Current Contract -->
 <label>العقد الحالي *</label>
-<input name="entry.157494334" required>
+<select name="entry.157494334" required>
+<option value="">اختر العقد</option>
+<option>PT 12</option>
+<option>PT 24</option>
+<option>PT 36</option>
+<option>PT 50</option>
+<option>PT 100</option>
+</select>
 
-<!-- عدد الجلسات المتبقية -->
+<!-- Expiry Date -->
+<label>تاريخ الانتهاء *</label>
+<input type="date" name="entry.1069043705" required>
+
+<!-- Remaining Sessions -->
 <label>عدد الجلسات المتبقية *</label>
-<input name="entry.194941931" required>
+<input type="number" name="entry.194941931" required>
 
-<!-- العقد الجديد -->
+<!-- New Contract -->
 <label>العقد الجديد *</label>
-<input name="entry.466177843" required>
+<select name="entry.466177843" required>
+<option value="">اختر العقد الجديد</option>
+<option>PT 12</option>
+<option>PT 24</option>
+<option>PT 36</option>
+<option>PT 50</option>
+<option>PT 100</option>
+</select>
 
-<!-- ملاحظات -->
+<!-- Notes -->
 <label>ملاحظات</label>
 <input name="entry.356004514">
 
 <button type="submit">إرسال</button>
+
 </form>
 
 <iframe name="hidden_iframe" style="display:none;"></iframe>
