@@ -12,6 +12,7 @@ body{
     background:#f2f2f2;
 }
 
+/* Header */
 .header{
     background:#d40000;
     color:#fff;
@@ -21,6 +22,7 @@ body{
     font-weight:bold;
 }
 
+/* Form container */
 .container{
     max-width:900px;
     margin:30px auto;
@@ -29,10 +31,17 @@ body{
     border-radius:12px;
 }
 
+/* Fields */
 label{
     display:block;
     margin-top:18px;
     font-weight:bold;
+}
+
+.desc{
+    font-size:13px;
+    color:#666;
+    margin-top:4px;
 }
 
 input, select{
@@ -44,6 +53,7 @@ input, select{
     border-radius:6px;
 }
 
+/* Submit button */
 button{
     margin-top:30px;
     width:100%;
@@ -54,6 +64,21 @@ button{
     border:none;
     border-radius:12px;
     cursor:pointer;
+}
+
+/* Message center */
+.message{
+    position:fixed;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    background:#d40000;
+    color:#fff;
+    padding:20px 40px;
+    font-size:22px;
+    border-radius:12px;
+    display:none;
+    z-index:999;
 }
 </style>
 </head>
@@ -66,14 +91,12 @@ Follow up - Contract Extensions
 
 <div class="container">
 
-<form action="https://docs.google.com/forms/d/e/1FAIpQLSfVo_4pKXkrX6Od8WRTt5X39APUpjptsMqk0EoNXspzEZxbsA/formResponse"
-method="POST"
-target="hidden_iframe">
+<form id="myForm">
 
-<!-- Center Name -->
-<label>Center Name *</label>
+<!-- Center -->
+<label>Center Name - اسم المركز *</label>
 <select name="entry.1615855283" required>
-<option value="">اختيار</option>
+<option value="">Select</option>
 <option>Shatie Dammam FT</option>
 <option>Tarout FT</option>
 <option>Sihat PRO 16+</option>
@@ -91,22 +114,23 @@ target="hidden_iframe">
 <option>Firdaws FT 16+</option>
 </select>
 
-<!-- Member Name -->
-<label>Member Name *</label>
+<!-- Member -->
+<label>Member Name - اسم المشترك *</label>
 <input name="entry.144583990" required>
 
 <!-- Mobile -->
-<label>Mobile Number *</label>
-<input name="entry.307165346" pattern="05[0-9]{8}" placeholder="05XXXXXXXX" required>
+<label>Mobile Number - رقم الجوال *</label>
+<div class="desc">Please write number starting with 05</div>
+<input name="entry.307165346" pattern="05[0-9]{8}" required>
 
 <!-- Trainer -->
-<label>Trainer Name *</label>
+<label>Trainer Name - اسم المدرب *</label>
 <input name="entry.1178026807" required>
 
 <!-- Contract Type -->
-<label>Contract Type *</label>
+<label>Contract Type - نوع العقد *</label>
 <select name="entry.157494334" required>
-<option value="">اختيار</option>
+<option value="">Select</option>
 <option>PT 6</option>
 <option>PT 12</option>
 <option>PT 24</option>
@@ -119,29 +143,68 @@ target="hidden_iframe">
 <option>SWIM 24</option>
 </select>
 
-<!-- Expiry Date -->
-<label>Contract Expiration Date *</label>
+<!-- Expiry -->
+<label>Contract Expiration Date - تاريخ نهاية العقد *</label>
+<div class="desc">If contract expired last month or earlier, approval email required</div>
 <input type="date" name="entry.1069043705" required>
 
 <!-- Previous Extensions -->
-<label>Number of Previous Extensions *</label>
+<label>Number of Previous Extensions - عدد مرات التمديد السابقة *</label>
 <input type="number" name="entry.466177843" required>
 
-<!-- Remaining Sessions -->
-<label>Remaining Sessions *</label>
+<!-- Remaining -->
+<label>Remaining Sessions - الحصص المتبقية *</label>
 <input type="number" name="entry.194941931" required>
 
 <!-- Notes -->
-<label>Notes</label>
+<label>Notes - ملاحظات</label>
 <input name="entry.356004514">
 
 <button type="submit">إرسال</button>
 
 </form>
 
-<iframe name="hidden_iframe" style="display:none;"></iframe>
-
 </div>
+
+<div id="msg" class="message"></div>
+
+<script>
+const form = document.getElementById("myForm");
+const msg = document.getElementById("msg");
+
+form.addEventListener("submit", function(e){
+    e.preventDefault();
+
+    // Check required fields
+    const inputs = form.querySelectorAll("[required]");
+    for(let input of inputs){
+        if(!input.value){
+            showMessage("يرجى تعبئة باقي البيانات");
+            return;
+        }
+    }
+
+    // Send to Google Form
+    const formData = new FormData(form);
+
+    fetch("https://docs.google.com/forms/d/e/1FAIpQLSfVo_4pKXkrX6Od8WRTt5X39APUpjptsMqk0EoNXspzEZxbsA/formResponse", {
+        method: "POST",
+        mode: "no-cors",
+        body: formData
+    }).then(() => {
+        form.reset();
+        showMessage("تم الإرسال");
+    });
+});
+
+function showMessage(text){
+    msg.innerText = text;
+    msg.style.display = "block";
+    setTimeout(()=>{
+        msg.style.display = "none";
+    },2000);
+}
+</script>
 
 </body>
 </html>
