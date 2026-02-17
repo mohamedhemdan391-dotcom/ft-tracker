@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Follow up - Contract Extensions</title>
+        <div class="desc">يرجي تعبئة كامل البيانات بشكل صحيح والأنتباه للتعليمات تحت الأسئلة - في حال تم تقديم بيانات غير صحيحة سيتم تجاهل الطلب</div>
 
 <style>
 body{
@@ -143,14 +144,15 @@ Follow up - Contract Extensions
 <option>SWIM 24</option>
 </select>
 
-<!-- Expiry -->
+<!-- Expiry Date (FIXED FOR MOBILE) -->
 <label>Contract Expiration Date - تاريخ نهاية العقد *</label>
 <div class="desc">تنبيه : اذا كان تاريخ نهاية العقد الشهر الماضي او ما قبل يرجي أرسال ايميل لطلب الموافقة علي التمديد</div>
-<input type="date" name="entry.1069043705" required>
+<input type="date" id="expiryDate" required>
+<input type="hidden" name="entry.1069043705" id="expiryHidden">
 
 <!-- Previous Extensions -->
 <label>Number of Previous Extensions - عدد مرات التمديد السابقة *</label>
-        <div class="desc">تنبيه : اذا كان التمديد للمرة الثالثة يرجي أرسال ايميل للموافقة - سيتم تجاهل الطلب اذا كانت المعلومات خاطئة </div>
+<div class="desc">تنبيه : اذا كان التمديد للمرة الثالثة يرجي أرسال ايميل للموافقة</div>
 <input type="number" name="entry.466177843" required>
 
 <!-- Remaining -->
@@ -158,8 +160,8 @@ Follow up - Contract Extensions
 <input type="number" name="entry.194941931" required>
 
 <!-- Notes -->
-<label>سبب التمديد -  Reason for Extension</label>
-    <div class="desc">تنبيه : الطلبات التي تحتاج اضافة مرفقات وايميل للموافقة هي ( سفر عميل - سبب مرضي - أجازة مدرب )</div>
+<label>سبب التمديد - Reason for Extension</label>
+<div class="desc">تنبيه : الطلبات التي تحتاج ارسال ايميل وتوفر مرفقات هي ( سفر عميل - سبب مرضي - أجازة مدرب )</div>
 <input name="entry.356004514">
 
 <button type="submit">إرسال</button>
@@ -177,7 +179,7 @@ const msg = document.getElementById("msg");
 form.addEventListener("submit", function(e){
     e.preventDefault();
 
-    // Check required fields
+    // Validate required fields
     const inputs = form.querySelectorAll("[required]");
     for(let input of inputs){
         if(!input.value){
@@ -186,7 +188,10 @@ form.addEventListener("submit", function(e){
         }
     }
 
-    // Send to Google Form
+    // FIX DATE FORMAT FOR MOBILE
+    let dateValue = document.getElementById("expiryDate").value;
+    document.getElementById("expiryHidden").value = dateValue;
+
     const formData = new FormData(form);
 
     fetch("https://docs.google.com/forms/d/e/1FAIpQLSfVo_4pKXkrX6Od8WRTt5X39APUpjptsMqk0EoNXspzEZxbsA/formResponse", {
